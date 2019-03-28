@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Data.SqlClient;
+using System.Configuration;
+using System.Collections.Specialized;
 
 namespace Middleware
 {
@@ -49,8 +51,8 @@ namespace Middleware
 		{
 			try
 			{
-				string connectionString = "Data Source=localhost;Initial Catalog=DummyDatabase;Integrated Security=true;";// User ID=UserName;Password=Password";
-				SqlConnection connection = new SqlConnection(connectionString);
+                string connectionString = Properties.Settings1.Default.CONNECTIONSTRING;
+                SqlConnection connection = new SqlConnection(connectionString);
 				connection.Open();
 				currentUser = new User();
 				currentUser.login(username, password, connection);
