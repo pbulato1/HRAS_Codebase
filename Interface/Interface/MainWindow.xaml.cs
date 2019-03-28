@@ -32,7 +32,7 @@ namespace Interface
             this.Close();
         }
 
-        private void Account_TextChanged(object sender, TextChangedEventArgs e)
+        private void UserName_TextChanged(object sender, TextChangedEventArgs e)
         {
 
         }
