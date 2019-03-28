@@ -1,0 +1,43 @@
+﻿<Window x:Class="Interface.CheckIn"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Interface"
+        mc:Ignorable="d"
+        WindowState="Maximized"
+        Title="Check In" Height="720" Width="1280">
+    <Grid>
+        <Label Content="Check In Patient" FontSize="30" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,20,0,0"/>
+        <Label Content="The fields with (*) are required fields. " HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,70,0,0" FontSize="10" Height="30" Foreground="Red"/>
+        <Label Content="Patient Name: " HorizontalAlignment="Left" VerticalAlignment="Top" Margin="30,110,0,0" FontSize="13" Height="30"/>
+        <TextBox x:Name="FirstName" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="150,110,0,0" TextWrapping="Wrap" Text="First Name" FontSize="15" Height="30" Width="250" TextChanged="FirstName_TextChanged"/>
+        <Label Content="(*)" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="400,110,0,0" FontSize="10" Height="30" Foreground="Red"/>
+        <TextBox x:Name="LastName" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="430,110,0,0" TextWrapping="Wrap" Text="Last Name" FontSize="15" Height="30" Width="250" TextChanged="LastName_TextChanged"/>
+        <Label Content="(*)" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="680,110,0,0" FontSize="10" Height="30" Foreground="Red"/>
+        <Label Content="Patient SSN: " HorizontalAlignment="Left" VerticalAlignment="Top" Margin="30,150,0,0" FontSize="13" Height="30"/>
+        <TextBox x:Name="SSN" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="150,150,0,0" TextWrapping="Wrap" Text="" FontSize="15" Height="30" Width="250" TextChanged="SSN_TextChanged"/>
+        <Label Content="(*)" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="400,150,0,0" FontSize="10" Height="30" Foreground="Red"/>
+        <Label Content="Birthdate: " HorizontalAlignment="Left" VerticalAlignment="Top" Margin="30,190,0,0" FontSize="13" Height="30"/>
+        <TextBox x:Name="Birthdate" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="150,190,0,0" TextWrapping="Wrap" Text="" FontSize="15" Height="30" Width="250" TextChanged="Birthdate_TextChanged"/>
+        <Label Content="(*)" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="400,190,0,0" FontSize="10" Height="30" Foreground="Red"/>
+        <Label Content="Phone Number: " HorizontalAlignment="Left" VerticalAlignment="Top" Margin="30,230,0,0" FontSize="13" Height="30"/>
+        <TextBox x:Name="Phone" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="150,230,0,0" TextWrapping="Wrap" Text="" FontSize="15" Height="30" Width="250" TextChanged="Phone_TextChanged"/>
+        <Label Content="Address: " HorizontalAlignment="Left" VerticalAlignment="Top" Margin="30,270,0,0" FontSize="13" Height="30"/>
+        <TextBox x:Name="Adress" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="150,270,0,0" TextWrapping="Wrap" Text="" FontSize="15" Height="30" Width="250" TextChanged="Address_TextChanged"/>
+        <Label Content="(*)" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="400,270,0,0" FontSize="10" Height="30" Foreground="Red"/>
+        <Label Content="City: " HorizontalAlignment="Left" VerticalAlignment="Top" Margin="420,270,0,0" FontSize="13" Height="30"/>
+        <TextBox x:Name="City" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="455,270,0,0" TextWrapping="Wrap" Text="" FontSize="15" Height="30" Width="100" TextChanged="City_TextChanged"/>
+        <Label Content="(*)" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="555,270,0,0" FontSize="10" Height="30" Foreground="Red"/>
+        <Label Content="State: " HorizontalAlignment="Left" VerticalAlignment="Top" Margin="575,270,0,0" FontSize="13" Height="30"/>
+        <ComboBox HorizontalAlignment="Left" VerticalAlignment="Top" Margin="620,270,0,0" Height="30" Width="70" SelectionChanged="ComboBox_SelectionChanged"/>
+        <Label Content="(*)" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="690,270,0,0" FontSize="10" Height="30" Foreground="Red"/>
+        <Label Content="Zip: " HorizontalAlignment="Left" VerticalAlignment="Top" Margin="710,270,0,0" FontSize="13" Height="30"/>
+        <TextBox x:Name="Zip" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="745,270,0,0" TextWrapping="Wrap" Text="" FontSize="15" Height="30" Width="100" TextChanged="Zip_TextChanged"/>
+        <Label Content="(*)" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="845,270,0,0" FontSize="10" Height="30" Foreground="Red"/>
+        <Button Content="Submit" HorizontalAlignment="Left" VerticalAlignment="Bottom"  Margin="390,0,0,250" FontSize="15" Height="35" Width="100" Click="Button_Click_Submit"/>
+        <Button Content="Cancel" HorizontalAlignment="Right" VerticalAlignment="Bottom"  Margin="0,0,390,250" FontSize="15" Height="35" Width="100" Click="Button_Click_Cancel"/>
+        <Button Content="Main Menu" Background="White" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Bottom"  Margin="60,0,0,30" Height="35" Width="75" Click="Button_Click_BackMenu" />
+        <Button Content="Log out" Background="White" FontWeight="Bold" HorizontalAlignment="Right" VerticalAlignment="Bottom"  Margin="0,0,60,30" Height="35" Width="75" Click="Button_Click_LogOut" />
+    </Grid>
+</Window>

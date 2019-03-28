@@ -1,0 +1,29 @@
+﻿<Window x:Class="Interface.DiagnosisWizard"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Interface"
+        mc:Ignorable="d"
+        WindowState="Maximized"
+        Title="Diagnosis Wizard" Height="720" Width="1280">
+    <Grid>
+        <Label Content="HRAS Diagnosis Wizard" FontSize="30" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,20,0,0"/>
+        <Label Content="*Finish the following questions to predict the diagnosis" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,80,0,0"/>
+        <Grid HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,140,0,0" Height="30">
+            <Label Content="Question" FontSize="15" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+            <Label Content="##:" FontSize="15" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="65,0,0,0"/>
+            <Label Content="Sample question?" FontSize="15" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="125,0,0,0"/>
+        </Grid>
+        <CheckBox Content="Yes" FontSize="15" HorizontalAlignment="Center" Margin="-375,200,0,0" VerticalAlignment="Top"/>
+        <CheckBox Content="No" FontSize="15" HorizontalAlignment="Center" Margin="-375,230,0,0" VerticalAlignment="Top"/>
+
+
+        <Button Content="Previous" HorizontalAlignment="Left" VerticalAlignment="Bottom"  Margin="290,0,0,300" FontSize="15" Height="35" Width="75" Click="Button_Click_Previous"/>
+        <Button Content="Next" HorizontalAlignment="Center" VerticalAlignment="Bottom"  Margin="0,0,0,300" FontSize="15" Height="35" Width="75" Click="Button_Click_Next"/>
+        <Button Content="Submit" HorizontalAlignment="Right" VerticalAlignment="Bottom"  Margin="0,0,290,300" FontSize="15" Height="35" Width="75" Click="Button_Click_Submit"/>
+        
+        <Button Content="Main Menu" Background="White" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Bottom"  Margin="60,0,0,30" Height="35" Width="75" Click="Button_Click_BackMenu" />
+        <Button Content="Log out" Background="White" FontWeight="Bold" HorizontalAlignment="Right" VerticalAlignment="Bottom"  Margin="0,0,60,30" Height="35" Width="75" Click="Button_Click_LogOut" />
+    </Grid>
+</Window>
