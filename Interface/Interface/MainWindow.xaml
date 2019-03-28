@@ -11,10 +11,10 @@
         <Label Content="Hospital Record Access System" FontSize="30" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,30,0,0"/>
         <Image Source="logo.jpg" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,100,0,0" Stretch="UniformToFill" Height="250" Width="400"/>
         <Label x:Name="lockedInfo" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,360,0,0" Content="Sample" FontSize="12" Background="White" Foreground="Red" FontWeight="Bold"/>
-        <Label Content="Account：" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="-150,400,0,0" FontSize="15" Height="30"/>
-        <TextBox x:Name="Account" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="100,400,0,0" TextWrapping="Wrap" Text="" FontSize="15" Height="30" Width="150" TextChanged="Account_TextChanged"/>
+        <Label Content="lblAccount：" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="-150,400,0,0" FontSize="15" Height="30"/>
+        <TextBox x:Name="Account" TabIndex="1" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="100,400,0,0" TextWrapping="Wrap" Text="" FontSize="15" Height="30" Width="150" TextChanged="Account_TextChanged"/>
         <Label Content="Password：" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="-150,440,0,0" FontSize="15" Height="30"/>
-        <PasswordBox x:Name="password" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="100,440,0,0" PasswordChar="*" FontSize="15" Height="30" Width="150"/>
-        <Button Content="Log in" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,490,0,0" FontSize="15" Height="35" Width="75" Click="Button_Click"/>
+        <PasswordBox x:Name="password" TabIndex="2" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="100,440,0,0" PasswordChar="*" FontSize="15" Height="30" Width="150"/>
+        <Button Content="Log in" TabIndex="3" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,490,0,0" FontSize="15" Height="35" Width="75" Click="Button_Click" IsDefault="True"/>
     </Grid>
 </Window>

@@ -12,6 +12,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Middleware;
+using System.Security.Cryptography;
 
 namespace Interface
 {
@@ -20,16 +22,41 @@ namespace Interface
     /// </summary>
     public partial class MainWindow : Window
     {
-        public MainWindow()
+		int failedAttempts = 0;
+		int attemptThreshold = 5;
+
+		public MainWindow()
         {
             InitializeComponent();
         }
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            //This code below is just for testing perpose
-            MainMenu menu = new MainMenu();
-            menu.Show();
-            this.Close();
+			byte[] passwordBytes = Encoding.ASCII.GetBytes(password.Password);
+			HashAlgorithm sha = new SHA1CryptoServiceProvider();
+			byte[] hashedBytes = sha.ComputeHash(passwordBytes);
+			string hashedPassword = Convert.ToBase64String(hashedBytes);
+
+			Session currentSession = new Session(Account.Text, hashedPassword);
+
+			if (currentSession.verifySession())
+			{
+				MainMenu m = new MainMenu();
+				m.Show();
+				this.Close();
+				failedAttempts = 0;
+			}
+			else
+			{
+				failedAttempts++;
+				if (failedAttempts == attemptThreshold)
+				{
+					MessageBox.Show(this, "Your account is locked!", "Locked", MessageBoxButton.OK, MessageBoxImage.Stop);
+				}
+				else
+				{
+					lockedInfo.Content = "Your account currently has " + failedAttempts + " strike. It will be locked when you reach " + attemptThreshold + " strikes.";
+				}
+			}
         }
 
         private void Account_TextChanged(object sender, TextChangedEventArgs e)
