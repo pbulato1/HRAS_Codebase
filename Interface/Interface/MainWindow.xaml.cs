@@ -59,9 +59,9 @@ namespace Interface
 			}
         }
 
-        private void UserName_TextChanged(object sender, TextChangedEventArgs e)
-        {
+		private void Account_TextChanged(object sender, TextChangedEventArgs e)
+		{
 
-        }
-    }
+		}
+	}
 }
