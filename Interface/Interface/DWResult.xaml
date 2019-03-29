@@ -5,8 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Interface"
         mc:Ignorable="d"
-        Title="DWResult" Height="450" Width="800">
+        Title="Diagnois Wizard Result" Height="700" Width="500">
     <Grid>
+        <Label Content="Diagnosis Result" FontSize="30" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,20,0,0"/>
+        
         
     </Grid>
 </Window>
