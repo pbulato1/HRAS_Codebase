@@ -91,5 +91,10 @@ namespace Interface
                 this.Close();
             }
         }
+
+        private void IR_DataChange(object sender, SelectionChangedEventArgs e)
+        {
+        }
+        
     }
 }

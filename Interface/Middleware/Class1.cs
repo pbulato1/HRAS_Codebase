@@ -287,11 +287,21 @@ namespace Middleware
 
 	class BasicAddress
 	{
-		string addressLineOne;
-		string addressLineTwo;
-		string city;
-		string state;
-		string zip;
+		private string addressLineOne;
+		private string addressLineTwo;
+		private string city;
+		private string state;
+		private string zip;
+
+        public BasicAddress(string line1, string line2, string theCity, string theState, string theZip)
+        {
+            addressLineOne = line1;
+            addressLineTwo = line2;
+            city = theCity;
+            state = theState;
+            zip = theZip;
+        }
+
 	}
 
 	class Patient

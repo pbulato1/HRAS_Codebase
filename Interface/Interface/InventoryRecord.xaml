@@ -14,7 +14,7 @@
         <Button Content="Inventory History" FontSize="13" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="360,90,0,0" Height="30" Width="150" Click="Button_Click_History"/>
         <Button Content="Search" FontSize="13" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,90,30,0" Height="30" Width="75" Click="Button_Click_Search"/>
 
-        <DataGrid Margin="20,138,30,89" Name="DG1" ItemsSource="{Binding}" AutoGenerateColumns="False" >
+        <DataGrid Name="IR_DG" Margin="20,138,30,89"  ItemsSource="{Binding}" AutoGenerateColumns="False" SelectionChanged="IR_DataChange" >
             
         </DataGrid>
 

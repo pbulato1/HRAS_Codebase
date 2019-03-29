@@ -58,10 +58,5 @@ namespace Interface
 				}
 			}
         }
-
-		private void Account_TextChanged(object sender, TextChangedEventArgs e)
-		{
-
-		}
 	}
 }
