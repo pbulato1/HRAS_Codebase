@@ -396,7 +396,17 @@ namespace Middleware
             inventory.Load(reader);
             return inventory;
         }
-	}
+
+        public static DataTable searchInventory(string input)
+        {
+            DataTable inventory = new DataTable();
+            SqlConnection connection = Session.getCurrentSession().getConnection();
+            SqlCommand command = new SqlCommand("Select * FROM Item WHERE Item_Description like '%" + input + "%' OR Stock_ID like '%" + input + "%' OR Size like '%" + input + "%'", connection);
+            SqlDataReader reader = command.ExecuteReader();
+            inventory.Load(reader);
+            return inventory;
+        }
+    }
 
 	class Room
 	{

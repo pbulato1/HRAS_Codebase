@@ -49,7 +49,6 @@ namespace Interface
         private void InventoryRecord_Loaded(object sender, EventArgs e)
         {
             DataTable inventory = InventoryItem.getInventory();
-            int x = inventory.Rows.Count;
             DG1.ItemsSource = inventory.DefaultView;
             DG1.AutoGenerateColumns = true;
             DG1.CanUserAddRows = false;
@@ -57,7 +56,10 @@ namespace Interface
 
         private void Search_TextChanged(object sender, TextChangedEventArgs e)
         {
-
+            DataTable inventory = InventoryItem.searchInventory(Account.Text);
+            DG1.ItemsSource = inventory.DefaultView;
+            DG1.AutoGenerateColumns = true;
+            DG1.CanUserAddRows = false;
         }
 
         private void Button_Click_Search(object sender, RoutedEventArgs e)
