@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Data.SqlClient;
+using System.Configuration;
+using System.Collections.Specialized;
 
 namespace Middleware
 {
@@ -44,21 +46,33 @@ namespace Middleware
 	{
 		SqlConnection conn;
 		User currentUser;
-        public Session(string username, string password)
+        static Session theSession;
+
+		private Session(string username, string password)
 		{
 			try
 			{
-				string connectionString = "Data Source=localhost;Initial Catalog=DummyDatabase;Integrated Security=true;";// User ID=UserName;Password=Password";
-				SqlConnection connection = new SqlConnection(connectionString);
-				connection.Open();
+                string connectionString = Properties.Settings1.Default.CONNECTIONSTRING;
+                conn = new SqlConnection(connectionString);
+				conn.Open();
 				currentUser = new User();
-				currentUser.login(username, password, connection);
+				currentUser.login(username, password, conn);
 			}
 			catch (Exception e)
 			{
 				throw new Exception("A connection to the database could not be established.");
 			}
 		}
+
+        public static Session establishSession(string username, string password)
+        {
+            if (theSession == null)
+            {
+                theSession = new Session(username, password);
+                return theSession;
+            }
+            return theSession;
+        }
 
 		public SqlConnection getConnection()
 		{
@@ -69,6 +83,7 @@ namespace Middleware
 		{
 			currentUser.logout();
 			conn.Close();
+            theSession = null;
 		}
 
 		public bool verifySession()
@@ -201,6 +216,11 @@ namespace Middleware
 			logoffTimer.Stop();
 			logoffTimer.Start();
 		}
+
+        public string getUsername()
+        {
+            return username;
+        }
 	}
 
 	class BasicAddress
@@ -284,21 +304,11 @@ namespace Middleware
 		{
 			diagnosis = theDiagnosis;
 
-			string connectionString = "Data Source=localhost;Initial Catalog=DummyDatabase;Integrated Security=true;";// User ID=UserName;Password=Password";
-			string commandString = "UPDATE Staff SET Password = 'HellsYeah' WHERE User_Name = sami; ";
-			SqlConnection connection = new SqlConnection(connectionString);
-			try
-			{
-				connection.Open();
-				SqlCommand command = new SqlCommand(commandString, connection);
-				command.ExecuteNonQuery();
-				command.Dispose();
-				connection.Close();
-			}
-			catch (Exception ex)
-			{
-				throw new Exception("A connection to the database could not be established.");
-			}
+			//connection.Open();
+			//SqlCommand command = new SqlCommand(commandString, connection);
+			//command.ExecuteNonQuery();
+			//command.Dispose();
+			//connection.Close();
 		}
 
 		public void addRoom(Room theRoom)
@@ -376,14 +386,14 @@ namespace Middleware
 		private static void importInventory(System.IO.StreamReader file, SqlConnection connection)
 		{
 			string line;
-			while ((line = file.ReadLine()) != null)
+			while ((line = file.ReadLine()) != null) // all casts are just integer enumerations to make it more readable
 			{
-				int id = Int32.Parse(line.Substring(0, 5));
-				int quantity = Int32.Parse(line.Substring(5, 5));
-				string description = line.Substring(10, 35);
-				int size = Int32.Parse(line.Substring(45, 3));
-				int cost = Int32.Parse(line.Substring(48, 8));
-				string commandString = "UPDATE Staff SET Password = 'HellsYeah' WHERE User_Name = sami; ";
+				int id = Int32.Parse(line.Substring((int)DataStart.STOCKID, (int)DataLength.STOCKID));
+				int quantity = Int32.Parse(line.Substring((int)DataStart.QUANTITY, (int)DataLength.QUANTITY));
+				string description = line.Substring((int)DataStart.DESCRIPTION, (int)DataLength.DESCRIPTION);
+				int size = Int32.Parse(line.Substring((int)DataStart.SIZE, (int)DataLength.SIZE));
+				int cost = Int32.Parse(line.Substring((int)DataStart.COST, (int)DataLength.COST));
+				string commandString = "UPDATE Staff SET Password = '' WHERE User_Name = ''";
 				SqlCommand command = new SqlCommand(commandString, connection);
 				command.ExecuteNonQuery();
 				command.Dispose();
