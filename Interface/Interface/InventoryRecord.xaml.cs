@@ -56,30 +56,17 @@ namespace Interface
 
         private void Search_TextChanged(object sender, TextChangedEventArgs e)
         {
-            DataTable inventory = InventoryItem.searchInventory(Account.Text);
+            DataTable inventory = InventoryItem.searchInventory(SearchBox.Text);
             DG1.ItemsSource = inventory.DefaultView;
             DG1.AutoGenerateColumns = true;
             DG1.CanUserAddRows = false;
         }
-
-        private void Button_Click_Search(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-
-
-
-
-
-
         private void Button_Click_BackMenu(object sender, RoutedEventArgs e)
         {
             MainMenu menu = new MainMenu();
             menu.Show();
             this.Close();
         }
-
         private void Button_Click_LogOut(object sender, RoutedEventArgs e)
         {
             MessageBoxResult result;
@@ -91,7 +78,6 @@ namespace Interface
                 this.Close();
             }
         }
-
         private void IR_DataChange(object sender, SelectionChangedEventArgs e)
         {
         }
