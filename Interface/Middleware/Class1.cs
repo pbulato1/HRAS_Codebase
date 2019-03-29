@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Data.SqlClient;
 using System.Configuration;
 using System.Collections.Specialized;
+using System.Data;
 
 namespace Middleware
 {
@@ -24,25 +25,81 @@ namespace Middleware
 		ROOM = 2
 	}
 
-	public enum DataLength
-	{
-		STOCKID = 5,
-		QUANTITY = 5,
-		DESCRIPTION = 35,
-		SIZE = 3,
-		COST = 8
-	}
+    public enum DataLength
+    {
+        //INVENTORY
+        STOCKID = 5,
+        QUANTITY = 5,
+        DESCRIPTION = 35,
+        SIZE = 3,
+        COST = 8,
+        //MEDICAL RECORD
+        LASTNAME = 50,
+        FIRSTNAME = 25,
+        MIDDLEINITIAL = 1,
+        GENDER = 1,
+        SSN = 9,
+        BIRTHDATE = 8,
+        ENTRYDATETIME = 12,
+        EXITDATETIME = 12,
+        ATTENDINGPHY = 5,
+        ROOMNO = 9,
+        SYMPTOM1 = 25,
+        SYMPTOM2 = 25,
+        SYMPTOM3 = 25,
+        SYMPTOM4 = 25,
+        SYMPTOM5 = 25,
+        SYMPTOM6 = 25,
+        DIAGNOSIS = 75,
+        NOTES = 100,
+        INSURER = 5,
+        ADDRESSLINE1 = 35,
+        ADDRESSLINE2 = 35,
+        ADDRESSCITY = 25,
+        ADDRESSSTATE = 2,
+        ADDRESSZIP = 5,
+        DNRSTATUS = 1,
+        ORGANDONOR = 1
+    }
 
-	public enum DataStart
-	{
-		STOCKID = 0,
-		QUANTITY = DataLength.STOCKID,
-		DESCRIPTION = DataLength.STOCKID + DataLength.QUANTITY,
-		SIZE = DataLength.STOCKID + DataLength.QUANTITY + DataLength.DESCRIPTION,
-		COST = DataLength.STOCKID + DataLength.QUANTITY + DataLength.DESCRIPTION + DataLength.SIZE
-	}
+    public enum DataStart
+    {
+        //INVENTORY
+        STOCKID = 0,
+        QUANTITY = DataLength.STOCKID,
+        DESCRIPTION = DataLength.STOCKID + DataLength.QUANTITY,
+        SIZE = DataLength.STOCKID + DataLength.QUANTITY + DataLength.DESCRIPTION,
+        COST = DataLength.STOCKID + DataLength.QUANTITY + DataLength.DESCRIPTION + DataLength.SIZE,
+        //MEDICAL RECORD
+        LASTNAME = 0,
+        FIRSTNAME = DataLength.LASTNAME,
+        MIDDLEINITIAL = FIRSTNAME + DataLength.FIRSTNAME,
+        GENDER = MIDDLEINITIAL + DataLength.MIDDLEINITIAL,
+        SSN = GENDER + DataLength.GENDER,
+        BIRTHDATE = SSN + DataLength.SSN,
+        ENTRYDATETIME = BIRTHDATE + DataLength.BIRTHDATE,
+        EXITDATETIME = ENTRYDATETIME + DataLength.ENTRYDATETIME,
+        ATTENDINGPHY = EXITDATETIME + DataLength.EXITDATETIME,
+        ROOMNO = ATTENDINGPHY + DataLength.ATTENDINGPHY,
+        SYMPTOM1 = ROOMNO + DataLength.ROOMNO,
+        SYMPTOM2 = SYMPTOM1 + DataLength.SYMPTOM1,
+        SYMPTOM3 = SYMPTOM2 + DataLength.SYMPTOM2,
+        SYMPTOM4 = SYMPTOM3 + DataLength.SYMPTOM3,
+        SYMPTOM5 = SYMPTOM4 + DataLength.SYMPTOM4,
+        SYMPTOM6 = SYMPTOM5 + DataLength.SYMPTOM5,
+        DIAGNOSIS = SYMPTOM6 + DataLength.SYMPTOM6,
+        NOTES = DIAGNOSIS + DataLength.DIAGNOSIS,
+        INSURER = NOTES + DataLength.NOTES,
+        ADDRESSLINE1 = INSURER + DataLength.INSURER,
+        ADDRESSLINE2 = ADDRESSLINE1 + DataLength.ADDRESSLINE1,
+        ADDRESSCITY = ADDRESSLINE2 + DataLength.ADDRESSLINE2,
+        ADRESSSTATE = ADDRESSCITY + DataLength.ADDRESSCITY,
+        ADDRESSZIP = ADRESSSTATE + DataLength.ADDRESSSTATE,
+        DNRSTATUS = ADDRESSZIP + DataLength.ADDRESSZIP,
+        ORGANDONOR = DNRSTATUS + DataLength.DNRSTATUS,
+    }
 
-	public class Session
+    public class Session
 	{
 		SqlConnection conn;
 		User currentUser;
@@ -74,7 +131,12 @@ namespace Middleware
             return theSession;
         }
 
-		public SqlConnection getConnection()
+        public static Session getCurrentSession()
+        {
+            return theSession;
+        }
+
+        public SqlConnection getConnection()
 		{
 			return conn;
 		}
@@ -322,7 +384,7 @@ namespace Middleware
 		}
 	}
 
-	class InventoryItem
+	public class InventoryItem
 	{
 		string stockID;
 		int quantity;
@@ -334,6 +396,16 @@ namespace Middleware
 		{
 			return 0;
 		}
+
+        public static DataTable  getInventory()
+        {
+            DataTable inventory = new DataTable();
+            SqlConnection connection = Session.getCurrentSession().getConnection();
+            SqlCommand command = new SqlCommand("Select * FROM Item", connection);
+            SqlDataReader reader = command.ExecuteReader();
+            inventory.Load(reader);
+            return inventory;
+        }
 	}
 
 	class Room
@@ -388,17 +460,16 @@ namespace Middleware
 			string line;
 			while ((line = file.ReadLine()) != null) // all casts are just integer enumerations to make it more readable
 			{
-				int id = Int32.Parse(line.Substring((int)DataStart.STOCKID, (int)DataLength.STOCKID));
-				int quantity = Int32.Parse(line.Substring((int)DataStart.QUANTITY, (int)DataLength.QUANTITY));
-				string description = line.Substring((int)DataStart.DESCRIPTION, (int)DataLength.DESCRIPTION);
-				int size = Int32.Parse(line.Substring((int)DataStart.SIZE, (int)DataLength.SIZE));
-				int cost = Int32.Parse(line.Substring((int)DataStart.COST, (int)DataLength.COST));
-				string commandString = "UPDATE Staff SET Password = '' WHERE User_Name = ''";
-				SqlCommand command = new SqlCommand(commandString, connection);
-				command.ExecuteNonQuery();
-				command.Dispose();
-				System.Console.WriteLine(line);
-			}
+                string id = line.Substring((int)DataStart.STOCKID, (int)DataLength.STOCKID);
+                string quantity = line.Substring((int)DataStart.QUANTITY, (int)DataLength.QUANTITY);
+                string description = line.Substring((int)DataStart.DESCRIPTION, (int)DataLength.DESCRIPTION);
+                string size = line.Substring((int)DataStart.SIZE, (int)DataLength.SIZE);
+                string cost = line.Substring((int)DataStart.COST, (int)DataLength.COST);
+                string commandString = "INSERT INTO Item(Stock_ID, Size, Cost, Item_Description, Quantity) VALUES('" + id + "', '" + size + "', '" + cost + "', '" + description + "', '" + quantity + "')";
+                SqlCommand command = new SqlCommand(commandString, connection);
+                command.ExecuteNonQuery();
+                command.Dispose();
+            }
 		}
 
 		private static void importMedical(System.IO.StreamReader file, SqlConnection connection)
