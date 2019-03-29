@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Middleware;
 
 namespace Interface
 {
@@ -22,6 +24,7 @@ namespace Interface
         public InventoryRecord()
         {
             InitializeComponent();
+            Loaded += InventoryRecord_Loaded;
         }
 
         private void Button_Click_Add(object sender, RoutedEventArgs e)
@@ -41,6 +44,15 @@ namespace Interface
             InventoryHistory history = new InventoryHistory();
             history.Show();
             this.Close();
+        }
+
+        private void InventoryRecord_Loaded(object sender, EventArgs e)
+        {
+            DataTable inventory = InventoryItem.getInventory();
+            int x = inventory.Rows.Count;
+            DG1.ItemsSource = inventory.DefaultView;
+            DG1.AutoGenerateColumns = true;
+            DG1.CanUserAddRows = false;
         }
 
         private void Search_TextChanged(object sender, TextChangedEventArgs e)
