@@ -54,7 +54,9 @@ namespace Interface
 				}
 				else
 				{
-					lockedInfo.Content = "Your account currently has " + failedAttempts + " strike. It will be locked when you reach " + attemptThreshold + " strikes.";
+					lockedInfo.HorizontalContentAlignment = HorizontalAlignment.Center;
+					lockedInfo.Content = "Your user name or password is wrong.\n" +
+						"Your account currently has " + failedAttempts + " strike. It will be locked when you reach " + attemptThreshold + " strikes.";
 				}
 			}
         }

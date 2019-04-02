@@ -10,7 +10,7 @@
     <Grid>
         <Label Content="Hospital Record Access System" FontSize="30" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,30,0,0"/>
         <Image Source="logo.jpg" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,100,0,0" Stretch="UniformToFill" Height="250" Width="400"/>
-        <Label x:Name="lockedInfo" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,360,0,0" Content="Sample" FontSize="12" Background="White" Foreground="Red" FontWeight="Bold"/>
+        <Label x:Name="lockedInfo" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,360,0,0" Content="" FontSize="12" Background="White" Foreground="Red" FontWeight="Bold"/>
         <Label Content="lblAccount：" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="-150,400,0,0" FontSize="15" Height="30"/>
         <TextBox x:Name="Account" TabIndex="1" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="100,400,0,0" TextWrapping="Wrap" Text="" FontSize="15" Height="30" Width="150" TextChanged="Account_TextChanged"/>
         <Label Content="Password：" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="-150,440,0,0" FontSize="15" Height="30"/>
