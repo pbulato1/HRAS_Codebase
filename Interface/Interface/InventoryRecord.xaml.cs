@@ -71,7 +71,6 @@ namespace Interface
             menu.Show();
             this.Close();
         }
-
         private void Button_Click_LogOut(object sender, RoutedEventArgs e)
         {
             MessageBoxResult result;
@@ -83,7 +82,6 @@ namespace Interface
                 this.Close();
             }
         }
-
         private void IR_DataChange(object sender, SelectionChangedEventArgs e)
         {
         }
