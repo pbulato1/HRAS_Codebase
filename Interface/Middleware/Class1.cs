@@ -568,11 +568,11 @@ namespace Middleware
             return inventory;
         }
 
-        public static DataTable searchInventory(string input)
+        public static DataTable searchInventory(string id, string description, string size)
         {
             DataTable inventory = new DataTable();
             SqlConnection connection = Session.getCurrentSession().getConnection();
-            SqlCommand command = new SqlCommand("Select * FROM Item WHERE Item_Description like '%" + input + "%' OR Stock_ID like '%" + input + "%' OR Size like '%" + input + "%'", connection);
+            SqlCommand command = new SqlCommand("Select * FROM Item WHERE Item_Description like '%" + description + "%' AND Stock_ID like '%" + id + "%' AND Size like '%" + size + "%'", connection);
             SqlDataReader reader = command.ExecuteReader();
             inventory.Load(reader);
             return inventory;
