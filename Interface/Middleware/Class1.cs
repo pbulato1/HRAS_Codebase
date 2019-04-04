@@ -10,7 +10,8 @@ using System.Collections.Specialized;
 using System.Data; 
 /*Database code ,, Implemantation code is below this
  * 
- * CREATE TABLE Staff
+ * 
+CREATE TABLE Staff
 (
 [User_Name] varchar(25),
 [Password] varchar(50),
@@ -28,7 +29,7 @@ SSN char(9),
 Birth_Date char(8),
 Address_Line1 varchar(35),
 Address_Line2 varchar(35),
-Address_City
+Address_City varchar(25),
 Address_State char(2),
 Address_Zip char(5),
 DNR_Status char,
