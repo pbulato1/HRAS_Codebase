@@ -56,22 +56,14 @@ namespace Interface
 
         private void Search_TextChanged(object sender, TextChangedEventArgs e)
         {
-            DataTable inventory = InventoryItem.searchInventory(Account.Text);
-            DG1.ItemsSource = inventory.DefaultView;
-            DG1.AutoGenerateColumns = true;
-            DG1.CanUserAddRows = false;
+            if (tfID != null && tfDescription != null && tfSize != null)
+            {
+                DataTable inventory = InventoryItem.searchInventory(tfID.Text, tfDescription.Text, tfSize.Text);
+                DG1.ItemsSource = inventory.DefaultView;
+                DG1.AutoGenerateColumns = true;
+                DG1.CanUserAddRows = false;
+            }
         }
-
-        private void Button_Click_Search(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-
-
-
-
-
 
         private void Button_Click_BackMenu(object sender, RoutedEventArgs e)
         {
@@ -79,7 +71,6 @@ namespace Interface
             menu.Show();
             this.Close();
         }
-
         private void Button_Click_LogOut(object sender, RoutedEventArgs e)
         {
             MessageBoxResult result;
@@ -91,7 +82,6 @@ namespace Interface
                 this.Close();
             }
         }
-
         private void IR_DataChange(object sender, SelectionChangedEventArgs e)
         {
         }
