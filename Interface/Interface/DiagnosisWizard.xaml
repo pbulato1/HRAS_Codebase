@@ -15,8 +15,8 @@
             <Label Content="##:" FontSize="15" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="65,0,0,0"/>
             <Label Content="Sample question?" FontSize="15" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="125,0,0,0"/>
         </Grid>
-        <CheckBox Content="Yes" FontSize="15" HorizontalAlignment="Center" Margin="-375,200,0,0" VerticalAlignment="Top"/>
-        <CheckBox Content="No" FontSize="15" HorizontalAlignment="Center" Margin="-375,230,0,0" VerticalAlignment="Top"/>
+        <CheckBox Content="Yes" FontSize="15" HorizontalAlignment="Center" Margin="-375,220,0,0" VerticalAlignment="Top"/>
+        <CheckBox Content="No" FontSize="15" HorizontalAlignment="Center" Margin="-375,240,0,0" VerticalAlignment="Top"/>
 
 
         <Button Content="Previous" HorizontalAlignment="Left" VerticalAlignment="Bottom"  Margin="290,0,0,300" FontSize="15" Height="35" Width="75" Click="Button_Click_Previous"/>

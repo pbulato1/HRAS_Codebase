@@ -36,7 +36,7 @@ namespace Interface
 			byte[] hashedBytes = sha.ComputeHash(passwordBytes);
 			string hashedPassword = Convert.ToBase64String(hashedBytes);
 
-			Session currentSession = new Session(Account.Text, hashedPassword);
+			Session currentSession = Session.establishSession(Account.Text, hashedPassword);
 
 			if (currentSession.verifySession())
 			{
@@ -60,10 +60,5 @@ namespace Interface
 				}
 			}
         }
-
-		private void Account_TextChanged(object sender, TextChangedEventArgs e)
-		{
-
-		}
 	}
 }

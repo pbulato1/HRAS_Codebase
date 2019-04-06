@@ -5,9 +5,173 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Data.SqlClient;
+using System.Configuration;
+using System.Collections.Specialized;
+using System.Data; 
+/*Database code ,, Implemantation code is below this
+ * 
+ * CREATE TABLE Staff
+(
+[User_Name] varchar(25),
+[Password] varchar(50),
+User_Type char,
+CONSTRAINT PK_Staff PRIMARY KEY 
+([User_Name])
+)
 
+CREATE TABLE Patient
+(
+Last_Name varchar(50),
+First_Name varchar(25),
+Gender char,
+SSN char(9),
+Birth_Date char(8),
+Address_Line1 varchar(35),
+Address_Line2 varchar(35),
+Address_City
+Address_State char(2),
+Address_Zip char(5),
+DNR_Status char,
+Organ_Donor char,
+CONSTRAINT PK_Patient PRIMARY KEY 
+(SSN)
+)
+
+CREATE TABLE Visited_History
+(
+Patient_SSN char(9),
+Entry_Date char(8),
+Exit_Date char(8),
+Insurer varchar(5),
+Diagnosis varchar(75),
+Notes varchar(100),
+Bill NUMERIC(7,2),
+CONSTRAINT PK_Visited_History PRIMARY KEY 
+(Patient_SSN, Entry_Date),
+CONSTRAINT FK_Visited_History_Patient FOREIGN KEY 
+(Patient_SSN) REFERENCES Patient 
+(SSN)
+)
+
+CREATE TABLE Room
+(
+Room_Number NUMERIC(9,0),
+Hourly_Rate NUMERIC(5,0),
+Effective_Date char(8),
+CONSTRAINT PK_Room PRIMARY KEY 
+(Room_Number)
+)
+
+CREATE TABLE Symptom
+(
+[Name] varchar(25),
+CONSTRAINT PK_Symptom PRIMARY KEY 
+([Name])
+)
+
+CREATE TABLE Item
+(
+Stock_ID char(5),
+Quantity NUMERIC(5,0),
+[Description] varchar(35),
+Size varchar(3),
+Cost NUMERIC(8,0),
+CONSTRAINT PK_Item PRIMARY KEY 
+(Stock_ID)
+)
+
+CREATE TABLE Show_Signs
+(
+Symptom_Name varchar(25),
+Patient_SSN char(9),
+Entry_Date char(8),
+CONSTRAINT PK_Show_Signs PRIMARY KEY 
+(Symptom_Name, Patient_SSN, Entry_Date),
+CONSTRAINT FK_Show_Signs_Symptom FOREIGN KEY 
+(Symptom_Name) REFERENCES Symptom
+([Name]),
+CONSTRAINT FK_Show_Signs_Visited_History FOREIGN KEY 
+(Patient_SSN, Entry_Date) REFERENCES Visited_History
+(Patient_SSN, Entry_Date)
+)
+
+CREATE TABLE Stayed_In
+(
+Room_Number NUMERIC(9,0),
+Patient_SSN char(9),
+Entry_Date char(8),
+CONSTRAINT PK_Stayed_In PRIMARY KEY 
+(Room_Number, Patient_SSN, Entry_Date),
+CONSTRAINT FK_Stayed_In_Room FOREIGN KEY 
+(Room_Number) REFERENCES Room
+(Room_Number),
+CONSTRAINT FK_Stayed_In_Visited_History FOREIGN KEY 
+(Patient_SSN, Entry_Date) REFERENCES Visited_History
+(Patient_SSN, Entry_Date)
+)
+
+CREATE TABLE Attended_Physican
+(
+[User_Name] varchar(25),
+Patient_SSN char(9),
+Entry_Date char(8),
+CONSTRAINT PK_Attended_Physican PRIMARY KEY 
+([User_name], Patient_SSN, Entry_Date),
+CONSTRAINT FK_Attended_Physican_Staff FOREIGN KEY 
+([User_Name]) REFERENCES Staff
+([User_name]),
+CONSTRAINT FK_Attended_Physican_Visited_History FOREIGN KEY 
+(Patient_SSN, Entry_Date) REFERENCES Visited_History
+(Patient_SSN, Entry_Date)
+)
+
+CREATE TABLE Takes_Care
+(
+Patient_SSN char(9),
+[User_Name] varchar(25),
+CONSTRAINT PK_Takes_Care PRIMARY KEY 
+(Patient_SSN, [User_Name]),
+CONSTRAINT FK_Takes_Care_Patient FOREIGN KEY 
+(Patient_SSN) REFERENCES Patient
+(SSN),
+CONSTRAINT FK_Takes_Care_Staff FOREIGN KEY 
+([User_Name]) REFERENCES Staff
+([User_Name])
+)
+
+CREATE TABLE [Use]
+(
+[User_Name] varchar(25),
+Stock_ID char(5),
+Patient_SSN char(9),
+Entry_Date char(8),
+Quantity_Used NUMERIC(5,0),
+[Date] char(18),
+CONSTRAINT PK_Use PRIMARY KEY 
+(Patient_SSN, Entry_Date),
+CONSTRAINT FK_Use_Staff FOREIGN KEY 
+([User_Name]) REFERENCES Staff
+([User_Name]),
+CONSTRAINT FK_Use_Item FOREIGN KEY 
+(Stock_ID) REFERENCES Item
+(Stock_ID),
+CONSTRAINT FK_Use_Visited_History FOREIGN KEY 
+(Patient_SSN, Entry_Date) REFERENCES Visited_History
+(Patient_SSN, Entry_Date)
+)
+
+CREATE PROCEDURE Verify_Login @username nvarchar(25), @passwordnvarchar(50)
+AS
+BEGIN
+SELECT User_Name, User_Type
+FROM Staff
+WHERE User_Name=@username 
+AND Password=@password
+END
+ * */
 namespace Middleware
 {
+    
 	enum PrivilegeLevels
 	{
 		NONE = 0,
@@ -22,38 +186,95 @@ namespace Middleware
 		ROOM = 2
 	}
 
-	public enum DataLength
-	{
-		STOCKID = 5,
-		QUANTITY = 5,
-		DESCRIPTION = 35,
-		SIZE = 3,
-		COST = 8
-	}
+    public enum DataLength
+    {
+        //INVENTORY
+        STOCKID = 5,
+        QUANTITY = 5,
+        DESCRIPTION = 35,
+        SIZE = 3,
+        COST = 8,
+        //MEDICAL RECORD
+        LASTNAME = 50,
+        FIRSTNAME = 25,
+        MIDDLEINITIAL = 1,
+        GENDER = 1,
+        SSN = 9,
+        BIRTHDATE = 8,
+        ENTRYDATETIME = 12,
+        EXITDATETIME = 12,
+        ATTENDINGPHY = 5,
+        ROOMNO = 9,
+        SYMPTOM1 = 25,
+        SYMPTOM2 = 25,
+        SYMPTOM3 = 25,
+        SYMPTOM4 = 25,
+        SYMPTOM5 = 25,
+        SYMPTOM6 = 25,
+        DIAGNOSIS = 75,
+        NOTES = 100,
+        INSURER = 5,
+        ADDRESSLINE1 = 35,
+        ADDRESSLINE2 = 35,
+        ADDRESSCITY = 25,
+        ADDRESSSTATE = 2,
+        ADDRESSZIP = 5,
+        DNRSTATUS = 1,
+        ORGANDONOR = 1
+    }
 
-	public enum DataStart
-	{
-		STOCKID = 0,
-		QUANTITY = DataLength.STOCKID,
-		DESCRIPTION = DataLength.STOCKID + DataLength.QUANTITY,
-		SIZE = DataLength.STOCKID + DataLength.QUANTITY + DataLength.DESCRIPTION,
-		COST = DataLength.STOCKID + DataLength.QUANTITY + DataLength.DESCRIPTION + DataLength.SIZE
-	}
+    public enum DataStart
+    {
+        //INVENTORY
+        STOCKID = 0,
+        QUANTITY = DataLength.STOCKID,
+        DESCRIPTION = DataLength.STOCKID + DataLength.QUANTITY,
+        SIZE = DataLength.STOCKID + DataLength.QUANTITY + DataLength.DESCRIPTION,
+        COST = DataLength.STOCKID + DataLength.QUANTITY + DataLength.DESCRIPTION + DataLength.SIZE,
+        //MEDICAL RECORD
+        LASTNAME = 0,
+        FIRSTNAME = DataLength.LASTNAME,
+        MIDDLEINITIAL = FIRSTNAME + DataLength.FIRSTNAME,
+        GENDER = MIDDLEINITIAL + DataLength.MIDDLEINITIAL,
+        SSN = GENDER + DataLength.GENDER,
+        BIRTHDATE = SSN + DataLength.SSN,
+        ENTRYDATETIME = BIRTHDATE + DataLength.BIRTHDATE,
+        EXITDATETIME = ENTRYDATETIME + DataLength.ENTRYDATETIME,
+        ATTENDINGPHY = EXITDATETIME + DataLength.EXITDATETIME,
+        ROOMNO = ATTENDINGPHY + DataLength.ATTENDINGPHY,
+        SYMPTOM1 = ROOMNO + DataLength.ROOMNO,
+        SYMPTOM2 = SYMPTOM1 + DataLength.SYMPTOM1,
+        SYMPTOM3 = SYMPTOM2 + DataLength.SYMPTOM2,
+        SYMPTOM4 = SYMPTOM3 + DataLength.SYMPTOM3,
+        SYMPTOM5 = SYMPTOM4 + DataLength.SYMPTOM4,
+        SYMPTOM6 = SYMPTOM5 + DataLength.SYMPTOM5,
+        DIAGNOSIS = SYMPTOM6 + DataLength.SYMPTOM6,
+        NOTES = DIAGNOSIS + DataLength.DIAGNOSIS,
+        INSURER = NOTES + DataLength.NOTES,
+        ADDRESSLINE1 = INSURER + DataLength.INSURER,
+        ADDRESSLINE2 = ADDRESSLINE1 + DataLength.ADDRESSLINE1,
+        ADDRESSCITY = ADDRESSLINE2 + DataLength.ADDRESSLINE2,
+        ADRESSSTATE = ADDRESSCITY + DataLength.ADDRESSCITY,
+        ADDRESSZIP = ADRESSSTATE + DataLength.ADDRESSSTATE,
+        DNRSTATUS = ADDRESSZIP + DataLength.ADDRESSZIP,
+        ORGANDONOR = DNRSTATUS + DataLength.DNRSTATUS,
+    }
 
-	public class Session
+    public class Session
 	{
 		SqlConnection conn;
 		User currentUser;
+        static Session theSession;
 
-		public Session(string username, string password)
+		private Session(string username, string password)
 		{
 			try
 			{
-				string connectionString = "Data Source=localhost;Initial Catalog=DummyDatabase;Integrated Security=true;";// User ID=UserName;Password=Password";
-				SqlConnection connection = new SqlConnection(connectionString);
-				connection.Open();
+                string connectionString = Properties.Settings1.Default.CONNECTIONSTRING;
+                conn = new SqlConnection(connectionString);
+				conn.Open();
 				currentUser = new User();
-				currentUser.login(username, password, connection);
+				currentUser.login(username, password, conn);
 			}
 			catch (Exception e)
 			{
@@ -61,7 +282,22 @@ namespace Middleware
 			}
 		}
 
-		public SqlConnection getConnection()
+        public static Session establishSession(string username, string password)
+        {
+            if (theSession == null)
+            {
+                theSession = new Session(username, password);
+                return theSession;
+            }
+            return theSession;
+        }
+
+        public static Session getCurrentSession()
+        {
+            return theSession;
+        }
+
+        public SqlConnection getConnection()
 		{
 			return conn;
 		}
@@ -70,6 +306,7 @@ namespace Middleware
 		{
 			currentUser.logout();
 			conn.Close();
+            theSession = null;
 		}
 
 		public bool verifySession()
@@ -202,15 +439,30 @@ namespace Middleware
 			logoffTimer.Stop();
 			logoffTimer.Start();
 		}
+
+        public string getUsername()
+        {
+            return username;
+        }
 	}
 
 	class BasicAddress
 	{
-		string addressLineOne;
-		string addressLineTwo;
-		string city;
-		string state;
-		string zip;
+		private string addressLineOne;
+		private string addressLineTwo;
+		private string city;
+		private string state;
+		private string zip;
+
+        public BasicAddress(string line1, string line2, string theCity, string theState, string theZip)
+        {
+            addressLineOne = line1;
+            addressLineTwo = line2;
+            city = theCity;
+            state = theState;
+            zip = theZip;
+        }
+
 	}
 
 	class Patient
@@ -275,21 +527,11 @@ namespace Middleware
 		{
 			diagnosis = theDiagnosis;
 
-			string connectionString = "Data Source=localhost;Initial Catalog=DummyDatabase;Integrated Security=true;";// User ID=UserName;Password=Password";
-			string commandString = "UPDATE Staff SET Password = 'HellsYeah' WHERE User_Name = sami; ";
-			SqlConnection connection = new SqlConnection(connectionString);
-			try
-			{
-				connection.Open();
-				SqlCommand command = new SqlCommand(commandString, connection);
-				command.ExecuteNonQuery();
-				command.Dispose();
-				connection.Close();
-			}
-			catch (Exception ex)
-			{
-				throw new Exception("A connection to the database could not be established.");
-			}
+			//connection.Open();
+			//SqlCommand command = new SqlCommand(commandString, connection);
+			//command.ExecuteNonQuery();
+			//command.Dispose();
+			//connection.Close();
 		}
 
 		public void addRoom(Room theRoom)
@@ -303,7 +545,7 @@ namespace Middleware
 		}
 	}
 
-	class InventoryItem
+	public class InventoryItem
 	{
 		string stockID;
 		int quantity;
@@ -315,7 +557,27 @@ namespace Middleware
 		{
 			return 0;
 		}
-	}
+
+        public static DataTable  getInventory()
+        {
+            DataTable inventory = new DataTable();
+            SqlConnection connection = Session.getCurrentSession().getConnection();
+            SqlCommand command = new SqlCommand("Select * FROM Item", connection);
+            SqlDataReader reader = command.ExecuteReader();
+            inventory.Load(reader);
+            return inventory;
+        }
+
+        public static DataTable searchInventory(string input)
+        {
+            DataTable inventory = new DataTable();
+            SqlConnection connection = Session.getCurrentSession().getConnection();
+            SqlCommand command = new SqlCommand("Select * FROM Item WHERE Item_Description like '%" + input + "%' OR Stock_ID like '%" + input + "%' OR Size like '%" + input + "%'", connection);
+            SqlDataReader reader = command.ExecuteReader();
+            inventory.Load(reader);
+            return inventory;
+        }
+    }
 
 	class Room
 	{
@@ -367,19 +629,18 @@ namespace Middleware
 		private static void importInventory(System.IO.StreamReader file, SqlConnection connection)
 		{
 			string line;
-			while ((line = file.ReadLine()) != null)
+			while ((line = file.ReadLine()) != null) // all casts are just integer enumerations to make it more readable
 			{
-				int id = Int32.Parse(line.Substring(0, 5));
-				int quantity = Int32.Parse(line.Substring(5, 5));
-				string description = line.Substring(10, 35);
-				int size = Int32.Parse(line.Substring(45, 3));
-				int cost = Int32.Parse(line.Substring(48, 8));
-				string commandString = "UPDATE Staff SET Password = 'HellsYeah' WHERE User_Name = sami; ";
-				SqlCommand command = new SqlCommand(commandString, connection);
-				command.ExecuteNonQuery();
-				command.Dispose();
-				System.Console.WriteLine(line);
-			}
+                string id = line.Substring((int)DataStart.STOCKID, (int)DataLength.STOCKID);
+                string quantity = line.Substring((int)DataStart.QUANTITY, (int)DataLength.QUANTITY);
+                string description = line.Substring((int)DataStart.DESCRIPTION, (int)DataLength.DESCRIPTION);
+                string size = line.Substring((int)DataStart.SIZE, (int)DataLength.SIZE);
+                string cost = line.Substring((int)DataStart.COST, (int)DataLength.COST);
+                string commandString = "INSERT INTO Item(Stock_ID, Size, Cost, Item_Description, Quantity) VALUES('" + id + "', '" + size + "', '" + cost + "', '" + description + "', '" + quantity + "')";
+                SqlCommand command = new SqlCommand(commandString, connection);
+                command.ExecuteNonQuery();
+                command.Dispose();
+            }
 		}
 
 		private static void importMedical(System.IO.StreamReader file, SqlConnection connection)

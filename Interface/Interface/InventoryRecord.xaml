@@ -13,11 +13,12 @@
         <Button Content="Inventory Withdraw" FontSize="13" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="190,90,0,0" Height="30" Width="150" Click="Button_Click_Withdraw"/>
         <Button Content="Inventory History" FontSize="13" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="360,90,0,0" Height="30" Width="150" Click="Button_Click_History"/>
         <Button Content="Search" FontSize="13" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,90,30,0" Height="30" Width="75" Click="Button_Click_Search"/>
-        <TextBox x:Name="Account" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,90,120,0" TextWrapping="Wrap" Text=" Searchbox" FontSize="13" Height="30" Width="250" TextChanged="Search_TextChanged"/>
 
-        <DataGrid Margin="20,138,30,89" Name="DG1" ItemsSource="{Binding}" AutoGenerateColumns="False" >
+        <DataGrid Name="DG1" Margin="20,138,30,89"  ItemsSource="{Binding}" AutoGenerateColumns="False" SelectionChanged="IR_DataChange" >
             
         </DataGrid>
+
+        <TextBox x:Name="Account" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,90,120,0" TextWrapping="Wrap" Text=" Searchbox" FontSize="13" Height="30" Width="250" TextChanged="Search_TextChanged"/>
 
         <Button Content="Main Menu" Background="White" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Bottom"  Margin="60,0,0,30" Height="35" Width="75" Click="Button_Click_BackMenu" />
         <Button Content="Log out" Background="White" FontWeight="Bold" HorizontalAlignment="Right" VerticalAlignment="Bottom"  Margin="0,0,60,30" Height="35" Width="75" Click="Button_Click_LogOut" />
