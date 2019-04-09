@@ -56,11 +56,15 @@ namespace Interface
 
         private void Search_TextChanged(object sender, TextChangedEventArgs e)
         {
-            DataTable inventory = InventoryItem.searchInventory(SearchBox.Text);
-            DG1.ItemsSource = inventory.DefaultView;
-            DG1.AutoGenerateColumns = true;
-            DG1.CanUserAddRows = false;
+            if (tfID != null && tfDescription != null && tfSize != null)
+            {
+                DataTable inventory = InventoryItem.searchInventory(tfID.Text, tfDescription.Text, tfSize.Text);
+                DG1.ItemsSource = inventory.DefaultView;
+                DG1.AutoGenerateColumns = true;
+                DG1.CanUserAddRows = false;
+            }
         }
+
         private void Button_Click_BackMenu(object sender, RoutedEventArgs e)
         {
             MainMenu menu = new MainMenu();
