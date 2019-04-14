@@ -469,11 +469,7 @@ namespace Middleware
 
         public BasicAddress(string line1, string line2, string theCity, string theState, string theZip)
         {
-            addressLineOne = line1;
-            addressLineTwo = line2;
-            city = theCity;
-            state = theState;
-            zip = theZip;
+            // this should connect the datebase directly, 
         }
 
 	}
@@ -489,6 +485,11 @@ namespace Middleware
 		BasicAddress address;
 		bool dnrStatus;
 		bool organDonor;
+
+        public Patient(string theLastName, string theFirstName, char middle, char theGender, string SSN, DateTime birthdate, BasicAddress theAddress, bool theDnrStatus, bool Donor)
+        {
+            
+        }
 	}
 
 	class MedicalRecord

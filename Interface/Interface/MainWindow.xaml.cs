@@ -42,18 +42,21 @@ namespace Interface
 				this.Close();
 				failedAttempts = 0;
 			}
-			else
+            failedAttempts++;
+
+            if (failedAttempts < attemptThreshold)
+            {
+                lockedInfo.Content = "Your account currently has " + failedAttempts + " strike. It will be locked when you reach " + attemptThreshold + " strikes.";
+            }
+            else
 			{
-				failedAttempts++;
-				if (failedAttempts == attemptThreshold)
-				{
-					MessageBox.Show(this, "Your account is locked!", "Locked", MessageBoxButton.OK, MessageBoxImage.Stop);
-				}
-				lockedInfo.HorizontalContentAlignment = HorizontalAlignment.Center;
-				string plural = (failedAttempts > 1) ? "s" : "";
-				lockedInfo.Content = "Your user name or password is wrong.\n" +
-					"Your account currently has " + failedAttempts + " strike" + plural + ". It will be locked when you reach " + attemptThreshold + " strikes.";
+                lockedInfo.Content = "Your account currently has " + failedAttempts + " strike. It will be locked when you reach " + attemptThreshold + " strikes.";
+                MessageBox.Show(this, "Your account is locked!", "Locked", MessageBoxButton.OK, MessageBoxImage.Stop);
 			}
+            
+            /// I found this is very important in here the lock-out feature is not actually acknowledge which user_ID
+            /// They will increase false attempt when every the USER_ID and PASSWORD are not both matched the data base
+            /// and then when we enter the right one => we suppose to get into the system.
         }
 
 	}
