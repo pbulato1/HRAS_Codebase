@@ -8,10 +8,14 @@
         WindowState="Maximized"
         Title="Inventory History" Height="720" Width="1280">
     <Grid>
-        <Label Content="HRAS Inventory History" FontSize="30" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,20,0,0"/>
-        
-        <Button Content="Back To Inventory Record" FontSize="13" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,30" Height="30" Width="160" Click="Button_Click_Back"/>
-        <Button Content="Main Menu" Background="White" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Bottom"  Margin="60,0,0,30" Height="35" Width="75" Click="Button_Click_BackMenu" />
-        <Button Content="Log out" Background="White" FontWeight="Bold" HorizontalAlignment="Right" VerticalAlignment="Bottom"  Margin="0,0,60,30" Height="35" Width="75" Click="Button_Click_LogOut" />
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="27*"/>
+            <ColumnDefinition Width="1247*"/>
+        </Grid.ColumnDefinitions>
+        <Label Content="HRAS Inventory History" FontSize="30" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="435.4,20,462.6,0" Grid.Column="1"/>
+
+        <Button Content="Back To Inventory Record" FontSize="13" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="530.4,0,556.6,30.4" Height="30" Width="160" Click="Button_Click_Back" Grid.Column="1"/>
+        <Button Content="Main Menu" Background="White" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Bottom"  Margin="33.4,0,0,30.4" Height="35" Width="75" Click="Button_Click_BackMenu" Grid.Column="1" />
+        <Button Content="Log out" Background="White" FontWeight="Bold" HorizontalAlignment="Right" VerticalAlignment="Bottom"  Margin="0,0,59.6,30.4" Height="35" Width="75" Click="Button_Click_LogOut" Grid.Column="1" />
     </Grid>
 </Window>

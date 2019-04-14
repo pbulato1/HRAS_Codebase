@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Middleware;
 
 namespace Interface
 {
@@ -22,6 +23,11 @@ namespace Interface
         public MedicalRecord()
         {
             InitializeComponent();
+			if (Session.getCurrentSession().getCurrentUser().getPrivilegeLevel() != (int)PrivilegeLevels.A)
+			{
+				tfImportFilePath.IsEnabled = false;
+				btnImportFile.IsEnabled = false;
+			}
         }
 
         private void Button_Click_BackMenu(object sender, RoutedEventArgs e)
@@ -37,7 +43,8 @@ namespace Interface
             result = MessageBox.Show(this, "Do you want to exit?", "Log Out", MessageBoxButton.YesNo, MessageBoxImage.Warning);
             if (result == MessageBoxResult.Yes)
             {
-                MainWindow login = new MainWindow();
+				Session.getCurrentSession().getCurrentUser().logout();
+				MainWindow login = new MainWindow();
                 login.Show();
                 this.Close();
             }
@@ -52,6 +59,11 @@ namespace Interface
         {
 
         }
+
+		private void Button_Click_Import(object sender, RoutedEventArgs e)
+		{
+			//ImportData.import(tfImportFilePath.Text, ImportType.MEDICAL, Session.getCurrentSession()); Currently has bug with one of the lengths, looking into it
+		}
 
         private void Search_TextChanged(object sender, TextChangedEventArgs e)
         {

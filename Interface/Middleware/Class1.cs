@@ -174,7 +174,7 @@ END
 namespace Middleware
 {
     
-	enum PrivilegeLevels
+	public enum PrivilegeLevels
 	{
 		NONE = 0,
 		R = 1,
@@ -256,8 +256,8 @@ namespace Middleware
         ADDRESSLINE1 = INSURER + DataLength.INSURER,
         ADDRESSLINE2 = ADDRESSLINE1 + DataLength.ADDRESSLINE1,
         ADDRESSCITY = ADDRESSLINE2 + DataLength.ADDRESSLINE2,
-        ADRESSSTATE = ADDRESSCITY + DataLength.ADDRESSCITY,
-        ADDRESSZIP = ADRESSSTATE + DataLength.ADDRESSSTATE,
+        ADDRESSSTATE = ADDRESSCITY + DataLength.ADDRESSCITY,
+        ADDRESSZIP = ADDRESSSTATE + DataLength.ADDRESSSTATE,
         DNRSTATUS = ADDRESSZIP + DataLength.ADDRESSZIP,
         ORGANDONOR = DNRSTATUS + DataLength.DNRSTATUS,
     }
@@ -267,6 +267,8 @@ namespace Middleware
 		SqlConnection conn;
 		User currentUser;
         static Session theSession;
+		public static Exception failedConnectionException = new Exception("A connection to the database could not be established.");
+
 
 		private Session(string username, string password)
 		{
@@ -276,21 +278,25 @@ namespace Middleware
                 conn = new SqlConnection(connectionString);
 				conn.Open();
 				currentUser = new User();
-				currentUser.login(username, password, conn);
+				if (!currentUser.login(username, password, conn))
+				{
+					throw User.failedLoginException;
+				}
 			}
-			catch (Exception)
+			catch (Exception e)
 			{
-				throw new Exception("A connection to the database could not be established.");
+				if (e == User.failedLoginException) throw User.failedLoginException;
+				throw failedConnectionException;
 			}
 		}
 
         public static Session establishSession(string username, string password)
         {
+			Session tempSession;
             if (theSession == null)
             {
                 theSession = new Session(username, password);
-                return theSession;
-            }
+			}
             return theSession;
         }
 
@@ -306,7 +312,6 @@ namespace Middleware
 
 		public void closeConnection()
 		{
-			currentUser.logout();
 			conn.Close();
             theSession = null;
 		}
@@ -314,6 +319,11 @@ namespace Middleware
 		public bool verifySession()
 		{
 			return currentUser.isLoggedIn();
+		}
+
+		public User getCurrentUser()
+		{
+			return currentUser;
 		}
 	}
 
@@ -362,7 +372,7 @@ namespace Middleware
 		}
 	}
 
-	class User
+	public class User
 	{
 		string username;
 		string password;
@@ -373,6 +383,7 @@ namespace Middleware
 		int logoffThreshold = 15;
 		int warningThreshold = 10;
 		bool loggedIn = false;
+		public static Exception failedLoginException = new Exception("Incorrect username or password");
 
 		public bool login(string enteredUsername, string enteredPassword, SqlConnection connection)
 		{
@@ -433,6 +444,8 @@ namespace Middleware
 				logoffTimer = null;
 				AFKTime = 0;
 				loggedIn = false;
+				Session currentSession = Session.getCurrentSession();
+				currentSession.closeConnection();
 				return true;
 			}
 			catch (Exception e)
@@ -457,6 +470,11 @@ namespace Middleware
         {
             return username;
         }
+
+		public int getPrivilegeLevel()
+		{
+			return privilegeLevel;
+		}
 	}
 
 	class BasicAddress
@@ -662,7 +680,46 @@ namespace Middleware
 			string line;
 			while ((line = file.ReadLine()) != null)
 			{
+				string lastName = line.Substring((int)DataStart.LASTNAME, (int)DataLength.LASTNAME);
+				string firstName = line.Substring((int)DataStart.FIRSTNAME, (int)DataLength.FIRSTNAME);
+				string middleInitial = line.Substring((int)DataStart.MIDDLEINITIAL, (int)DataLength.MIDDLEINITIAL);
+				string gender = line.Substring((int)DataStart.GENDER, (int)DataLength.GENDER);
+				string ssn = line.Substring((int)DataStart.SSN, (int)DataLength.SSN);
+				string birthDate = line.Substring((int)DataStart.BIRTHDATE, (int)DataLength.BIRTHDATE);
+				string entryDateTime = line.Substring((int)DataStart.ENTRYDATETIME, (int)DataLength.ENTRYDATETIME);
+				string exitDateTime = line.Substring((int)DataStart.EXITDATETIME, (int)DataLength.EXITDATETIME);
+				string attendingPhys = line.Substring((int)DataStart.ATTENDINGPHY, (int)DataLength.ATTENDINGPHY);
+				string roomNo = line.Substring((int)DataStart.ROOMNO, (int)DataLength.ROOMNO);
+				string symptom1 = line.Substring((int)DataStart.SYMPTOM1, (int)DataLength.SYMPTOM1);
+				string symptom2 = line.Substring((int)DataStart.SYMPTOM2, (int)DataLength.SYMPTOM2);
+				string symptom3 = line.Substring((int)DataStart.SYMPTOM3, (int)DataLength.SYMPTOM3);
+				string symptom4 = line.Substring((int)DataStart.SYMPTOM4, (int)DataLength.SYMPTOM4);
+				string symptom5 = line.Substring((int)DataStart.SYMPTOM5, (int)DataLength.SYMPTOM5);
+				string symptom6 = line.Substring((int)DataStart.SYMPTOM6, (int)DataLength.SYMPTOM6);
+				string diagnosis = line.Substring((int)DataStart.DIAGNOSIS, (int)DataLength.DIAGNOSIS);
+				string notes = line.Substring((int)DataStart.NOTES, (int)DataLength.NOTES);
+				string insurer = line.Substring((int)DataStart.INSURER, (int)DataLength.INSURER);
+				string addressLine1 = line.Substring((int)DataStart.ADDRESSLINE1, (int)DataLength.ADDRESSLINE1);
+				string addressLine2 = line.Substring((int)DataStart.ADDRESSLINE2, (int)DataLength.ADDRESSLINE2);
+				string addressCity = line.Substring((int)DataStart.ADDRESSCITY, (int)DataLength.ADDRESSCITY);
+				string addressState = line.Substring((int)DataStart.ADDRESSSTATE, (int)DataLength.ADDRESSSTATE);
+				string addressZip = line.Substring((int)DataStart.ADDRESSZIP, (int)DataLength.ADDRESSZIP);
+				string dnrStatus = line.Substring((int)DataStart.DNRSTATUS, (int)DataLength.DNRSTATUS);
+				string organDonor = line.Substring((int)DataStart.ORGANDONOR, (int)DataLength.ORGANDONOR);
+				string commandString = "INSERT INTO Patient(Last_Name, First_Name, Middle_Initial, Gender, SSN, Birth_Date, Address_Line1, Address_Line2, Address_City, Address_State, Address_Zip, DNR_Status, Organ_Donor) VALUES('" + 
+					lastName + "', '" + firstName + "', '" + middleInitial + "', '" + gender + "', '" + ssn + "', '" + birthDate + "', '" + addressLine1 + "', '" + addressLine2 + "', '" + addressCity + "', '" + addressState + "', '" + 
+					addressZip + "', '" + dnrStatus + "', '" + organDonor + "')";
+				SqlCommand command = new SqlCommand(commandString, connection);
+				command.ExecuteNonQuery();
 
+				commandString = "INSERT INTO Visited_History(Entry_Date, Exit_Date, Diagnosis, Insurer, Notes) VALUES('" +
+					entryDateTime + "', '" + exitDateTime + "', '" + diagnosis + "', '" + insurer + "', '" + notes + "')";
+				command = new SqlCommand(commandString, connection);
+				command.ExecuteNonQuery();
+
+				// TODO: !!!!!!!!!!!!!!!!!STILL NEED ATTENDING PHYSICIAN AND SYMPTOMS!!!!!!!!!!!!!!!!!!!!!!!
+
+				command.Dispose();
 			}
 		}
 
