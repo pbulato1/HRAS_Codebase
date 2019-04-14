@@ -25,7 +25,7 @@ namespace Interface
         {
             InitializeComponent();
             Loaded += InventoryRecord_Loaded;
-        }
+		}
 
         private void Button_Click_Add(object sender, RoutedEventArgs e)
         {

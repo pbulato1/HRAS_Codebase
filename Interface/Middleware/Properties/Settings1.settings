@@ -5,9 +5,9 @@
     <Setting Name="CONNECTIONSTRING" Type="(Connection string)" Scope="Application">
       <DesignTimeValue Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
 &lt;SerializableConnectionString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
-  &lt;ConnectionString&gt;Data Source=database\csci3400011030;Initial Catalog=HRAS_iTas;Integrated Security=false; User ID=HRAS_MW_iTas; Password=ZMNv01X&lt;/ConnectionString&gt;
+  &lt;ConnectionString&gt;Data Source=localhost;Initial Catalog=HRAS_iTas;Integrated Security=true;&lt;/ConnectionString&gt;
 &lt;/SerializableConnectionString&gt;</DesignTimeValue>
-      <Value Profile="(Default)">Data Source=database\csci3400011030;Initial Catalog=HRAS_iTas;Integrated Security=false; User ID=HRAS_MW_iTas; Password=ZMNv01X</Value>
+      <Value Profile="(Default)">Data Source=localhost;Initial Catalog=HRAS_iTas;Integrated Security=true;</Value>
     </Setting>
   </Settings>
 </SettingsFile>

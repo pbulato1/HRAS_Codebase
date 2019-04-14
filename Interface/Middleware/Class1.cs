@@ -7,10 +7,11 @@ using System.Threading.Tasks;
 using System.Data.SqlClient;
 using System.Configuration;
 using System.Collections.Specialized;
-using System.Data; 
+using System.Data;
+using System.Security.Cryptography;
 /*Database code ,, Implemantation code is below this
- * 
- * 
+* 
+* 
 CREATE TABLE Staff
 (
 [User_Name] varchar(25),
@@ -169,7 +170,7 @@ FROM Staff
 WHERE User_Name=@username 
 AND Password=@password
 END
- * */
+* */
 namespace Middleware
 {
     
@@ -277,7 +278,7 @@ namespace Middleware
 				currentUser = new User();
 				currentUser.login(username, password, conn);
 			}
-			catch (Exception e)
+			catch (Exception)
 			{
 				throw new Exception("A connection to the database could not be established.");
 			}
@@ -348,6 +349,17 @@ namespace Middleware
 	{
 		string diagnosisName;
 		List<string> symptoms;
+	}
+
+	public class PasswordHasher
+	{
+		public static string hashPassword(string pass)
+		{
+			byte[] passwordBytes = Encoding.ASCII.GetBytes(pass);
+			HashAlgorithm sha = new SHA1CryptoServiceProvider();
+			byte[] hashedBytes = sha.ComputeHash(passwordBytes);
+			return Convert.ToBase64String(hashedBytes);
+		}
 	}
 
 	class User

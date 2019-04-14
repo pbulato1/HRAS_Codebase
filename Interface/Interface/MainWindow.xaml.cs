@@ -31,10 +31,7 @@ namespace Interface
         }
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-			byte[] passwordBytes = Encoding.ASCII.GetBytes(password.Password);
-			HashAlgorithm sha = new SHA1CryptoServiceProvider();
-			byte[] hashedBytes = sha.ComputeHash(passwordBytes);
-			string hashedPassword = Convert.ToBase64String(hashedBytes);
+			string hashedPassword = PasswordHasher.hashPassword(password.Password);
 
 			Session currentSession = Session.establishSession(Account.Text, hashedPassword);
 
@@ -52,13 +49,12 @@ namespace Interface
 				{
 					MessageBox.Show(this, "Your account is locked!", "Locked", MessageBoxButton.OK, MessageBoxImage.Stop);
 				}
-				else
-				{
-					lockedInfo.HorizontalContentAlignment = HorizontalAlignment.Center;
-					lockedInfo.Content = "Your user name or password is wrong.\n" +
-						"Your account currently has " + failedAttempts + " strike. It will be locked when you reach " + attemptThreshold + " strikes.";
-				}
+				lockedInfo.HorizontalContentAlignment = HorizontalAlignment.Center;
+				string plural = (failedAttempts > 1) ? "s" : "";
+				lockedInfo.Content = "Your user name or password is wrong.\n" +
+					"Your account currently has " + failedAttempts + " strike" + plural + ". It will be locked when you reach " + attemptThreshold + " strikes.";
 			}
         }
+
 	}
 }
