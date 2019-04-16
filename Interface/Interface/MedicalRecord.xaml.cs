@@ -62,7 +62,7 @@ namespace Interface
 
 		private void Button_Click_Import(object sender, RoutedEventArgs e)
 		{
-			//ImportData.import(tfImportFilePath.Text, ImportType.MEDICAL, Session.getCurrentSession()); Currently has bug with one of the lengths, looking into it
+			//ImportData.import(tfImportFilePath.Text, ImportType.MEDICAL, Session.getCurrentSession()); //Currently has bug with one of the lengths, looking into it
 		}
 
         private void Search_TextChanged(object sender, TextChangedEventArgs e)

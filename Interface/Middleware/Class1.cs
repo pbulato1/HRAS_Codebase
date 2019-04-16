@@ -204,8 +204,10 @@ namespace Middleware
         SSN = 9,
         BIRTHDATE = 8,
         ENTRYDATETIME = 12,
+		ENTRYDATETIMEADDJUSTED = 8,
         EXITDATETIME = 12,
-        ATTENDINGPHY = 5,
+		EXITDATETIMEADDJUSTED = 8,
+		ATTENDINGPHY = 5,
         ROOMNO = 9,
         SYMPTOM1 = 25,
         SYMPTOM2 = 25,
@@ -681,13 +683,17 @@ namespace Middleware
 			while ((line = file.ReadLine()) != null)
 			{
 				string lastName = line.Substring((int)DataStart.LASTNAME, (int)DataLength.LASTNAME);
+				lastName = lastName.Replace("'", "''");
 				string firstName = line.Substring((int)DataStart.FIRSTNAME, (int)DataLength.FIRSTNAME);
+				firstName = firstName.Replace("'", "''");
 				string middleInitial = line.Substring((int)DataStart.MIDDLEINITIAL, (int)DataLength.MIDDLEINITIAL);
 				string gender = line.Substring((int)DataStart.GENDER, (int)DataLength.GENDER);
 				string ssn = line.Substring((int)DataStart.SSN, (int)DataLength.SSN);
 				string birthDate = line.Substring((int)DataStart.BIRTHDATE, (int)DataLength.BIRTHDATE);
 				string entryDateTime = line.Substring((int)DataStart.ENTRYDATETIME, (int)DataLength.ENTRYDATETIME);
+				entryDateTime = entryDateTime.Substring(0, (int)DataLength.ENTRYDATETIMEADDJUSTED);
 				string exitDateTime = line.Substring((int)DataStart.EXITDATETIME, (int)DataLength.EXITDATETIME);
+				exitDateTime = exitDateTime.Substring(0, (int)DataLength.EXITDATETIMEADDJUSTED);
 				string attendingPhys = line.Substring((int)DataStart.ATTENDINGPHY, (int)DataLength.ATTENDINGPHY);
 				string roomNo = line.Substring((int)DataStart.ROOMNO, (int)DataLength.ROOMNO);
 				string symptom1 = line.Substring((int)DataStart.SYMPTOM1, (int)DataLength.SYMPTOM1);
@@ -702,6 +708,7 @@ namespace Middleware
 				string addressLine1 = line.Substring((int)DataStart.ADDRESSLINE1, (int)DataLength.ADDRESSLINE1);
 				string addressLine2 = line.Substring((int)DataStart.ADDRESSLINE2, (int)DataLength.ADDRESSLINE2);
 				string addressCity = line.Substring((int)DataStart.ADDRESSCITY, (int)DataLength.ADDRESSCITY);
+				addressCity = addressCity.Replace("'", "''");
 				string addressState = line.Substring((int)DataStart.ADDRESSSTATE, (int)DataLength.ADDRESSSTATE);
 				string addressZip = line.Substring((int)DataStart.ADDRESSZIP, (int)DataLength.ADDRESSZIP);
 				string dnrStatus = line.Substring((int)DataStart.DNRSTATUS, (int)DataLength.DNRSTATUS);
@@ -712,7 +719,7 @@ namespace Middleware
 				SqlCommand command = new SqlCommand(commandString, connection);
 				command.ExecuteNonQuery();
 
-				commandString = "INSERT INTO Visited_History(Entry_Date, Exit_Date, Diagnosis, Insurer, Notes) VALUES('" +
+				commandString = "INSERT INTO Visited_History(Patient_SSN, Entry_Date, Exit_Date, Diagnosis, Insurer, Notes) VALUES('" + ssn + "', '" +
 					entryDateTime + "', '" + exitDateTime + "', '" + diagnosis + "', '" + insurer + "', '" + notes + "')";
 				command = new SqlCommand(commandString, connection);
 				command.ExecuteNonQuery();
