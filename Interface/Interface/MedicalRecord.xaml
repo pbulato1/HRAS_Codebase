@@ -12,11 +12,10 @@
         <Button Content="Search" FontSize="13" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,90,30,0" Height="30" Width="75" Click="Button_Click_Search"/>
         <TextBox x:Name="Account" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,90,120,0" TextWrapping="Wrap" Text=" Searchbox" FontSize="13" Height="30" Width="250" TextChanged="Search_TextChanged"/>
         <Button Content="Advance Search" FontSize="13" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,90,400,0" Height="30" Width="200" Click="Button_Click_AdvanceSearch"/>
-
+        
 
         <Button Content="Main Menu" Background="White" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Bottom"  Margin="60,0,0,30" Height="35" Width="75" Click="Button_Click_BackMenu" />
         <Button Content="Log out" Background="White" FontWeight="Bold" HorizontalAlignment="Right" VerticalAlignment="Bottom"  Margin="0,0,60,30" Height="35" Width="75" Click="Button_Click_LogOut" />
-        <Button Name="btnImportFile" Content="Import Medical Records" HorizontalAlignment="Left" Height="30" Margin="357,90,0,0" VerticalAlignment="Top" Width="146" Click="Button_Click_Import"/>
-        <TextBox Name="tfImportFilePath" HorizontalAlignment="Left" Height="30" Margin="60,90,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="286"/>
+        <DataGrid HorizontalAlignment="Left" Height="441" Margin="32,151,0,0" VerticalAlignment="Top" Width="1210" Name="M1" ItemsSource="{Binding}" AutoGenerateColumns="False" SelectionChanged="IR_DataChange"/>
     </Grid>
 </Window>

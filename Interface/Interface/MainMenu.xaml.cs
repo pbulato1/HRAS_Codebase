@@ -11,7 +11,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using Middleware;
 
 namespace Interface
 {
@@ -25,25 +24,25 @@ namespace Interface
             InitializeComponent();
         }
 
-        private void Button_Click_1(object sender, RoutedEventArgs e)
+        private void Button_Click_InvertoryRecords(object sender, RoutedEventArgs e)
         {
             InventoryRecord inventory = new InventoryRecord();
             inventory.Show();
             this.Close();
         }
-        private void Button_Click_2(object sender, RoutedEventArgs e)
+        private void Button_Click_CheckIn(object sender, RoutedEventArgs e)
         {
             CheckIn checkIn = new CheckIn();
             checkIn.Show();
             this.Close();
         }
-        private void Button_Click_3(object sender, RoutedEventArgs e)
+        private void Button_Click_DiagnosisWizard(object sender, RoutedEventArgs e)
         {
             DiagnosisWizard dw = new DiagnosisWizard();
             dw.Show();
             this.Close();
         }
-        private void Button_Click_4(object sender, RoutedEventArgs e)
+        private void Button_Click_MedicalRecords(object sender, RoutedEventArgs e)
         {
             MedicalRecord medicalRecord = new MedicalRecord();
             medicalRecord.Show();
@@ -55,11 +54,11 @@ namespace Interface
             result = MessageBox.Show(this, "Do you want to exit?", "Log Out", MessageBoxButton.YesNo, MessageBoxImage.Warning);
             if(result == MessageBoxResult.Yes)
             {
-				Session.getCurrentSession().getCurrentUser().logout();
                 MainWindow login = new MainWindow();
                 login.Show();
                 this.Close();
             }
         }
+
     }
 }

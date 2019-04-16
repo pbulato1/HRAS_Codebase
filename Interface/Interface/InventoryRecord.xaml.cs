@@ -25,7 +25,7 @@ namespace Interface
         {
             InitializeComponent();
             Loaded += InventoryRecord_Loaded;
-		}
+        }
 
         private void Button_Click_Add(object sender, RoutedEventArgs e)
         {
@@ -77,8 +77,7 @@ namespace Interface
             result = MessageBox.Show(this, "Do you want to exit?", "Log Out", MessageBoxButton.YesNo, MessageBoxImage.Warning);
             if (result == MessageBoxResult.Yes)
             {
-				Session.getCurrentSession().getCurrentUser().logout();
-				MainWindow login = new MainWindow();
+                MainWindow login = new MainWindow();
                 login.Show();
                 this.Close();
             }

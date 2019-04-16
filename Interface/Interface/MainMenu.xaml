@@ -10,10 +10,10 @@
     <Grid>
         <Label Content="Hospital Record Access System" FontSize="30" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,30,0,0"/>
         <Image Source="logo.jpg" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,100,0,0" Stretch="UniformToFill" Height="200" Width="350"/>
-        <Button Content="Inventory records" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="-270,350,0,0" Height="100" Width="250" Click="Button_Click_1"/>
-        <Button Content="Check in" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="270,350,0,0" Height="100" Width="250" Click="Button_Click_2"/>
-        <Button Content="Diagnosis wizard" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="-270,485,0,0" Height="100" Width="250" Click="Button_Click_3"/>
-        <Button Content="Medical records" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="270,485,0,0" Height="100" Width="250" Click="Button_Click_4"/>
+        <Button Content="Inventory records" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="-270,350,0,0" Height="100" Width="250" Click="Button_Click_InvertoryRecords"/>
+        <Button Content="Check in" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="270,350,0,0" Height="100" Width="250" Click="Button_Click_CheckIn"/>
+        <Button Content="Diagnosis wizard" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="-270,485,0,0" Height="100" Width="250" Click="Button_Click_DiagnosisWizard"/>
+        <Button Content="Medical records" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="270,485,0,0" Height="100" Width="250" Click="Button_Click_MedicalRecords"/>
         <Button Content="Log out" Background="White" FontWeight="Bold" HorizontalAlignment="Right" VerticalAlignment="Bottom"  Margin="0,0,60,30" Height="35" Width="75" Click="Button_Click_LogOut" />
     </Grid>
 </Window>
