@@ -11,7 +11,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using Middleware;
 
 namespace Interface
 {
@@ -52,8 +51,7 @@ namespace Interface
             result = MessageBox.Show(this, "Do you want to exit?", "Log Out", MessageBoxButton.YesNo, MessageBoxImage.Warning);
             if (result == MessageBoxResult.Yes)
             {
-				Session.getCurrentSession().getCurrentUser().logout();
-				MainWindow login = new MainWindow();
+                MainWindow login = new MainWindow();
                 login.Show();
                 this.Close();
             }
