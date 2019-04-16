@@ -1,5 +1,7 @@
 ﻿using System;
+using Interface;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Middleware;
+using HRAS;
 
 namespace Interface
 {
@@ -23,11 +26,7 @@ namespace Interface
         public MedicalRecord()
         {
             InitializeComponent();
-			if (Session.getCurrentSession().getCurrentUser().getPrivilegeLevel() != (int)PrivilegeLevels.A)
-			{
-				tfImportFilePath.IsEnabled = false;
-				btnImportFile.IsEnabled = false;
-			}
+            Loaded += MedicalRecord_Loaded;
         }
 
         private void Button_Click_BackMenu(object sender, RoutedEventArgs e)
@@ -43,31 +42,55 @@ namespace Interface
             result = MessageBox.Show(this, "Do you want to exit?", "Log Out", MessageBoxButton.YesNo, MessageBoxImage.Warning);
             if (result == MessageBoxResult.Yes)
             {
-				Session.getCurrentSession().getCurrentUser().logout();
-				MainWindow login = new MainWindow();
+                MainWindow login = new MainWindow();
                 login.Show();
                 this.Close();
             }
         }
 
-        private void Button_Click_AdvanceSearch(object sender, RoutedEventArgs e)
-        {
-
-        }
 
         private void Button_Click_Search(object sender, RoutedEventArgs e)
         {
 
         }
 
-		private void Button_Click_Import(object sender, RoutedEventArgs e)
-		{
-			ImportData.import(tfImportFilePath.Text, ImportType.MEDICAL, Session.getCurrentSession()); //Currently has bug with one of the lengths, looking into it
-		}
+      
+
+        private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
+
+
+        private void MedicalRecord_Loaded(object sender, EventArgs e)
+        {
+            //DataTable medical = MedicalRecord.getMedical();
+            //M1. = medical.DefaultView;
+            M1.AutoGenerateColumns = true;
+            M1.CanUserAddRows = false;
+        }
 
         private void Search_TextChanged(object sender, TextChangedEventArgs e)
         {
+            //DataTable medical = MedicalRecord.searchMedical(Account.Text);
+            //M1.ItemsSource = medical.DefaultView;
+            M1.AutoGenerateColumns = true;
+            M1.CanUserAddRows = false;
+        }
 
+
+ 
+
+        private void IR_DataChange(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+
+        }
+
+        private void Button_Click_AdvanceSearch(object sender, RoutedEventArgs e)
+        {
+            AdvanceSearch advanceSearch = new AdvanceSearch();
+            advanceSearch.Show();
+            this.Close();
         }
     }
 }

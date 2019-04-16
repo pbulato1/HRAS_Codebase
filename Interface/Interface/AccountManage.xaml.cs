@@ -15,11 +15,11 @@ using System.Windows.Shapes;
 namespace Interface
 {
     /// <summary>
-    /// Interaction logic for MainMenu.xaml
+    /// Interaction logic for AccountManage.xaml
     /// </summary>
-    public partial class MainMenu : Window
+    public partial class AccountManage : Window
     {
-        public MainMenu()
+        public AccountManage()
         {
             InitializeComponent();
         }
@@ -52,7 +52,7 @@ namespace Interface
         {
             MessageBoxResult result;
             result = MessageBox.Show(this, "Do you want to exit?", "Log Out", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-            if(result == MessageBoxResult.Yes)
+            if (result == MessageBoxResult.Yes)
             {
                 MainWindow login = new MainWindow();
                 login.Show();
@@ -60,5 +60,18 @@ namespace Interface
             }
         }
 
+        private void Button_Click_ImportFile(object sender, RoutedEventArgs e)
+        {
+            ImportFile importFile = new ImportFile();
+            importFile.Show();
+            this.Close();
+        }
+
+        private void Button_Click_AccountInformation(object sender, RoutedEventArgs e)
+        {
+            AccountInformation accountInformation = new AccountInformation();
+            accountInformation.Show();
+            this.Close();
+        }
     }
 }

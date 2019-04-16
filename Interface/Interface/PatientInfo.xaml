@@ -9,6 +9,10 @@
         Title="Patient Information" Height="720" Width="1280">
     <Grid>
         <Label Content="HRAS Patient Information" FontSize="30" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,20,0,0"/>
+        <DataGrid HorizontalAlignment="Left" Height="476" Margin="32,136,0,0" VerticalAlignment="Top" Width="1214" Name="P1" ItemsSource="{Binding}" AutoGenerateColumns="False" SelectionChanged="IR_DataChange"/>
+        <Button Content="Main Menu" Background="White" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Bottom"  Margin="32,0,0,19" Height="35" Width="75" Click="Button_Click_BackMenu" />
+        <Button Content="Log out" Background="White" FontWeight="Bold" HorizontalAlignment="Right" VerticalAlignment="Bottom"  Margin="0,0,26,19" Height="35" Width="75" Click="Button_Click_LogOut" />
+        <Button Content="Check out" Background="White" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Bottom"  Margin="623,0,0,19" Height="35" Width="75" Click="Button_Click_Checkout" />
 
     </Grid>
 </Window>

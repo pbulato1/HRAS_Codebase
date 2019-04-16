@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,6 +24,7 @@ namespace Interface
         public InventoryHistory()
         {
             InitializeComponent();
+            Loaded += InventoryHistory_Loaded;
         }
 
         private void Button_Click_Back(object sender, RoutedEventArgs e)
@@ -44,11 +46,37 @@ namespace Interface
             result = MessageBox.Show(this, "Do you want to exit?", "Log Out", MessageBoxButton.YesNo, MessageBoxImage.Warning);
             if (result == MessageBoxResult.Yes)
             {
-				Session.getCurrentSession().getCurrentUser().logout();
-				MainWindow login = new MainWindow();
+                MainWindow login = new MainWindow();
                 login.Show();
                 this.Close();
             }
+        }
+
+
+        private void InventoryHistory_Loaded(object sender, EventArgs e)
+        {
+            //DataTable inventoryHistory = ();
+            //D1.ItemsSource = inventoryHistory.DefaultView;
+            D1.AutoGenerateColumns = true;
+            D1.CanUserAddRows = false;
+        }
+
+        private void Search_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            //DataTable inventoryHistory = ;
+            //D1.ItemsSource = inventoryHistory.DefaultView;
+            D1.AutoGenerateColumns = true;
+            D1.CanUserAddRows = false;
+        }
+
+        private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
+
+        private void IR_DataChange(object sender, SelectionChangedEventArgs e)
+        {
+
         }
     }
 }

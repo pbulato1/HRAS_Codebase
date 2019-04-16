@@ -15,27 +15,13 @@ using System.Windows.Shapes;
 namespace Interface
 {
     /// <summary>
-    /// Interaction logic for DiagnosisWizard.xaml
+    /// Interaction logic for ImportFile.xaml
     /// </summary>
-    public partial class DiagnosisWizard : Window
+    public partial class ImportFile : Window
     {
-        public DiagnosisWizard()
+        public ImportFile()
         {
             InitializeComponent();
-        }
-        private void Button_Click_Previous(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void Button_Click_Next(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void Button_Click_Submit(object sender, RoutedEventArgs e)
-        {
-
         }
 
         private void Button_Click_BackMenu(object sender, RoutedEventArgs e)
@@ -56,6 +42,10 @@ namespace Interface
                 this.Close();
             }
         }
-       
+
+        private void Button_Click_InvertoryRecords(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

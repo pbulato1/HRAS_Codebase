@@ -70,7 +70,23 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="AccountInformation.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="AccountManage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="AddInventory.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="AdvanceSearch.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Billing.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -83,6 +99,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="DWResult.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ImportFile.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -106,12 +126,24 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Compile Include="AccountInformation.xaml.cs">
+      <DependentUpon>AccountInformation.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AccountManage.xaml.cs">
+      <DependentUpon>AccountManage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="AddInventory.xaml.cs">
       <DependentUpon>AddInventory.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AdvanceSearch.xaml.cs">
+      <DependentUpon>AdvanceSearch.xaml</DependentUpon>
     </Compile>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Billing.xaml.cs">
+      <DependentUpon>Billing.xaml</DependentUpon>
     </Compile>
     <Compile Include="CheckIn.xaml.cs">
       <DependentUpon>CheckIn.xaml</DependentUpon>
@@ -121,6 +153,9 @@
     </Compile>
     <Compile Include="DWResult.xaml.cs">
       <DependentUpon>DWResult.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ImportFile.xaml.cs">
+      <DependentUpon>ImportFile.xaml</DependentUpon>
     </Compile>
     <Compile Include="InventoryHistory.xaml.cs">
       <DependentUpon>InventoryHistory.xaml</DependentUpon>

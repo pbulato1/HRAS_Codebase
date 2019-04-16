@@ -15,29 +15,16 @@ using System.Windows.Shapes;
 namespace Interface
 {
     /// <summary>
-    /// Interaction logic for DiagnosisWizard.xaml
+    /// Interaction logic for AccountInformation.xaml
     /// </summary>
-    public partial class DiagnosisWizard : Window
+    public partial class AccountInformation : Window
     {
-        public DiagnosisWizard()
+        public AccountInformation()
         {
             InitializeComponent();
         }
-        private void Button_Click_Previous(object sender, RoutedEventArgs e)
-        {
 
-        }
-
-        private void Button_Click_Next(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void Button_Click_Submit(object sender, RoutedEventArgs e)
-        {
-
-        }
-
+  
         private void Button_Click_BackMenu(object sender, RoutedEventArgs e)
         {
             MainMenu menu = new MainMenu();
@@ -56,6 +43,10 @@ namespace Interface
                 this.Close();
             }
         }
-       
+
+        private void IR_DataChange(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
     }
 }
