@@ -169,7 +169,7 @@ CONSTRAINT FK_Use_Visited_History FOREIGN KEY
 )
 
 USE HRAS_iTas_Test
-CREATE PROCEDURE Verify_Login @username nvarchar(25), @passwordnvarchar(50)
+CREATE PROCEDURE Verify_Login @username nvarchar(25), @password nvarchar(50)
 AS
 BEGIN
 SELECT User_Name, User_Type
@@ -698,9 +698,7 @@ namespace Middleware
 			while ((line = file.ReadLine()) != null)
 			{
 				string lastName = line.Substring((int)DataStart.LASTNAME, (int)DataLength.LASTNAME);
-				lastName = lastName.Replace("'", "''");
 				string firstName = line.Substring((int)DataStart.FIRSTNAME, (int)DataLength.FIRSTNAME);
-				firstName = firstName.Replace("'", "''");
 				string middleInitial = line.Substring((int)DataStart.MIDDLEINITIAL, (int)DataLength.MIDDLEINITIAL);
 				string gender = line.Substring((int)DataStart.GENDER, (int)DataLength.GENDER);
 				string ssn = line.Substring((int)DataStart.SSN, (int)DataLength.SSN);
@@ -723,21 +721,47 @@ namespace Middleware
 				string addressLine1 = line.Substring((int)DataStart.ADDRESSLINE1, (int)DataLength.ADDRESSLINE1);
 				string addressLine2 = line.Substring((int)DataStart.ADDRESSLINE2, (int)DataLength.ADDRESSLINE2);
 				string addressCity = line.Substring((int)DataStart.ADDRESSCITY, (int)DataLength.ADDRESSCITY);
-				addressCity = addressCity.Replace("'", "''");
 				string addressState = line.Substring((int)DataStart.ADDRESSSTATE, (int)DataLength.ADDRESSSTATE);
 				string addressZip = line.Substring((int)DataStart.ADDRESSZIP, (int)DataLength.ADDRESSZIP);
 				string dnrStatus = line.Substring((int)DataStart.DNRSTATUS, (int)DataLength.DNRSTATUS);
 				string organDonor = line.Substring((int)DataStart.ORGANDONOR, (int)DataLength.ORGANDONOR);
-				string commandString = "INSERT INTO Patient(Last_Name, First_Name, Middle_Initial, Gender, SSN, Birth_Date, Address_Line1, Address_Line2, Address_City, Address_State, Address_Zip, DNR_Status, Organ_Donor) VALUES('" + 
-					lastName + "', '" + firstName + "', '" + middleInitial + "', '" + gender + "', '" + ssn + "', '" + birthDate + "', '" + addressLine1 + "', '" + addressLine2 + "', '" + addressCity + "', '" + addressState + "', '" + 
-					addressZip + "', '" + dnrStatus + "', '" + organDonor + "')";
-				SqlCommand command = new SqlCommand(commandString, connection);
-				command.ExecuteNonQuery();
 
-				commandString = "INSERT INTO Visited_History(Patient_SSN, Entry_Date, Exit_Date, Diagnosis, Insurer, Notes) VALUES('" + ssn + "', '" +
-					entryDateTime + "', '" + exitDateTime + "', '" + diagnosis + "', '" + insurer + "', '" + notes + "')";
-				command = new SqlCommand(commandString, connection);
-				command.ExecuteNonQuery();
+				string queryString = "Import_Patient";
+				SqlCommand command = new SqlCommand(queryString, connection);
+				command.CommandType = System.Data.CommandType.StoredProcedure;
+				command.Parameters.Add(new SqlParameter("@lastName", lastName));
+				command.Parameters.Add(new SqlParameter("@firstName", firstName));
+				command.Parameters.Add(new SqlParameter("@middleInitial", middleInitial));
+				command.Parameters.Add(new SqlParameter("@gender", gender));
+				command.Parameters.Add(new SqlParameter("@ssn", ssn));
+				command.Parameters.Add(new SqlParameter("@birthDate", birthDate));
+				command.Parameters.Add(new SqlParameter("@addressLine1", addressLine1));
+				command.Parameters.Add(new SqlParameter("@addressLine2", addressLine2));
+				command.Parameters.Add(new SqlParameter("@addressCity", addressCity));
+				command.Parameters.Add(new SqlParameter("@addressState", addressState));
+				command.Parameters.Add(new SqlParameter("@addressZip", addressZip));
+				command.Parameters.Add(new SqlParameter("@dnrStatus", dnrStatus));
+				command.Parameters.Add(new SqlParameter("@organDonor", organDonor));
+				try
+				{
+					command.ExecuteNonQuery();
+				}
+				catch (Exception) { } // This is for the duplictes that occur
+
+				queryString = "Import_Medical_Record";
+				command = new SqlCommand(queryString, connection);
+				command.CommandType = System.Data.CommandType.StoredProcedure;
+				command.Parameters.Add(new SqlParameter("@ssn", ssn));
+				command.Parameters.Add(new SqlParameter("@entryDateTime", entryDateTime));
+				command.Parameters.Add(new SqlParameter("@exitDateTime", exitDateTime));
+				command.Parameters.Add(new SqlParameter("@diagnosis", diagnosis));
+				command.Parameters.Add(new SqlParameter("@insurer", insurer));
+				command.Parameters.Add(new SqlParameter("@notes", notes));
+				try
+				{
+					command.ExecuteNonQuery();
+				}
+				catch (Exception) { } // This is for the duplictes that occur
 
 				// TODO: !!!!!!!!!!!!!!!!!STILL NEED ATTENDING PHYSICIAN AND SYMPTOMS!!!!!!!!!!!!!!!!!!!!!!!
 
