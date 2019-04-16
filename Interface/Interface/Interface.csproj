@@ -70,6 +70,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="AccountInformation.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="AccountManage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -98,6 +102,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="ImportFile.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="InventoryHistory.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -118,6 +126,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Compile Include="AccountInformation.xaml.cs">
+      <DependentUpon>AccountInformation.xaml</DependentUpon>
+    </Compile>
     <Compile Include="AccountManage.xaml.cs">
       <DependentUpon>AccountManage.xaml</DependentUpon>
     </Compile>
@@ -142,6 +153,9 @@
     </Compile>
     <Compile Include="DWResult.xaml.cs">
       <DependentUpon>DWResult.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ImportFile.xaml.cs">
+      <DependentUpon>ImportFile.xaml</DependentUpon>
     </Compile>
     <Compile Include="InventoryHistory.xaml.cs">
       <DependentUpon>InventoryHistory.xaml</DependentUpon>

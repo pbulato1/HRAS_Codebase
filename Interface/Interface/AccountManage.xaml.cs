@@ -59,5 +59,19 @@ namespace Interface
                 this.Close();
             }
         }
+
+        private void Button_Click_ImportFile(object sender, RoutedEventArgs e)
+        {
+            ImportFile importFile = new ImportFile();
+            importFile.Show();
+            this.Close();
+        }
+
+        private void Button_Click_AccountInformation(object sender, RoutedEventArgs e)
+        {
+            AccountInformation accountInformation = new AccountInformation();
+            accountInformation.Show();
+            this.Close();
+        }
     }
 }

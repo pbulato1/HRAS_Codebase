@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Interface"
         mc:Ignorable="d"
+         WindowState="Maximized"
         Title="AccountManage" Height="720" Width="1080">
     <Grid>
         <Image Source="logo.jpg" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="363,136,353,0" Stretch="UniformToFill" Height="180" Width="356"/>
