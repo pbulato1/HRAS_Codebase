@@ -9,10 +9,11 @@
         Title="ImportFile" Height="720" Width="1280">
 
     <Grid>
-        <Label Content="HRAS Import Info" FontSize="30" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,20,0,0"/>
-        <Button Content="Search" FontSize="13" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="1052,0,60,609" Height="30" Width="160" Click="Button_Click_Back"/>
+        <Button Content="Inventory File" FontSize="24" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="60,290,882,0" Height="148" Width="330" Click="Button_Click_InvertoryFile"/>
+        <Label Content="HRAS Import Info" FontSize="30" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="512,39,497,0"/>
         <Button Content="Main Menu" Background="White" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Bottom"  Margin="60,0,0,30" Height="35" Width="75" Click="Button_Click_BackMenu" />
         <Button Content="Log out" Background="White" FontWeight="Bold" HorizontalAlignment="Right" VerticalAlignment="Bottom"  Margin="0,0,60,30" Height="35" Width="75" Click="Button_Click_LogOut" />
-        <DataGrid HorizontalAlignment="Left" Height="487" Margin="26,109,0,0" VerticalAlignment="Top" Width="1222" Name="I1" ItemsSource="{Binding}" AutoGenerateColumns="False" SelectionChanged="IR_DataChange"/>
+        <Button Content="Medical record File" FontSize="24" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="475,290,467,0" Height="148" Width="330" Click="Button_Click_MedicalRecordFile"/>
+        <Button Content="Room File" FontSize="24" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="882,290,60,0" Height="148" Width="330" Click="Button_Click_RoomFile"/>
     </Grid>
 </Window>

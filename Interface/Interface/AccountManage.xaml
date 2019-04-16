@@ -8,7 +8,7 @@
          WindowState="Maximized"
         Title="AccountManage" Height="720" Width="1080">
     <Grid>
-        <Image Source="logo.jpg" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="363,136,353,0" Stretch="UniformToFill" Height="180" Width="356"/>
+        <Image Source="logo.jpg" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="362,113,354,0" Stretch="UniformToFill" Height="180" Width="356"/>
         <Label Content="HARS Account Manage" HorizontalAlignment="Left" Height="80" Margin="270,33,0,0" VerticalAlignment="Top" Width="534" FontSize="48" FontWeight="Bold"/>
         <Button Content="Inventory records" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="103,350,719,0" Height="100" Width="250" Click="Button_Click_InvertoryRecords"/>
         <Button Content="Check in" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="415,350,407,0" Height="100" Width="250" Click="Button_Click_CheckIn"/>
