@@ -165,7 +165,7 @@ AS
 BEGIN
 SELECT User_Name, User_Type
 FROM Staff
-WHERE User_Name=@username 
+WHERE User_Name = @username 
 AND Password=@password
 END
 
