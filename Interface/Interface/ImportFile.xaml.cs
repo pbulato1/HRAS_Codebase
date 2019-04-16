@@ -11,6 +11,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Microsoft.Win32;
+using Middleware;
 
 namespace Interface
 {
@@ -19,6 +21,8 @@ namespace Interface
     /// </summary>
     public partial class ImportFile : Window
     {
+		ImportType type;
+
         public ImportFile()
         {
             InitializeComponent();
@@ -37,15 +41,38 @@ namespace Interface
             result = MessageBox.Show(this, "Do you want to exit?", "Log Out", MessageBoxButton.YesNo, MessageBoxImage.Warning);
             if (result == MessageBoxResult.Yes)
             {
-                MainWindow login = new MainWindow();
+				Session.getCurrentSession().getCurrentUser().logout();
+				MainWindow login = new MainWindow();
                 login.Show();
                 this.Close();
             }
         }
 
-        private void Button_Click_InvertoryRecords(object sender, RoutedEventArgs e)
+        private void Button_Click_tbtnInventory(object sender, RoutedEventArgs e)
         {
-
+			type = ImportType.INVENTORY;
         }
-    }
+
+		private void Button_Click_tbtnMedicalRecords(object sender, RoutedEventArgs e)
+		{
+			type = ImportType.MEDICAL;
+		}
+
+		private void Button_Click_tbtnRooms(object sender, RoutedEventArgs e)
+		{
+			type = ImportType.ROOM;
+		}
+
+		private void Button_Click_btnImport(object sender, RoutedEventArgs e)
+		{
+			ImportData.import(tfFilePath.Text, type, Session.getCurrentSession());
+		}
+
+		private void Button_Click_btnBrowse(object sender, RoutedEventArgs e)
+		{
+			OpenFileDialog openFileDialog = new OpenFileDialog();
+			if (openFileDialog.ShowDialog() == true)
+				tfFilePath.Text = openFileDialog.FileName;
+		}
+	}
 }

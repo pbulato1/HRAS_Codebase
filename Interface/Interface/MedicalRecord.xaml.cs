@@ -27,7 +27,12 @@ namespace Interface
         {
             InitializeComponent();
             Loaded += MedicalRecord_Loaded;
-        }
+			if (Session.getCurrentSession().getCurrentUser().getPrivilegeLevel() != (int)PrivilegeLevels.A)
+			{
+				tfImportFilePath.IsEnabled = false;
+				btnImportFile.IsEnabled = false;
+			}
+		}
 
         private void Button_Click_BackMenu(object sender, RoutedEventArgs e)
         {
@@ -42,7 +47,8 @@ namespace Interface
             result = MessageBox.Show(this, "Do you want to exit?", "Log Out", MessageBoxButton.YesNo, MessageBoxImage.Warning);
             if (result == MessageBoxResult.Yes)
             {
-                MainWindow login = new MainWindow();
+				Session.getCurrentSession().getCurrentUser().logout();
+				MainWindow login = new MainWindow();
                 login.Show();
                 this.Close();
             }
@@ -78,10 +84,12 @@ namespace Interface
             M1.CanUserAddRows = false;
         }
 
+		private void Button_Click_Import(object sender, RoutedEventArgs e)
+		{
+			ImportData.import(tfImportFilePath.Text, ImportType.MEDICAL, Session.getCurrentSession()); //Currently has bug with one of the lengths, looking into it
+		}
 
- 
-
-        private void IR_DataChange(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+		private void IR_DataChange(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
 
         }

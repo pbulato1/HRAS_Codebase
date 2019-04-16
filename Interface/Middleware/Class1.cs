@@ -482,23 +482,24 @@ namespace Middleware
 	{
 		public static void import(string filePath, ImportType type, Session session)
 		{
+			long fileSize = new System.IO.FileInfo(filePath).Length;
 			System.IO.StreamReader file = new System.IO.StreamReader(@filePath);
 			switch (type)
 			{
 				case ImportType.INVENTORY:
-					importInventory(file, session.getConnection());
+					importInventory(file, session.getConnection(), fileSize);
 					break;
 				case ImportType.MEDICAL:
-					importMedical(file, session.getConnection());
+					importMedical(file, session.getConnection(), fileSize);
 					break;
 				case ImportType.ROOM:
-					importRoom(file, session.getConnection());
+					importRoom(file, session.getConnection(), fileSize);
 					break;
 			}
 			file.Close();
 		}
 
-		private static void importInventory(System.IO.StreamReader file, SqlConnection connection)
+		private static void importInventory(System.IO.StreamReader file, SqlConnection connection, long fileSize)
 		{
 			string line;
 			while ((line = file.ReadLine()) != null) // all casts are just integer enumerations to make it more readable
@@ -515,11 +516,13 @@ namespace Middleware
             }
 		}
 
-		private static void importMedical(System.IO.StreamReader file, SqlConnection connection)
+		private static void importMedical(System.IO.StreamReader file, SqlConnection connection, long fileSize)
 		{
+			int bytesRead = 0;
 			string line;
 			while ((line = file.ReadLine()) != null)
 			{
+				bytesRead += line.Length;
 				string lastName = line.Substring((int)DataStart.LASTNAME, (int)DataLength.LASTNAME);
 				string firstName = line.Substring((int)DataStart.FIRSTNAME, (int)DataLength.FIRSTNAME);
 				string middleInitial = line.Substring((int)DataStart.MIDDLEINITIAL, (int)DataLength.MIDDLEINITIAL);
@@ -588,11 +591,17 @@ namespace Middleware
 
 				// TODO: !!!!!!!!!!!!!!!!!STILL NEED ATTENDING PHYSICIAN AND SYMPTOMS!!!!!!!!!!!!!!!!!!!!!!!
 
+				//ImportFile.pbImport.Dispatcher.Invoke(() =>
+				//{
+					//ringFingerSlider.Value = Int32.Parse(splitData[(int)FingerIndex.ring]);
+				//});
+
 				command.Dispose();
+
 			}
 		}
 
-		private static void importRoom(System.IO.StreamReader file, SqlConnection connection)
+		private static void importRoom(System.IO.StreamReader file, SqlConnection connection, long fileSize)
 		{
 			string line;
 			while ((line = file.ReadLine()) != null)
