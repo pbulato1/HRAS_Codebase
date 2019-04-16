@@ -133,7 +133,6 @@ namespace Middleware
 
         public static Session establishSession(string username, string password)
         {
-			Session tempSession;
             if (theSession == null)
             {
                 theSession = new Session(username, password);
