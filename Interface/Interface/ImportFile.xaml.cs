@@ -42,5 +42,10 @@ namespace Interface
                 this.Close();
             }
         }
+
+        private void Button_Click_InvertoryRecords(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

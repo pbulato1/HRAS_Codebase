@@ -9,7 +9,8 @@
         Title="AccountInformation" Height="720" Width="1080">
     <Grid Margin="0,-4,0,4">
         <Label Content="HRAS Account Info" FontSize="30" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,20,0,0"/>
-        <Button Content="Add account info" FontSize="13" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,30" Height="30" Width="160" Click="Button_Click_Back"/>
+        <Button Content="Add account info" FontSize="13" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="352,0,560,30" Height="30" Width="160" Click="Button_Click_AccountInfo"/>
+        <Button Content="Reset password" FontSize="13" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="580,0,332,30" Height="30" Width="160" Click="Button_Click_ResetPassword"/>
         <Button Content="Main Menu" Background="White" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Bottom"  Margin="60,0,0,30" Height="35" Width="75" Click="Button_Click_BackMenu" />
         <Button Content="Log out" Background="White" FontWeight="Bold" HorizontalAlignment="Right" VerticalAlignment="Bottom"  Margin="0,0,60,30" Height="35" Width="75" Click="Button_Click_LogOut" />
         <DataGrid HorizontalAlignment="Left" Height="487" Margin="26,109,0,0" VerticalAlignment="Top" Width="1018" Name="A1" ItemsSource="{Binding}" AutoGenerateColumns="False" SelectionChanged="IR_DataChange"/>
