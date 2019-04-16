@@ -11,6 +11,7 @@ CREATE TABLE Staff
 [User_Name] varchar(25),
 [Password] varchar(50),
 User_Type char,
+Failed_Login int,
 CONSTRAINT PK_Staff PRIMARY KEY 
 ([User_Name])
 )
