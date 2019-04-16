@@ -12,6 +12,11 @@ using System.Security.Cryptography;
 /*Database code ,, Implemantation code is below this
 * 
 * 
+CREATE DATABASE HRAS_iTas_Test
+
+GO
+USE HRAS_iTas_Test
+
 CREATE TABLE Staff
 (
 [User_Name] varchar(25),
@@ -25,6 +30,7 @@ CREATE TABLE Patient
 (
 Last_Name varchar(50),
 First_Name varchar(25),
+Middle_initial char,
 Gender char,
 SSN char(9),
 Birth_Date char(8),
@@ -143,25 +149,26 @@ CONSTRAINT FK_Takes_Care_Staff FOREIGN KEY
 
 CREATE TABLE [Use]
 (
-[User_Name] varchar(25),
 Stock_ID char(5),
+[User_Name] varchar(25),
 Patient_SSN char(9),
 Entry_Date char(8),
 Quantity_Used NUMERIC(5,0),
 [Date] char(18),
 CONSTRAINT PK_Use PRIMARY KEY 
-(Patient_SSN, Entry_Date),
-CONSTRAINT FK_Use_Staff FOREIGN KEY 
-([User_Name]) REFERENCES Staff
-([User_Name]),
+(Stock_ID, [User_Name], Patient_SSN, Entry_Date),
 CONSTRAINT FK_Use_Item FOREIGN KEY 
 (Stock_ID) REFERENCES Item
 (Stock_ID),
+CONSTRAINT FK_Use_Staff FOREIGN KEY 
+([User_Name]) REFERENCES Staff
+([User_Name]),
 CONSTRAINT FK_Use_Visited_History FOREIGN KEY 
 (Patient_SSN, Entry_Date) REFERENCES Visited_History
 (Patient_SSN, Entry_Date)
 )
 
+USE HRAS_iTas_Test
 CREATE PROCEDURE Verify_Login @username nvarchar(25), @passwordnvarchar(50)
 AS
 BEGIN
@@ -170,6 +177,14 @@ FROM Staff
 WHERE User_Name=@username 
 AND Password=@password
 END
+
+GO
+
+CREATE USER HRAS_MW_iTas IDENTIFIED BY ZMNv01X
+IDENTIFIED WITH READ
+IDENTIFIED WITH WRITE
+IDENTIFIED WITH Verify_Login
+
 * */
 namespace Middleware
 {
