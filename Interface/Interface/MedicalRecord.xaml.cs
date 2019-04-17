@@ -27,11 +27,6 @@ namespace Interface
         {
             InitializeComponent();
             Loaded += MedicalRecord_Loaded;
-			if (Session.getCurrentSession().getCurrentUser().getPrivilegeLevel() != (int)PrivilegeLevels.A)
-			{
-				tfImportFilePath.IsEnabled = false;
-				btnImportFile.IsEnabled = false;
-			}
 		}
 
         private void Button_Click_BackMenu(object sender, RoutedEventArgs e)
@@ -83,11 +78,6 @@ namespace Interface
             M1.AutoGenerateColumns = true;
             M1.CanUserAddRows = false;
         }
-
-		private void Button_Click_Import(object sender, RoutedEventArgs e)
-		{
-			ImportData.import(tfImportFilePath.Text, ImportType.MEDICAL, Session.getCurrentSession()); //Currently has bug with one of the lengths, looking into it
-		}
 
 		private void IR_DataChange(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
