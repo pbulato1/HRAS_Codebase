@@ -196,7 +196,7 @@ namespace Middleware
 		}
 	}
 
-	class Diagnosis
+	public class Diagnosis
 	{
 		string diagnosisName;
 		List<string> symptoms;
@@ -317,7 +317,7 @@ namespace Middleware
 		}
 	}
 
-	class BasicAddress
+	public class BasicAddress
 	{
 		private string addressLineOne;
 		private string addressLineTwo;
@@ -332,7 +332,7 @@ namespace Middleware
 
 	}
 
-	class Patient
+	public class Patient
 	{
 		string lastName;
 		string firstName;
@@ -350,7 +350,7 @@ namespace Middleware
         }
 	}
 
-	class MedicalRecord
+	public class MedicalRecord
 	{
 		Patient patient;
 		DateTime entryDate;
@@ -362,6 +362,27 @@ namespace Middleware
 		string notes;
 		string insurer;
 		List<InventoryItem> suppliesUsed;
+
+		public static DataTable getMedicalRecords()
+		{
+			DataTable records = new DataTable();
+			SqlConnection connection = Session.getCurrentSession().getConnection();
+			SqlCommand command = new SqlCommand("SELECT TOP 1000 Patient.First_Name, Patient.Last_Name, Visited_History.* FROM Visited_History INNER JOIN Patient ON Visited_History.Patient_SSN = Patient.SSN", connection);
+			SqlDataReader reader = command.ExecuteReader();
+			records.Load(reader);
+			return records;
+		}
+
+		public static DataTable searchMedicalRecords(string input)
+		{
+			DataTable records = new DataTable();
+			SqlConnection connection = Session.getCurrentSession().getConnection();
+			
+			SqlCommand command = new SqlCommand(("SELECT Patient.First_Name, Patient.Last_Name, Visited_History.* FROM Visited_History INNER JOIN Patient ON Visited_History.Patient_SSN = Patient.SSN where First_Name  LIKE '%" + input + "%' OR Last_Name  LIKE '%" + input + "%' OR Patient_SSN  LIKE '%" + input + "%'"), connection);
+			SqlDataReader reader = command.ExecuteReader();
+			records.Load(reader);
+			return records;
+		}
 
 		public void addSupply(InventoryItem item)
 		{
@@ -451,7 +472,7 @@ namespace Middleware
         }
     }
 
-	class Room
+	public class Room
 	{
 		int roomNumber;
 		double hourlyRate;

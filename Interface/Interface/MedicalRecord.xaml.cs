@@ -65,19 +65,19 @@ namespace Interface
 
         private void MedicalRecord_Loaded(object sender, EventArgs e)
         {
-            //DataTable medical = MedicalRecord.getMedical();
-            //M1. = medical.DefaultView;
-            M1.AutoGenerateColumns = true;
-            M1.CanUserAddRows = false;
-        }
+			DataTable records = Middleware.MedicalRecord.getMedicalRecords();
+			M1.ItemsSource = records.DefaultView;
+			M1.AutoGenerateColumns = true;
+			M1.CanUserAddRows = false;
+		}
 
         private void Search_TextChanged(object sender, TextChangedEventArgs e)
         {
-            //DataTable medical = MedicalRecord.searchMedical(Account.Text);
-            //M1.ItemsSource = medical.DefaultView;
-            M1.AutoGenerateColumns = true;
-            M1.CanUserAddRows = false;
-        }
+			DataTable records = Middleware.MedicalRecord.searchMedicalRecords(Account.Text);
+			M1.ItemsSource = records.DefaultView;
+			M1.AutoGenerateColumns = true;
+			M1.CanUserAddRows = false;
+		}
 
 		private void IR_DataChange(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
