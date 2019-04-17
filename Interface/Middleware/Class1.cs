@@ -44,9 +44,7 @@ namespace Middleware
         SSN = 9,
         BIRTHDATE = 8,
         ENTRYDATETIME = 12,
-		ENTRYDATETIMEADDJUSTED = 8,
         EXITDATETIME = 12,
-		EXITDATETIMEADDJUSTED = 8,
 		ATTENDINGPHY = 5,
         ROOMNO = 9,
         SYMPTOM1 = 25,
@@ -64,7 +62,11 @@ namespace Middleware
         ADDRESSSTATE = 2,
         ADDRESSZIP = 5,
         DNRSTATUS = 1,
-        ORGANDONOR = 1
+        ORGANDONOR = 1,
+		//ROOM
+		ROOMNUMBER = 9,
+		HOURLYRATE = 5,
+		EFFECTIVEDATE = 8
     }
 
     public enum DataStart
@@ -102,6 +104,10 @@ namespace Middleware
         ADDRESSZIP = ADDRESSSTATE + DataLength.ADDRESSSTATE,
         DNRSTATUS = ADDRESSZIP + DataLength.ADDRESSZIP,
         ORGANDONOR = DNRSTATUS + DataLength.DNRSTATUS,
+		//ROOM
+		ROOMNUMBER = 0,
+		HOURLYRATE = ROOMNUMBER + DataLength.ROOMNUMBER,
+		EFFECTIVEDATE = HOURLYRATE + DataLength.HOURLYRATE
     }
 
     public class Session
@@ -465,7 +471,7 @@ namespace Middleware
         {
             DataTable inventory = new DataTable();
             SqlConnection connection = Session.getCurrentSession().getConnection();
-            SqlCommand command = new SqlCommand("Select * FROM Item WHERE Item_Description like '%" + description + "%' AND Stock_ID like '%" + id + "%' AND Size like '%" + size + "%'", connection);
+            SqlCommand command = new SqlCommand("Select * FROM Item WHERE Description like '%" + description + "%' AND Stock_ID like '%" + id + "%' AND Size like '%" + size + "%'", connection);
             SqlDataReader reader = command.ExecuteReader();
             inventory.Load(reader);
             return inventory;
@@ -534,19 +540,33 @@ namespace Middleware
 		{
 			int bytesRead = 0;
 			string line;
+			int quantity = 0;
+			bool hasQuantity = false;
 			while ((line = file.ReadLine()) != null) // all casts are just integer enumerations to make it more readable
 			{
 				bytesRead += line.Length;
                 string id = line.Substring((int)DataStart.STOCKID, (int)DataLength.STOCKID);
-                string quantity = line.Substring((int)DataStart.QUANTITY, (int)DataLength.QUANTITY);
+				try
+				{
+					quantity = Int32.Parse(line.Substring((int)DataStart.QUANTITY, (int)DataLength.QUANTITY));
+					hasQuantity = true;
+				}
+				catch (Exception)
+				{
+					hasQuantity = false;
+				}
                 string description = line.Substring((int)DataStart.DESCRIPTION, (int)DataLength.DESCRIPTION);
                 string size = line.Substring((int)DataStart.SIZE, (int)DataLength.SIZE);
-                string cost = line.Substring((int)DataStart.COST, (int)DataLength.COST);
-                string commandString = "INSERT INTO Item(Stock_ID, Size, Cost, Item_Description, Quantity) VALUES('" + id + "', '" + size + "', '" + cost + "', '" + description + "', '" + quantity + "')";
+                int cost = Int32.Parse(line.Substring((int)DataStart.COST, (int)DataLength.COST));
+                string commandString = (hasQuantity) ? "INSERT INTO Item(Stock_ID, Size, Cost, Description, Quantity) VALUES('" + id + "', '" + size + "', '" + cost + "', '" + description + "', '" + quantity + "')" :
+					"INSERT INTO Item(Stock_ID, Size, Cost, Description) VALUES('" + id + "', '" + size + "', '" + cost + "', '" + description + "')";
                 SqlCommand command = new SqlCommand(commandString, connection);
 				command.ExecuteNonQuery();
                 command.Dispose();
-            }
+				double updatedProgress = (bytesRead * 100) / fileSize;
+				if (updatedProgress < 100) progress = (int)updatedProgress; // ok because it will always be less than a hundred
+			}
+			progress = 100;
 			file.Close();
 		}
 
@@ -564,9 +584,7 @@ namespace Middleware
 				string ssn = line.Substring((int)DataStart.SSN, (int)DataLength.SSN);
 				string birthDate = line.Substring((int)DataStart.BIRTHDATE, (int)DataLength.BIRTHDATE);
 				string entryDateTime = line.Substring((int)DataStart.ENTRYDATETIME, (int)DataLength.ENTRYDATETIME);
-				entryDateTime = entryDateTime.Substring(0, (int)DataLength.ENTRYDATETIMEADDJUSTED);
 				string exitDateTime = line.Substring((int)DataStart.EXITDATETIME, (int)DataLength.EXITDATETIME);
-				exitDateTime = exitDateTime.Substring(0, (int)DataLength.EXITDATETIMEADDJUSTED);
 				string attendingPhys = line.Substring((int)DataStart.ATTENDINGPHY, (int)DataLength.ATTENDINGPHY);
 				string roomNo = line.Substring((int)DataStart.ROOMNO, (int)DataLength.ROOMNO);
 				string symptom1 = line.Substring((int)DataStart.SYMPTOM1, (int)DataLength.SYMPTOM1);
@@ -623,7 +641,60 @@ namespace Middleware
 				}
 				catch (Exception) { } // This is for the duplictes that occur
 
-				// TODO: !!!!!!!!!!!!!!!!!STILL NEED ATTENDING PHYSICIAN AND SYMPTOMS!!!!!!!!!!!!!!!!!!!!!!!
+				string[] symptomList = { symptom1, symptom2, symptom3, symptom4, symptom5, symptom6 };
+				foreach (string symptom in symptomList)
+				{
+					bool alreadyExists = false;
+					queryString = "Retrieve_Symptom";
+					command = new SqlCommand(queryString, connection);
+					command.CommandType = System.Data.CommandType.StoredProcedure;
+					command.Parameters.Add(new SqlParameter("@symptomName", symptom));
+					SqlDataReader dataReader = command.ExecuteReader();
+					while (dataReader.Read())
+					{
+						alreadyExists = true;
+					}
+					dataReader.Close();
+
+					if (!alreadyExists)
+					{
+						queryString = "Import_Symptom";
+						command = new SqlCommand(queryString, connection);
+						command.CommandType = System.Data.CommandType.StoredProcedure;
+						command.Parameters.Add(new SqlParameter("@symptomName", symptom));
+						try
+						{
+							command.ExecuteNonQuery();
+						}
+						catch (Exception) { } // This is for the duplictes that occur
+					}
+
+					queryString = "Import_Show_Signs";
+					command = new SqlCommand(queryString, connection);
+					command.CommandType = System.Data.CommandType.StoredProcedure;
+					command.Parameters.Add(new SqlParameter("@symptomName", symptom));
+					command.Parameters.Add(new SqlParameter("@ssn", ssn));
+					command.Parameters.Add(new SqlParameter("@entryDate", entryDateTime));
+					try
+					{
+						command.ExecuteNonQuery();
+					}
+					catch (Exception) { } // This is for the duplictes that occur
+				}
+
+				queryString = "Import_Stayed_In";
+				command = new SqlCommand(queryString, connection);
+				command.CommandType = System.Data.CommandType.StoredProcedure;
+				command.Parameters.Add(new SqlParameter("@roomNumber", roomNo));
+				command.Parameters.Add(new SqlParameter("@ssn", ssn));
+				command.Parameters.Add(new SqlParameter("@entryDate", entryDateTime));
+				try
+				{
+					command.ExecuteNonQuery();
+				}
+				catch (Exception) { } // This is for the duplictes that occur
+
+				// TODO: !!!!!!!!!!!!!!!!!STILL NEED ATTENDING PHYSICIAN!!!!!!!!!!!!!!!!!!!!!!!
 
 				command.Dispose();
 				double updatedProgress = (bytesRead * 100) / fileSize;
@@ -635,11 +706,31 @@ namespace Middleware
 
 		private static void importRoom(System.IO.StreamReader file, SqlConnection connection, long fileSize)
 		{
+			int bytesRead = 0;
 			string line;
 			while ((line = file.ReadLine()) != null)
 			{
-				System.Console.WriteLine(line);
+				bytesRead += line.Length;
+				string roomNumber = line.Substring((int)DataStart.ROOMNUMBER, (int)DataLength.ROOMNUMBER);
+				int hourlyRate = Int32.Parse(line.Substring((int)DataStart.HOURLYRATE, (int)DataLength.HOURLYRATE));
+				string effectiveDate = line.Substring((int)DataStart.EFFECTIVEDATE, (int)DataLength.EFFECTIVEDATE);
+				string queryString = "Import_Room";
+				SqlCommand command = new SqlCommand(queryString, connection);
+				command.CommandType = System.Data.CommandType.StoredProcedure;
+				command.Parameters.Add(new SqlParameter("@roomNumber", roomNumber));
+				command.Parameters.Add(new SqlParameter("@hourlyRate", hourlyRate));
+				command.Parameters.Add(new SqlParameter("@effectiveDate", effectiveDate));
+				try
+				{
+					command.ExecuteNonQuery();
+				}
+				catch (Exception) { } // This is for the duplictes that occur
+
+				command.Dispose();
+				double updatedProgress = (bytesRead * 100) / fileSize;
+				if (updatedProgress < 100) progress = (int)updatedProgress; // ok because it will always be less than a hundred
 			}
+			progress = 100;
 			file.Close();
 		}
 	}

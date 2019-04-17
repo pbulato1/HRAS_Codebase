@@ -160,13 +160,55 @@ CONSTRAINT FK_Use_Visited_History FOREIGN KEY
 
 USE HRAS_iTas_Test
 
-CREATE PROCEDURE Verify_Login @username nvarchar(25), @passwordnvarchar(50)
+CREATE PROCEDURE Verify_Login @username nvarchar(25), @password varchar(50)
 AS
 BEGIN
 SELECT User_Name, User_Type
 FROM Staff
 WHERE User_Name = @username 
-AND Password=@password
+AND Password = @password
+END
+
+CREATE PROCEDURE Import_Medical_Record @ssn varchar(9), @entryDateTime varchar(12), @exitDateTime varchar(12), @diagnosis varchar(75), @insurer varchar(5), @notes varchar(100)
+AS
+BEGIN
+INSERT INTO Visited_History(Patient_SSN, Entry_Date, Exit_Date, Diagnosis, Insurer, Notes) VALUES(@ssn, @entryDateTime, @exitDateTime, @diagnosis, @insurer, @notes)
+END
+
+CREATE PROCEDURE Import_Patient @lastName varchar(50), @firstName varchar(25), @middleInitial varchar(1), @gender varchar(1), @ssn varchar(9), @birthDate varchar(8), @addressLine1 varchar(35), @addressLine2 varchar(35), @addressCity varchar(25), @addressState varchar(2), @addressZip varchar(5), @dnrStatus varchar(1), @organDonor varchar(1)
+AS
+BEGIN
+INSERT INTO Patient(Last_Name, First_Name, Middle_Initial, Gender, SSN, Birth_Date, Address_Line1, Address_Line2, Address_City, Address_State, Address_Zip, DNR_Status, Organ_Donor) VALUES(@lastName, @firstName, @middleInitial, @gender, @ssn, @birthDate, @addressLine1, @addressLine2, @addressCity, @addressState, @addressZip, @dnrStatus, @organDonor)
+END
+
+CREATE PROCEDURE Import_Room @roomNumber varchar(9), @hourlyRate numeric(5), @effectiveDate varchar(8)
+AS
+BEGIN
+INSERT INTO Room(Room_Number, Hourly_Rate, Effective_Date) VALUES(@roomNumber, @hourlyRate, @effectiveDate)
+END
+
+CREATE PROCEDURE Import_Show_Signs @symptomName varchar(25), @ssn numeric(9), @entryDate varchar(12)
+AS
+BEGIN
+INSERT INTO Show_Signs(Symptom_Name, Patient_SSN, Entry_Date) VALUES(@symptomName, @ssn, @entryDate)
+END
+
+CREATE PROCEDURE Import_Symptom @symptomName varchar(25)
+AS
+BEGIN
+INSERT INTO Symptom(Name) VALUES(@symptomName)
+END
+
+CREATE PROCEDURE Retrieve_Symptom @symptomName varchar(25)
+AS
+BEGIN
+Select @symptomName FROM Symptom
+END
+
+CREATE PROCEDURE Import_Stayed_In @roomNumber varchar(9), @ssn varchar(9), @entryDate varchar(12)
+AS
+BEGIN
+INSERT INTO Stayed_In(Room_Number, Patient_SSN, Entry_Date) VALUES(@roomNumber, @ssn, @entryDate)
 END
 
 GO
@@ -175,3 +217,10 @@ CREATE USER HRAS_MW_iTas IDENTIFIED BY ZMNv01X
 IDENTIFIED WITH READ
 IDENTIFIED WITH WRITE
 IDENTIFIED WITH Verify_Login
+IDENTIFIED WITH Import_Medical_Record
+IDENTIFIED WITH Import_Patient
+IDENTIFIED WITH Import_Room
+IDENTIFIED WITH Import_Show_Signs
+IDENTIFIED WITH Import_Symptom
+IDENTIFIED WITH Retrieve_Symptom
+IDENTIFIED WITH Import_Stayed_In
