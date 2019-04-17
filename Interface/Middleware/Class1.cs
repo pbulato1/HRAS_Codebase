@@ -9,6 +9,7 @@ using System.Configuration;
 using System.Collections.Specialized;
 using System.Data;
 using System.Security.Cryptography;
+using System.Threading;
 
 namespace Middleware
 {
@@ -217,7 +218,7 @@ namespace Middleware
 		string username;
 		string password;
 		int privilegeLevel;
-		Timer logoffTimer; // This needs to be moved to the parent of the front end
+		//Timer logoffTimer; // This needs to be moved to the parent of the front end
 		int AFKTime;
 		int timerThreshold = 1000 * 60; // 1000 = 1 second, 60 seconds = 1 minute
 		int logoffThreshold = 15;
@@ -246,11 +247,10 @@ namespace Middleware
 					int index = dataReader.GetOrdinal("User_Type");
 					string privilege = dataReader.GetString(index);
 					privilegeLevel = (int)(Enum.Parse(typeof(PrivilegeLevels), privilege));
-					logoffTimer = new Timer();
 					AFKTime = 0;
-					logoffTimer.Interval = timerThreshold;
-					logoffTimer.Elapsed += OnTimedEvent;
-					logoffTimer.Enabled = true;
+					//logoffTimer.Interval = timerThreshold;
+					//logoffTimer.Elapsed += OnTimedEvent;
+					//logoffTimer.Enabled = true;
 					loggedIn = true;
 				}
 				else throw new Exception("An error occurred while logging the user in.");
@@ -281,7 +281,7 @@ namespace Middleware
 				username = "";
 				password = "";
 				privilegeLevel = (int)PrivilegeLevels.NONE; // this is ok becuase PrivilegeLevels is an enumeration thus the values are actually ints
-				logoffTimer = null;
+				//logoffTimer = null;
 				AFKTime = 0;
 				loggedIn = false;
 				Session currentSession = Session.getCurrentSession();
@@ -302,8 +302,8 @@ namespace Middleware
 		public void resetTimer()
 		{
 			AFKTime = 0;
-			logoffTimer.Stop();
-			logoffTimer.Start();
+			//logoffTimer.Stop();
+			//logoffTimer.Start();
 		}
 
         public string getUsername()
@@ -480,30 +480,42 @@ namespace Middleware
 
 	public class ImportData
 	{
+		public static int progress = 0;
+
+		public static int getProgress()
+		{
+			return progress;
+		}
+
 		public static void import(string filePath, ImportType type, Session session)
 		{
+			Thread thread;
 			long fileSize = new System.IO.FileInfo(filePath).Length;
 			System.IO.StreamReader file = new System.IO.StreamReader(@filePath);
 			switch (type)
 			{
 				case ImportType.INVENTORY:
-					importInventory(file, session.getConnection(), fileSize);
+					thread = new Thread(() => importInventory(file, session.getConnection(), fileSize));
+					thread.Start();
 					break;
 				case ImportType.MEDICAL:
-					importMedical(file, session.getConnection(), fileSize);
+					thread = new Thread(() => importMedical(file, session.getConnection(), fileSize));
+					thread.Start();
 					break;
 				case ImportType.ROOM:
-					importRoom(file, session.getConnection(), fileSize);
+					thread = new Thread(() => importRoom(file, session.getConnection(), fileSize));
+					thread.Start();
 					break;
 			}
-			file.Close();
 		}
 
 		private static void importInventory(System.IO.StreamReader file, SqlConnection connection, long fileSize)
 		{
+			int bytesRead = 0;
 			string line;
 			while ((line = file.ReadLine()) != null) // all casts are just integer enumerations to make it more readable
 			{
+				bytesRead += line.Length;
                 string id = line.Substring((int)DataStart.STOCKID, (int)DataLength.STOCKID);
                 string quantity = line.Substring((int)DataStart.QUANTITY, (int)DataLength.QUANTITY);
                 string description = line.Substring((int)DataStart.DESCRIPTION, (int)DataLength.DESCRIPTION);
@@ -511,9 +523,10 @@ namespace Middleware
                 string cost = line.Substring((int)DataStart.COST, (int)DataLength.COST);
                 string commandString = "INSERT INTO Item(Stock_ID, Size, Cost, Item_Description, Quantity) VALUES('" + id + "', '" + size + "', '" + cost + "', '" + description + "', '" + quantity + "')";
                 SqlCommand command = new SqlCommand(commandString, connection);
-                command.ExecuteNonQuery();
+				command.ExecuteNonQuery();
                 command.Dispose();
             }
+			file.Close();
 		}
 
 		private static void importMedical(System.IO.StreamReader file, SqlConnection connection, long fileSize)
@@ -591,14 +604,12 @@ namespace Middleware
 
 				// TODO: !!!!!!!!!!!!!!!!!STILL NEED ATTENDING PHYSICIAN AND SYMPTOMS!!!!!!!!!!!!!!!!!!!!!!!
 
-				//ImportFile.pbImport.Dispatcher.Invoke(() =>
-				//{
-					//ringFingerSlider.Value = Int32.Parse(splitData[(int)FingerIndex.ring]);
-				//});
-
 				command.Dispose();
-
+				double updatedProgress = (bytesRead * 100) / fileSize;
+				if (updatedProgress < 100) progress = (int)updatedProgress; // ok because it will always be less than a hundred
 			}
+			progress = 100;
+			file.Close();
 		}
 
 		private static void importRoom(System.IO.StreamReader file, SqlConnection connection, long fileSize)
@@ -608,6 +619,7 @@ namespace Middleware
 			{
 				System.Console.WriteLine(line);
 			}
+			file.Close();
 		}
 	}
 }
