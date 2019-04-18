@@ -55,7 +55,7 @@ CREATE TABLE Room
 (
 Room_Number char(9),
 Hourly_Rate NUMERIC(5,2),
-Effective_Date datetime,
+Effective_Date char(8),
 CONSTRAINT PK_Room PRIMARY KEY 
 (Room_Number)
 )
@@ -195,7 +195,7 @@ END
 
 GO
 
-CREATE PROCEDURE Import_Room @roomNumber varchar(9), @hourlyRate numeric(5), @effectiveDate varchar(8)
+CREATE PROCEDURE Import_Room @roomNumber char(9), @hourlyRate numeric(5,2), @effectiveDate char(8)
 AS
 BEGIN
 INSERT INTO Room(Room_Number, Hourly_Rate, Effective_Date) VALUES(@roomNumber, @hourlyRate, @effectiveDate)
