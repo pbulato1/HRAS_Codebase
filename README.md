@@ -1,8 +1,7 @@
 # HRAS_Codebase
 All of the contributor can log-in to the demo system by their first name as user name and last name as their password.
 
-CREATE DATABASE HRAS_iTas_Test  --this is a changable name but make sure you change 
--- it everywhere here and in the singalton pattern in the C# code.
+CREATE DATABASE HRAS_iTas_Test  --this is a changable name but make sure you change it everywhere here and in the singalton pattern in the C# code.
 
 GO
 USE HRAS_iTas_Test 
