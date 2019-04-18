@@ -187,6 +187,14 @@ END
 
 GO
 
+CREATE PROCEDURE Import_Item @stockID char(5), @quantity numeric(5,0) = null, @description varchar(35), @size varchar(3), @cost numeric(8,0)
+AS
+BEGIN
+INSERT INTO Item(Stock_ID, Quantity, [Description], Size, Cost) VALUES(@stockID, @quantity, @description, @size, @cost)
+END
+
+GO
+
 CREATE PROCEDURE Import_Room @roomNumber varchar(9), @hourlyRate numeric(5), @effectiveDate varchar(8)
 AS
 BEGIN
@@ -214,7 +222,15 @@ GO
 CREATE PROCEDURE Retrieve_Symptom @symptomName varchar(25)
 AS
 BEGIN
-Select @symptomName FROM Symptom
+Select [Name] FROM Symptom WHERE [Name] = @symptomName
+END
+
+GO
+
+CREATE PROCEDURE Retrieve_Item @stockID char(5)
+AS
+BEGIN
+Select Stock_ID FROM Item WHERE Stock_ID = @stockID
 END
 
 GO
@@ -223,6 +239,16 @@ CREATE PROCEDURE Import_Stayed_In @roomNumber varchar(9), @ssn varchar(9), @entr
 AS
 BEGIN
 INSERT INTO Stayed_In(Room_Number, Patient_SSN, Entry_Date) VALUES(@roomNumber, @ssn, @entryDate)
+END
+
+GO
+
+CREATE PROCEDURE Add_To_Existing_Inventory @stockID char(5), @quantity numeric(5,0)
+AS
+BEGIN
+UPDATE Item
+SET Quantity = Quantity + @quantity
+WHERE Stock_ID = @stockID
 END
 
 GO
