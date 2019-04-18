@@ -1,10 +1,11 @@
 # HRAS_Codebase
 All of the contributor can log-in to the demo system by their first name as user name and last name as their password.
 
-CREATE DATABASE HRAS_iTas_Test
+CREATE DATABASE HRAS_iTas_Test  --this is a changable name but make sure you change 
+-- it everywhere here and in the singalton pattern in the C# code.
 
 GO
-USE HRAS_iTas_Test
+USE HRAS_iTas_Test 
 
 CREATE TABLE Staff
 (
@@ -53,9 +54,9 @@ CONSTRAINT FK_Visited_History_Patient FOREIGN KEY
 
 CREATE TABLE Room
 (
-Room_Number NUMERIC(9,0),
-Hourly_Rate NUMERIC(5,0),
-Effective_Date char(8),
+Room_Number char(9),
+Hourly_Rate NUMERIC(5,2),
+Effective_Date datetime(12),
 CONSTRAINT PK_Room PRIMARY KEY 
 (Room_Number)
 )
