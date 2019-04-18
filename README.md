@@ -38,8 +38,8 @@ CONSTRAINT PK_Patient PRIMARY KEY
 CREATE TABLE Visited_History
 (
 Patient_SSN char(9),
-Entry_Date datetime(12),
-Exit_Date datetime(12),
+Entry_Date datetime,
+Exit_Date datetime,
 Insurer varchar(5),
 Diagnosis varchar(75),
 Notes varchar(100),
@@ -55,7 +55,7 @@ CREATE TABLE Room
 (
 Room_Number char(9),
 Hourly_Rate NUMERIC(5,2),
-Effective_Date datetime(12),
+Effective_Date datetime,
 CONSTRAINT PK_Room PRIMARY KEY 
 (Room_Number)
 )
@@ -82,7 +82,7 @@ CREATE TABLE Show_Signs
 (
 Symptom_Name varchar(25),
 Patient_SSN char(9),
-Entry_Date datetime(12),
+Entry_Date datetime,
 CONSTRAINT PK_Show_Signs PRIMARY KEY 
 (Symptom_Name, Patient_SSN, Entry_Date),
 CONSTRAINT FK_Show_Signs_Symptom FOREIGN KEY 
@@ -95,9 +95,9 @@ CONSTRAINT FK_Show_Signs_Visited_History FOREIGN KEY
 
 CREATE TABLE Stayed_In
 (
-Room_Number NUMERIC(9,0),
+Room_Number char(9),
 Patient_SSN char(9),
-Entry_Date datetime(12),
+Entry_Date datetime,
 CONSTRAINT PK_Stayed_In PRIMARY KEY 
 (Room_Number, Patient_SSN, Entry_Date),
 CONSTRAINT FK_Stayed_In_Room FOREIGN KEY 
@@ -112,7 +112,7 @@ CREATE TABLE Attended_Physican
 (
 [User_Name] varchar(25),
 Patient_SSN char(9),
-Entry_Date char(12),
+Entry_Date datetime,
 CONSTRAINT PK_Attended_Physican PRIMARY KEY 
 ([User_name], Patient_SSN, Entry_Date),
 CONSTRAINT FK_Attended_Physican_Staff FOREIGN KEY 
@@ -142,7 +142,7 @@ CREATE TABLE [Use]
 Stock_ID char(5),
 [User_Name] varchar(25),
 Patient_SSN char(9),
-Entry_Date datetime(12),
+Entry_Date datetime,
 Quantity_Used NUMERIC(5,0),
 [Date] char(18),
 CONSTRAINT PK_Use PRIMARY KEY 
@@ -158,7 +158,7 @@ CONSTRAINT FK_Use_Visited_History FOREIGN KEY
 (Patient_SSN, Entry_Date)
 )
 
-USE HRAS_iTas_Test
+GO
 
 CREATE PROCEDURE Verify_Login @username nvarchar(25), @password varchar(50)
 AS
@@ -169,11 +169,15 @@ WHERE User_Name = @username
 AND Password = @password
 END
 
+GO
+
 CREATE PROCEDURE Import_Medical_Record @ssn varchar(9), @entryDateTime varchar(12), @exitDateTime varchar(12), @diagnosis varchar(75), @insurer varchar(5), @notes varchar(100)
 AS
 BEGIN
 INSERT INTO Visited_History(Patient_SSN, Entry_Date, Exit_Date, Diagnosis, Insurer, Notes) VALUES(@ssn, @entryDateTime, @exitDateTime, @diagnosis, @insurer, @notes)
 END
+
+GO
 
 CREATE PROCEDURE Import_Patient @lastName varchar(50), @firstName varchar(25), @middleInitial varchar(1), @gender varchar(1), @ssn varchar(9), @birthDate varchar(8), @addressLine1 varchar(35), @addressLine2 varchar(35), @addressCity varchar(25), @addressState varchar(2), @addressZip varchar(5), @dnrStatus varchar(1), @organDonor varchar(1)
 AS
@@ -181,11 +185,15 @@ BEGIN
 INSERT INTO Patient(Last_Name, First_Name, Middle_Initial, Gender, SSN, Birth_Date, Address_Line1, Address_Line2, Address_City, Address_State, Address_Zip, DNR_Status, Organ_Donor) VALUES(@lastName, @firstName, @middleInitial, @gender, @ssn, @birthDate, @addressLine1, @addressLine2, @addressCity, @addressState, @addressZip, @dnrStatus, @organDonor)
 END
 
+GO
+
 CREATE PROCEDURE Import_Room @roomNumber varchar(9), @hourlyRate numeric(5), @effectiveDate varchar(8)
 AS
 BEGIN
 INSERT INTO Room(Room_Number, Hourly_Rate, Effective_Date) VALUES(@roomNumber, @hourlyRate, @effectiveDate)
 END
+
+GO
 
 CREATE PROCEDURE Import_Show_Signs @symptomName varchar(25), @ssn numeric(9), @entryDate varchar(12)
 AS
@@ -193,17 +201,23 @@ BEGIN
 INSERT INTO Show_Signs(Symptom_Name, Patient_SSN, Entry_Date) VALUES(@symptomName, @ssn, @entryDate)
 END
 
+GO
+
 CREATE PROCEDURE Import_Symptom @symptomName varchar(25)
 AS
 BEGIN
 INSERT INTO Symptom(Name) VALUES(@symptomName)
 END
 
+GO
+
 CREATE PROCEDURE Retrieve_Symptom @symptomName varchar(25)
 AS
 BEGIN
 Select @symptomName FROM Symptom
 END
+
+GO
 
 CREATE PROCEDURE Import_Stayed_In @roomNumber varchar(9), @ssn varchar(9), @entryDate varchar(12)
 AS
