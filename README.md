@@ -38,8 +38,8 @@ CONSTRAINT PK_Patient PRIMARY KEY
 CREATE TABLE Visited_History
 (
 Patient_SSN char(9),
-Entry_Date datetime(8),
-Exit_Date datetime(8),
+Entry_Date datetime(12),
+Exit_Date datetime(12),
 Insurer varchar(5),
 Diagnosis varchar(75),
 Notes varchar(100),
@@ -82,7 +82,7 @@ CREATE TABLE Show_Signs
 (
 Symptom_Name varchar(25),
 Patient_SSN char(9),
-Entry_Date datetime(8),
+Entry_Date datetime(12),
 CONSTRAINT PK_Show_Signs PRIMARY KEY 
 (Symptom_Name, Patient_SSN, Entry_Date),
 CONSTRAINT FK_Show_Signs_Symptom FOREIGN KEY 
@@ -97,7 +97,7 @@ CREATE TABLE Stayed_In
 (
 Room_Number NUMERIC(9,0),
 Patient_SSN char(9),
-Entry_Date datetime(8),
+Entry_Date datetime(12),
 CONSTRAINT PK_Stayed_In PRIMARY KEY 
 (Room_Number, Patient_SSN, Entry_Date),
 CONSTRAINT FK_Stayed_In_Room FOREIGN KEY 
@@ -112,7 +112,7 @@ CREATE TABLE Attended_Physican
 (
 [User_Name] varchar(25),
 Patient_SSN char(9),
-Entry_Date char(8),
+Entry_Date char(12),
 CONSTRAINT PK_Attended_Physican PRIMARY KEY 
 ([User_name], Patient_SSN, Entry_Date),
 CONSTRAINT FK_Attended_Physican_Staff FOREIGN KEY 
@@ -142,7 +142,7 @@ CREATE TABLE [Use]
 Stock_ID char(5),
 [User_Name] varchar(25),
 Patient_SSN char(9),
-Entry_Date datetime(8),
+Entry_Date datetime(12),
 Quantity_Used NUMERIC(5,0),
 [Date] char(18),
 CONSTRAINT PK_Use PRIMARY KEY 
