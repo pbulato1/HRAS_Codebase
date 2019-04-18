@@ -4,6 +4,7 @@ All of the contributor can log-in to the demo system by their first name as user
 CREATE DATABASE HRAS_iTas_Test  --this is a changable name but make sure you change it everywhere here and in the singalton pattern in the C# code.
 
 GO
+
 USE HRAS_iTas_Test 
 
 CREATE TABLE Staff
