@@ -74,10 +74,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="AccountManage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="AddInventory.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -128,9 +124,6 @@
     </Page>
     <Compile Include="AccountInformation.xaml.cs">
       <DependentUpon>AccountInformation.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="AccountManage.xaml.cs">
-      <DependentUpon>AccountManage.xaml</DependentUpon>
     </Compile>
     <Compile Include="AddInventory.xaml.cs">
       <DependentUpon>AddInventory.xaml</DependentUpon>

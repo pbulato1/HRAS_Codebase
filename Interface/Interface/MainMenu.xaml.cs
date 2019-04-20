@@ -23,11 +23,13 @@ namespace Interface
         public MainMenu()
         {
             InitializeComponent();
+            /*
 			if (Session.getCurrentSession().getCurrentUser().getPrivilegeLevel() != (int)PrivilegeLevels.A)
 			{
 				btnImportTool.IsEnabled = false;
 				btnImportTool.Visibility = Visibility.Hidden;
 			}
+            */
 		}
 
         private void Button_Click_InvertoryRecords(object sender, RoutedEventArgs e)
@@ -60,7 +62,19 @@ namespace Interface
 			importFile.Show();
 			this.Close();
 		}
-		private void Button_Click_LogOut(object sender, RoutedEventArgs e)
+        private void Button_Click_ImportFile(object sender, RoutedEventArgs e)
+        {
+            ImportFile importFile = new ImportFile();
+            importFile.Show();
+            this.Close();
+        }
+        private void Button_Click_AccountInformation(object sender, RoutedEventArgs e)
+        {
+            AccountInformation accountInformation = new AccountInformation();
+            accountInformation.Show();
+            this.Close();
+        }
+        private void Button_Click_LogOut(object sender, RoutedEventArgs e)
         {
             MessageBoxResult result;
             result = MessageBox.Show(this, "Do you want to exit?", "Log Out", MessageBoxButton.YesNo, MessageBoxImage.Warning);
@@ -72,6 +86,5 @@ namespace Interface
                 this.Close();
             }
         }
-
     }
 }
