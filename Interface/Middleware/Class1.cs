@@ -12,7 +12,6 @@ using System.Security.Cryptography;
 
 namespace Middleware
 {
-    
 	public enum PrivilegeLevels
 	{
 		NONE = 0,
