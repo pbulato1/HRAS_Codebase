@@ -29,33 +29,45 @@ namespace Interface
         {
             InitializeComponent();
         }
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
+		private void Button_Click(object sender, RoutedEventArgs e)
+		{
 			byte[] passwordBytes = Encoding.ASCII.GetBytes(password.Password);
 			HashAlgorithm sha = new SHA1CryptoServiceProvider();
 			byte[] hashedBytes = sha.ComputeHash(passwordBytes);
 			string hashedPassword = Convert.ToBase64String(hashedBytes);
 
-			Session currentSession = Session.establishSession(Account.Text, hashedPassword);
+			Session currentSession;
 
-			if (currentSession.verifySession())
+			try
 			{
+				currentSession = Session.establishSession(Account.Text, hashedPassword);
 				MainMenu m = new MainMenu();
 				m.Show();
 				this.Close();
 				failedAttempts = 0;
 			}
-            failedAttempts++;
-
-            if (failedAttempts < attemptThreshold)
-            {
-                lockedInfo.Content = "Your account currently has " + failedAttempts + " strike. It will be locked when you reach " + attemptThreshold + " strikes.";
-            }
-            else
+			catch (Exception ex)
 			{
-                lockedInfo.Content = "Your account currently has " + failedAttempts + " strike. It will be locked when you reach " + attemptThreshold + " strikes.";
-                MessageBox.Show(this, "Your account is locked!", "Locked", MessageBoxButton.OK, MessageBoxImage.Stop);
+				if (ex == User.failedLoginException)
+				{
+					failedAttempts++;
+					if (failedAttempts < attemptThreshold)
+					{
+						lockedInfo.Content = "Your account currently has " + failedAttempts + " strike. It will be locked when you reach " + attemptThreshold + " strikes.";
+					}
+					else
+					{
+						lockedInfo.Content = "Your account currently has " + failedAttempts + " strike. It will be locked when you reach " + attemptThreshold + " strikes.";
+						MessageBox.Show(this, "Your account is locked!", "Locked", MessageBoxButton.OK, MessageBoxImage.Stop);
+					}
+				}
+				else
+				{
+					lockedInfo.Content = "A connection to the database could not be established.";
+				}
 			}
+
+
             
             /// I found this is very important in here the lock-out feature is not actually acknowledge which user_ID
             /// They will increase false attempt when every the USER_ID and PASSWORD are not both matched the data base

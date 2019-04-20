@@ -132,8 +132,7 @@ namespace Middleware
 			}
 			catch (Exception e)
 			{
-				if (e == User.failedLoginException) throw User.failedLoginException;
-				throw failedConnectionException;
+				throw e;
 			}
 		}
 
@@ -141,7 +140,14 @@ namespace Middleware
         {
             if (theSession == null)
             {
-                theSession = new Session(username, password);
+				try
+				{
+					theSession = new Session(username, password);
+				}
+				catch (Exception e)
+				{
+					throw e;
+				}
 			}
             return theSession;
         }
