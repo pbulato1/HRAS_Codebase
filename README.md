@@ -161,7 +161,21 @@ CONSTRAINT FK_Use_Visited_History FOREIGN KEY
 
 GO
 
-CREATE PROCEDURE Verify_Login @username nvarchar(25), @password varchar(50) AS BEGIN SELECT User_Name, User_Type FROM Staff WHERE User_Name = @username AND Password = @password END
+CREATE PROCEDURE Verify_Login @username nvarchar(25), @password varchar(50)
+AS 
+BEGIN
+IF EXISTS (SELECT User_Name, User_Type FROM Staff WHERE User_Name = @username AND Password = @password)
+BEGIN
+SELECT User_Name, User_Type, Failed_Login FROM Staff WHERE User_Name = @username AND Password = @password
+END
+ELSE
+BEGIN
+IF EXISTS (SELECT User_Name, User_Type FROM Staff WHERE User_Name = @username)
+BEGIN
+UPDATE Staff SET Failed_Login = Failed_Login + 1 WHERE User_Name = @username
+END
+END
+END
 
 GO
 
@@ -222,6 +236,14 @@ CREATE PROCEDURE Search_Items @stockID varchar(5), @description varchar(35), @si
 GO
 
 CREATE PROCEDURE Search_Medical_Records @input varchar(50) AS BEGIN SELECT Patient.First_Name, Patient.Last_Name, Visited_History.* FROM Visited_History INNER JOIN Patient ON Visited_History.Patient_SSN = Patient.SSN where First_Name  LIKE '%' + @input + '%' OR Last_Name  LIKE '%' + @input + '%' OR Patient_SSN  LIKE '%' + @input + '%' END
+
+GO
+
+CREATE PROCEDURE Get_Failed_Attempts @userName varchar(25) AS BEGIN SELECT Failed_Login FROM Staff WHERE [User_Name] = @userName END
+
+GO
+
+CREATE PROCEDURE Verify_Username @userName varchar(25) AS BEGIN SELECT [User_Name] FROM Staff WHERE [User_Name] = @userName END
 
 GO
 
@@ -311,6 +333,16 @@ GO
 
 USE [HRAS_iTas]
 GRANT EXECUTE ON OBJECT::Search_Medical_Records
+    TO HRAS_MW_iTas;  
+GO  
+
+USE [HRAS_iTas]
+GRANT EXECUTE ON OBJECT::Get_Failed_Attempts
+    TO HRAS_MW_iTas;  
+GO  
+
+USE [HRAS_iTas]
+GRANT EXECUTE ON OBJECT::Verify_Username
     TO HRAS_MW_iTas;  
 GO  
 
