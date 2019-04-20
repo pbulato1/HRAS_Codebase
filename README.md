@@ -239,6 +239,10 @@ CREATE PROCEDURE Search_Medical_Records @input varchar(50) AS BEGIN SELECT Patie
 
 GO
 
+CREATE PROCEDURE Get_Failed_Attempts @userName varchar(25) AS BEGIN SELECT Failed_Login FROM Staff WHERE [User_Name] = @userName END
+
+GO
+
 USE [HRAS_iTas]
 CREATE LOGIN HRAS_MW_iTas  
     WITH PASSWORD = 'ZMNv01X';  
@@ -325,6 +329,11 @@ GO
 
 USE [HRAS_iTas]
 GRANT EXECUTE ON OBJECT::Search_Medical_Records
+    TO HRAS_MW_iTas;  
+GO  
+
+USE [HRAS_iTas]
+GRANT EXECUTE ON OBJECT::Get_Failed_Attempts
     TO HRAS_MW_iTas;  
 GO  
 
