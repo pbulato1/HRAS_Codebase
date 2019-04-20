@@ -24,7 +24,8 @@ namespace Middleware
 	{
 		MEDICAL = 0,
 		INVENTORY = 1,
-		ROOM = 2
+		ROOM = 2,
+		USERS = 4
 	}
 
     public enum DataLength
@@ -65,7 +66,11 @@ namespace Middleware
 		//ROOM
 		ROOMNUMBER = 9,
 		HOURLYRATE = 5,
-		EFFECTIVEDATE = 8
+		EFFECTIVEDATE = 8,
+		//USERS
+		USERNAME = 25,
+		PASSWORD = 50,
+		USERTYPE = 1
     }
 
     public enum DataStart
@@ -106,8 +111,12 @@ namespace Middleware
 		//ROOM
 		ROOMNUMBER = 0,
 		HOURLYRATE = ROOMNUMBER + DataLength.ROOMNUMBER,
-		EFFECTIVEDATE = HOURLYRATE + DataLength.HOURLYRATE
-    }
+		EFFECTIVEDATE = HOURLYRATE + DataLength.HOURLYRATE,
+		//USERS
+		USERNAME = 0,
+		PASSWORD = DataLength.USERNAME + USERNAME,
+		USERTYPE = DataLength.PASSWORD + PASSWORD
+	}
 
     public class Session
 	{
@@ -654,6 +663,10 @@ namespace Middleware
 					thread = new Thread(() => importRoom(file, session.getConnection(), fileSize));
 					thread.Start();
 					break;
+				case ImportType.USERS:
+					thread = new Thread(() => importUser(file, session.getConnection(), fileSize));
+					thread.Start();
+					break;
 			}
 		}
 
@@ -854,6 +867,40 @@ namespace Middleware
 				command.Parameters.Add(new SqlParameter("@roomNumber", roomNumber));
 				command.Parameters.Add(new SqlParameter("@hourlyRate", hourlyRate));
 				command.Parameters.Add(new SqlParameter("@effectiveDate", effectiveDate));
+				try
+				{
+					command.ExecuteNonQuery();
+				}
+				catch (Exception) { } // This is for the duplictes that occur
+
+				command.Dispose();
+				double updatedProgress = (bytesRead * 100) / fileSize;
+				if (updatedProgress < 100) progress = (int)updatedProgress; // ok because it will always be less than a hundred
+			}
+			progress = 100;
+			file.Close();
+		}
+
+		private static void importUser(System.IO.StreamReader file, SqlConnection connection, long fileSize)
+		{
+			int bytesRead = 0;
+			string line;
+			while ((line = file.ReadLine()) != null)
+			{
+				bytesRead += line.Length;
+				string username = line.Substring((int)DataStart.USERNAME, (int)DataLength.USERNAME);
+				username = username.Replace(" ", "");
+				string password = line.Substring((int)DataStart.PASSWORD, (int)DataLength.PASSWORD);
+				password = password.Replace(" ", "");
+				string hashedPassword = PasswordHasher.hashPassword(password);
+				string userType = line.Substring((int)DataStart.USERTYPE, (int)DataLength.USERTYPE);
+				string queryString = "Import_User";
+				SqlCommand command = new SqlCommand(queryString, connection);
+				command.CommandType = System.Data.CommandType.StoredProcedure;
+				command.Parameters.Add(new SqlParameter("@username", username));
+				command.Parameters.Add(new SqlParameter("@password", hashedPassword));
+				command.Parameters.Add(new SqlParameter("@userType", userType));
+				command.Parameters.Add(new SqlParameter("@failedLogins", '0'));
 				try
 				{
 					command.ExecuteNonQuery();

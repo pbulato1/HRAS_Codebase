@@ -66,6 +66,11 @@ namespace Interface
 			type = ImportType.ROOM;
 		}
 
+		private void Button_Click_tbtnUsers(object sender, RoutedEventArgs e)
+		{
+			type = ImportType.USERS;
+		}
+
 		private void Button_Click_btnImport(object sender, RoutedEventArgs e)
 		{
 			pbImport.Value = 0;
