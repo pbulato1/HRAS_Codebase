@@ -5,9 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Interface"
         mc:Ignorable="d"
-             WindowState="Maximized"
-        Title="ImportFile" Height="603.6" Width="1202">
-
+        WindowState="Maximized"
+        Title="Main Menu" Height="720" Width="1280">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="521*"/>

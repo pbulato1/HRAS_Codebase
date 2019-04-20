@@ -13,7 +13,6 @@ using System.Threading;
 
 namespace Middleware
 {
-    
 	public enum PrivilegeLevels
 	{
 		NONE = 0,
