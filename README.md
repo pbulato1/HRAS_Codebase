@@ -243,6 +243,10 @@ CREATE PROCEDURE Get_Failed_Attempts @userName varchar(25) AS BEGIN SELECT Faile
 
 GO
 
+CREATE PROCEDURE Verify_Username @userName varchar(25) AS BEGIN SELECT [User_Name] FROM Staff WHERE [User_Name] = @userName END
+
+GO
+
 USE [HRAS_iTas]
 CREATE LOGIN HRAS_MW_iTas  
     WITH PASSWORD = 'ZMNv01X';  
@@ -334,6 +338,11 @@ GO
 
 USE [HRAS_iTas]
 GRANT EXECUTE ON OBJECT::Get_Failed_Attempts
+    TO HRAS_MW_iTas;  
+GO  
+
+USE [HRAS_iTas]
+GRANT EXECUTE ON OBJECT::Verify_Username
     TO HRAS_MW_iTas;  
 GO  
 
