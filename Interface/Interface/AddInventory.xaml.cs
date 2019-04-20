@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Middleware;
 
 namespace Interface
 {
@@ -50,7 +51,8 @@ namespace Interface
 
         private void Button_Click_Submit(object sender, RoutedEventArgs e)
         {
-            //Need connection here
+			//Need connection here
+			InventoryItem.addInventory(ItemName.Text, ItemID.Text, Size.Text, Quantity.Text, Price.Text);
             this.Close();
         }
 

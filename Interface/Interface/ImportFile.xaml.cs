@@ -95,5 +95,10 @@ namespace Interface
 			if (openFileDialog.ShowDialog() == true)
 				tfFilePath.Text = openFileDialog.FileName;
 		}
+
+		private void pbImport_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+		{
+
+		}
 	}
 }
