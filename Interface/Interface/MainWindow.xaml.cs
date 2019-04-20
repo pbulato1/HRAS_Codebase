@@ -22,9 +22,6 @@ namespace Interface
     /// </summary>
     public partial class MainWindow : Window
     {
-		int failedAttempts = 0;
-		int attemptThreshold = 5;
-
 		public MainWindow()
         {
             InitializeComponent();
@@ -44,26 +41,26 @@ namespace Interface
 				MainMenu m = new MainMenu();
 				m.Show();
 				this.Close();
-				failedAttempts = 0;
 			}
 			catch (Exception ex)
 			{
 				if (ex == User.failedLoginException)
 				{
-					failedAttempts++;
-					if (failedAttempts < attemptThreshold)
-					{
-						lockedInfo.Content = "Your account currently has " + failedAttempts + " strike. It will be locked when you reach " + attemptThreshold + " strikes.";
-					}
-					else
-					{
-						lockedInfo.Content = "Your account currently has " + failedAttempts + " strike. It will be locked when you reach " + attemptThreshold + " strikes.";
-						MessageBox.Show(this, "Your account is locked!", "Locked", MessageBoxButton.OK, MessageBoxImage.Stop);
-					}
+					int failedAttempts = User.getFailedAttempts(Account.Text);
+					string plural = (failedAttempts == 1) ? "" : "s";
+					lockedInfo.Content = "Your account currently has " + failedAttempts + " strike" + plural + ". It will be locked when you reach 5 strikes.";
 				}
-				else
+				else if (ex == User.noAccountException)
+				{
+					lockedInfo.Content = "The specified user does not exist.";
+				}
+				else if (ex == Session.failedConnectionException)
 				{
 					lockedInfo.Content = "A connection to the database could not be established.";
+				}
+				else if (ex == User.accountLockedException)
+				{
+					MessageBox.Show(this, "Your account is locked!", "Locked", MessageBoxButton.OK, MessageBoxImage.Stop);
 				}
 			}
 

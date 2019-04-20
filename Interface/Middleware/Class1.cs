@@ -235,23 +235,41 @@ namespace Middleware
 		int logoffThreshold = 15;
 		int warningThreshold = 10;
 		bool loggedIn = false;
-		public static Exception failedLoginException = new Exception("Incorrect username or password");
+		public static Exception failedLoginException = new Exception("Incorrect username or password.");
+		public static Exception noAccountException = new Exception("The username given does not exist.");
+		public static Exception accountLockedException = new Exception("The specified account is locked.");
+		int loginAttemptThreshold = 5;
 
 		public bool login(string enteredUsername, string enteredPassword, SqlConnection connection)
 		{
 			bool matchFound = false;
-			string queryString = "Verify_Login";
+			string queryString = "Verify_Username";
 			SqlCommand command = new SqlCommand(queryString, connection);
+			command.CommandType = System.Data.CommandType.StoredProcedure;
+			command.Parameters.Add(new SqlParameter("@userName", enteredUsername));
+			SqlDataReader dataReader = command.ExecuteReader();
+			bool userExists = false;
+			while (dataReader.Read())
+			{
+				userExists = true;
+			}
+			if (!userExists) throw noAccountException;
+			queryString = "Verify_Login";
+			command = new SqlCommand(queryString, connection);
 			command.CommandType = System.Data.CommandType.StoredProcedure;
 			command.Parameters.Add(new SqlParameter("@username", enteredUsername));
 			command.Parameters.Add(new SqlParameter("@password", enteredPassword));
-			SqlDataReader dataReader = command.ExecuteReader();
+			dataReader.Close();
+			dataReader = command.ExecuteReader();
 			while (dataReader.Read())
 			{
 				int indexUsername = dataReader.GetOrdinal("User_Name");
+				int failedLogins = dataReader.GetOrdinal("Failed_Login");
 				string retrievedUsername = dataReader.GetString(indexUsername);
 				if (retrievedUsername == enteredUsername) // not necessary, but in case of hacker mischief
 				{
+					int loginAttempts = dataReader.GetInt32(failedLogins);
+					if (loginAttempts >= loginAttemptThreshold) throw accountLockedException;
 					matchFound = true;
 					username = enteredUsername;
 					password = enteredPassword;
@@ -259,17 +277,34 @@ namespace Middleware
 					string privilege = dataReader.GetString(index);
 					privilegeLevel = (int)(Enum.Parse(typeof(PrivilegeLevels), privilege));
 					AFKTime = 0;
-					//logoffTimer.Interval = timerThreshold;
-					//logoffTimer.Elapsed += OnTimedEvent;
-					//logoffTimer.Enabled = true;
 					loggedIn = true;
 				}
-				else throw new Exception("An error occurred while logging the user in.");
+				else throw failedLoginException;
 			}
 			dataReader.Close();
 			command.Dispose();
 
 			return matchFound;
+		}
+
+		public static int getFailedAttempts(string userName)
+		{
+			string connectionString = Properties.Settings1.Default.CONNECTIONSTRING;
+			SqlConnection connection = new SqlConnection(connectionString);
+			connection.Open();
+			string queryString = "Get_Failed_Attempts";
+			SqlCommand command = new SqlCommand(queryString, connection);
+			command.CommandType = System.Data.CommandType.StoredProcedure;
+			command.Parameters.Add(new SqlParameter("@userName", userName));
+			SqlDataReader dataReader = command.ExecuteReader();
+			int indexAttempts = dataReader.GetOrdinal("Failed_Login");
+			int fails = 5;
+			while (dataReader.Read())
+			{
+				fails = dataReader.GetInt32(indexAttempts);
+			}
+			connection.Close();
+			return fails;
 		}
 
 		private void OnTimedEvent(Object source, System.Timers.ElapsedEventArgs e)
