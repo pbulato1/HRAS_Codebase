@@ -56,12 +56,6 @@ namespace Interface
             medicalRecord.Show();
             this.Close();
         }
-		private void Button_Click_ImportTool(object sender, RoutedEventArgs e)
-		{
-			ImportFile importFile = new ImportFile();
-			importFile.Show();
-			this.Close();
-		}
         private void Button_Click_ImportFile(object sender, RoutedEventArgs e)
         {
             ImportFile importFile = new ImportFile();
