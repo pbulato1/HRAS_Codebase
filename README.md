@@ -161,7 +161,21 @@ CONSTRAINT FK_Use_Visited_History FOREIGN KEY
 
 GO
 
-CREATE PROCEDURE Verify_Login @username nvarchar(25), @password varchar(50) AS BEGIN SELECT User_Name, User_Type FROM Staff WHERE User_Name = @username AND Password = @password END
+CREATE PROCEDURE Verify_Login @username nvarchar(25), @password varchar(50)
+AS 
+BEGIN
+IF EXISTS (SELECT User_Name, User_Type FROM Staff WHERE User_Name = @username AND Password = @password)
+BEGIN
+SELECT User_Name, User_Type, Failed_Login FROM Staff WHERE User_Name = @username AND Password = @password
+END
+ELSE
+BEGIN
+IF EXISTS (SELECT User_Name, User_Type FROM Staff WHERE User_Name = @username)
+BEGIN
+UPDATE Staff SET Failed_Login = Failed_Login + 1 WHERE User_Name = @username
+END
+END
+END
 
 GO
 
