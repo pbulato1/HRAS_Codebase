@@ -6,11 +6,25 @@
         xmlns:local="clr-namespace:Interface"
         mc:Ignorable="d"
              WindowState="Maximized"
-        Title="ImportFile" Height="720" Width="1280">
+        Title="ImportFile" Height="603.6" Width="1202">
 
     <Grid>
-        <Label Content="HRAS Import Info" FontSize="30" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,20,0,0"/>
-        <Button Content="Main Menu" Background="White" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Bottom"  Margin="60,0,0,30" Height="35" Width="75" Click="Button_Click_BackMenu" />
-        <Button Content="Log out" Background="White" FontWeight="Bold" HorizontalAlignment="Right" VerticalAlignment="Bottom"  Margin="0,0,60,30" Height="35" Width="75" Click="Button_Click_LogOut" />
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="521*"/>
+            <ColumnDefinition Width="77*"/>
+        </Grid.ColumnDefinitions>
+        <Label Content="HRAS Import Info" FontSize="30" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="502,20,344.6,0" Height="50" Width="195"/>
+        <Button Content="Main Menu" Background="White" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Bottom"  Margin="60,0,0,30.6" Height="35" Width="75" Click="Button_Click_BackMenu" />
+        <Button Content="Log out" Background="White" FontWeight="Bold" HorizontalAlignment="Right" VerticalAlignment="Bottom"  Margin="0,0,5.6,30.6" Height="35" Width="75" Click="Button_Click_LogOut" />
+        <RadioButton Name="rbtnInventory" GroupName="FileType" Content="Inventory File" HorizontalAlignment="Center" Height="17" Margin="447,213,463.6,0" VerticalAlignment="Top" Width="131" Click="Button_Click_tbtnInventory"/>
+        <RadioButton Name="rbtnMedicalRecords" GroupName="FileType" Content="Medical Record File" HorizontalAlignment="Center" Height="17" Margin="447,257,463.6,0" VerticalAlignment="Top" Width="131" Click="Button_Click_tbtnMedicalRecords"/>
+        <RadioButton Name="rbtnRooms" GroupName="FileType" Content="Room File" HorizontalAlignment="Center" Height="17" Margin="447,235,463.6,0" VerticalAlignment="Top" Width="131" Click="Button_Click_tbtnRooms"/>
+        <Button Name="btnBrowse" Content="Browse For File" HorizontalAlignment="Center" Height="17" Margin="770,171,168.6,0" VerticalAlignment="Top" Width="103" Click="Button_Click_btnBrowse"/>
+        <TextBox Name="tfFilePath" HorizontalAlignment="Center" Height="17" Margin="447,171,293.6,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="301"/>
+        <ProgressBar Name="pbImport" HorizontalAlignment="Center" Height="40" Margin="230,455,69.6,0" VerticalAlignment="Top" Width="742"/>
+        <Button Name="btnImport" Content="Begin Import" HorizontalAlignment="Center" Height="35" Margin="716,307,168.6,0" VerticalAlignment="Top" Width="157" Click="Button_Click_btnImport"/>
+        <Label Name="lblStatus" Content="Import Status:" HorizontalAlignment="Center" Height="84" Margin="338,366,115.6,0" VerticalAlignment="Top" Width="588"/>
+        <Label Content="Import Type:" HorizontalAlignment="Center" Height="30" Margin="323,205,599.6,0" VerticalAlignment="Top" Width="119"/>
+        <Label Content="Path to import file:" HorizontalAlignment="Center" Height="30" Margin="292,165,448.6,0" VerticalAlignment="Top" Width="301"/>
     </Grid>
 </Window>

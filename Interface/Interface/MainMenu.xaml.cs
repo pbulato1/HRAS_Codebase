@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Middleware;
 
 namespace Interface
 {
@@ -22,7 +23,12 @@ namespace Interface
         public MainMenu()
         {
             InitializeComponent();
-        }
+			if (Session.getCurrentSession().getCurrentUser().getPrivilegeLevel() != (int)PrivilegeLevels.A)
+			{
+				btnImportTool.IsEnabled = false;
+				btnImportTool.Visibility = Visibility.Hidden;
+			}
+		}
 
         private void Button_Click_InvertoryRecords(object sender, RoutedEventArgs e)
         {
@@ -48,13 +54,20 @@ namespace Interface
             medicalRecord.Show();
             this.Close();
         }
-        private void Button_Click_LogOut(object sender, RoutedEventArgs e)
+		private void Button_Click_ImportTool(object sender, RoutedEventArgs e)
+		{
+			ImportFile importFile = new ImportFile();
+			importFile.Show();
+			this.Close();
+		}
+		private void Button_Click_LogOut(object sender, RoutedEventArgs e)
         {
             MessageBoxResult result;
             result = MessageBox.Show(this, "Do you want to exit?", "Log Out", MessageBoxButton.YesNo, MessageBoxImage.Warning);
             if(result == MessageBoxResult.Yes)
             {
-                MainWindow login = new MainWindow();
+				Session.getCurrentSession().getCurrentUser().logout();
+				MainWindow login = new MainWindow();
                 login.Show();
                 this.Close();
             }

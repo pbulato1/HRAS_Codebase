@@ -27,7 +27,7 @@ namespace Interface
         {
             InitializeComponent();
             Loaded += MedicalRecord_Loaded;
-        }
+		}
 
         private void Button_Click_BackMenu(object sender, RoutedEventArgs e)
         {
@@ -42,7 +42,8 @@ namespace Interface
             result = MessageBox.Show(this, "Do you want to exit?", "Log Out", MessageBoxButton.YesNo, MessageBoxImage.Warning);
             if (result == MessageBoxResult.Yes)
             {
-                MainWindow login = new MainWindow();
+				Session.getCurrentSession().getCurrentUser().logout();
+				MainWindow login = new MainWindow();
                 login.Show();
                 this.Close();
             }
@@ -64,24 +65,21 @@ namespace Interface
 
         private void MedicalRecord_Loaded(object sender, EventArgs e)
         {
-            //DataTable medical = MedicalRecord.getMedical();
-            //M1. = medical.DefaultView;
-            M1.AutoGenerateColumns = true;
-            M1.CanUserAddRows = false;
-        }
+			DataTable records = Middleware.MedicalRecord.getMedicalRecords();
+			M1.ItemsSource = records.DefaultView;
+			M1.AutoGenerateColumns = true;
+			M1.CanUserAddRows = false;
+		}
 
         private void Search_TextChanged(object sender, TextChangedEventArgs e)
         {
-            //DataTable medical = MedicalRecord.searchMedical(Account.Text);
-            //M1.ItemsSource = medical.DefaultView;
-            M1.AutoGenerateColumns = true;
-            M1.CanUserAddRows = false;
-        }
+			DataTable records = Middleware.MedicalRecord.searchMedicalRecords(Account.Text);
+			M1.ItemsSource = records.DefaultView;
+			M1.AutoGenerateColumns = true;
+			M1.CanUserAddRows = false;
+		}
 
-
- 
-
-        private void IR_DataChange(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+		private void IR_DataChange(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
 
         }

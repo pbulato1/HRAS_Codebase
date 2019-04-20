@@ -9,6 +9,7 @@ using System.Configuration;
 using System.Collections.Specialized;
 using System.Data;
 using System.Security.Cryptography;
+using System.Threading;
 
 namespace Middleware
 {
@@ -42,9 +43,7 @@ namespace Middleware
         SSN = 9,
         BIRTHDATE = 8,
         ENTRYDATETIME = 12,
-		ENTRYDATETIMEADDJUSTED = 8,
         EXITDATETIME = 12,
-		EXITDATETIMEADDJUSTED = 8,
 		ATTENDINGPHY = 5,
         ROOMNO = 9,
         SYMPTOM1 = 25,
@@ -62,7 +61,11 @@ namespace Middleware
         ADDRESSSTATE = 2,
         ADDRESSZIP = 5,
         DNRSTATUS = 1,
-        ORGANDONOR = 1
+        ORGANDONOR = 1,
+		//ROOM
+		ROOMNUMBER = 9,
+		HOURLYRATE = 5,
+		EFFECTIVEDATE = 8
     }
 
     public enum DataStart
@@ -100,6 +103,10 @@ namespace Middleware
         ADDRESSZIP = ADDRESSSTATE + DataLength.ADDRESSSTATE,
         DNRSTATUS = ADDRESSZIP + DataLength.ADDRESSZIP,
         ORGANDONOR = DNRSTATUS + DataLength.DNRSTATUS,
+		//ROOM
+		ROOMNUMBER = 0,
+		HOURLYRATE = ROOMNUMBER + DataLength.ROOMNUMBER,
+		EFFECTIVEDATE = HOURLYRATE + DataLength.HOURLYRATE
     }
 
     public class Session
@@ -194,7 +201,7 @@ namespace Middleware
 		}
 	}
 
-	class Diagnosis
+	public class Diagnosis
 	{
 		string diagnosisName;
 		List<string> symptoms;
@@ -216,7 +223,7 @@ namespace Middleware
 		string username;
 		string password;
 		int privilegeLevel;
-		Timer logoffTimer; // This needs to be moved to the parent of the front end
+		//Timer logoffTimer; // This needs to be moved to the parent of the front end
 		int AFKTime;
 		int timerThreshold = 1000 * 60; // 1000 = 1 second, 60 seconds = 1 minute
 		int logoffThreshold = 15;
@@ -245,11 +252,10 @@ namespace Middleware
 					int index = dataReader.GetOrdinal("User_Type");
 					string privilege = dataReader.GetString(index);
 					privilegeLevel = (int)(Enum.Parse(typeof(PrivilegeLevels), privilege));
-					logoffTimer = new Timer();
 					AFKTime = 0;
-					logoffTimer.Interval = timerThreshold;
-					logoffTimer.Elapsed += OnTimedEvent;
-					logoffTimer.Enabled = true;
+					//logoffTimer.Interval = timerThreshold;
+					//logoffTimer.Elapsed += OnTimedEvent;
+					//logoffTimer.Enabled = true;
 					loggedIn = true;
 				}
 				else throw new Exception("An error occurred while logging the user in.");
@@ -280,7 +286,7 @@ namespace Middleware
 				username = "";
 				password = "";
 				privilegeLevel = (int)PrivilegeLevels.NONE; // this is ok becuase PrivilegeLevels is an enumeration thus the values are actually ints
-				logoffTimer = null;
+				//logoffTimer = null;
 				AFKTime = 0;
 				loggedIn = false;
 				Session currentSession = Session.getCurrentSession();
@@ -301,8 +307,8 @@ namespace Middleware
 		public void resetTimer()
 		{
 			AFKTime = 0;
-			logoffTimer.Stop();
-			logoffTimer.Start();
+			//logoffTimer.Stop();
+			//logoffTimer.Start();
 		}
 
         public string getUsername()
@@ -316,7 +322,7 @@ namespace Middleware
 		}
 	}
 
-	class BasicAddress
+	public class BasicAddress
 	{
 		private string addressLineOne;
 		private string addressLineTwo;
@@ -331,7 +337,7 @@ namespace Middleware
 
 	}
 
-	class Patient
+	public class Patient
 	{
 		string lastName;
 		string firstName;
@@ -349,7 +355,7 @@ namespace Middleware
         }
 	}
 
-	class MedicalRecord
+	public class MedicalRecord
 	{
 		Patient patient;
 		DateTime entryDate;
@@ -361,6 +367,27 @@ namespace Middleware
 		string notes;
 		string insurer;
 		List<InventoryItem> suppliesUsed;
+
+		public static DataTable getMedicalRecords()
+		{
+			DataTable records = new DataTable();
+			SqlConnection connection = Session.getCurrentSession().getConnection();
+			SqlCommand command = new SqlCommand("SELECT TOP 1000 Patient.First_Name, Patient.Last_Name, Visited_History.* FROM Visited_History INNER JOIN Patient ON Visited_History.Patient_SSN = Patient.SSN", connection);
+			SqlDataReader reader = command.ExecuteReader();
+			records.Load(reader);
+			return records;
+		}
+
+		public static DataTable searchMedicalRecords(string input)
+		{
+			DataTable records = new DataTable();
+			SqlConnection connection = Session.getCurrentSession().getConnection();
+			
+			SqlCommand command = new SqlCommand(("SELECT Patient.First_Name, Patient.Last_Name, Visited_History.* FROM Visited_History INNER JOIN Patient ON Visited_History.Patient_SSN = Patient.SSN where First_Name  LIKE '%" + input + "%' OR Last_Name  LIKE '%" + input + "%' OR Patient_SSN  LIKE '%" + input + "%'"), connection);
+			SqlDataReader reader = command.ExecuteReader();
+			records.Load(reader);
+			return records;
+		}
 
 		public void addSupply(InventoryItem item)
 		{
@@ -443,14 +470,14 @@ namespace Middleware
         {
             DataTable inventory = new DataTable();
             SqlConnection connection = Session.getCurrentSession().getConnection();
-            SqlCommand command = new SqlCommand("Select * FROM Item WHERE Item_Description like '%" + description + "%' AND Stock_ID like '%" + id + "%' AND Size like '%" + size + "%'", connection);
+            SqlCommand command = new SqlCommand("Select * FROM Item WHERE Description like '%" + description + "%' AND Stock_ID like '%" + id + "%' AND Size like '%" + size + "%'", connection);
             SqlDataReader reader = command.ExecuteReader();
             inventory.Load(reader);
             return inventory;
         }
     }
 
-	class Room
+	public class Room
 	{
 		int roomNumber;
 		double hourlyRate;
@@ -479,58 +506,84 @@ namespace Middleware
 
 	public class ImportData
 	{
+		public static int progress = 0;
+
+		public static int getProgress()
+		{
+			return progress;
+		}
+
 		public static void import(string filePath, ImportType type, Session session)
 		{
+			Thread thread;
+			long fileSize = new System.IO.FileInfo(filePath).Length;
 			System.IO.StreamReader file = new System.IO.StreamReader(@filePath);
 			switch (type)
 			{
 				case ImportType.INVENTORY:
-					importInventory(file, session.getConnection());
+					thread = new Thread(() => importInventory(file, session.getConnection(), fileSize));
+					thread.Start();
 					break;
 				case ImportType.MEDICAL:
-					importMedical(file, session.getConnection());
+					thread = new Thread(() => importMedical(file, session.getConnection(), fileSize));
+					thread.Start();
 					break;
 				case ImportType.ROOM:
-					importRoom(file, session.getConnection());
+					thread = new Thread(() => importRoom(file, session.getConnection(), fileSize));
+					thread.Start();
 					break;
 			}
+		}
+
+		private static void importInventory(System.IO.StreamReader file, SqlConnection connection, long fileSize)
+		{
+			int bytesRead = 0;
+			string line;
+			int quantity = 0;
+			bool hasQuantity = false;
+			while ((line = file.ReadLine()) != null) // all casts are just integer enumerations to make it more readable
+			{
+				bytesRead += line.Length;
+                string id = line.Substring((int)DataStart.STOCKID, (int)DataLength.STOCKID);
+				try
+				{
+					quantity = Int32.Parse(line.Substring((int)DataStart.QUANTITY, (int)DataLength.QUANTITY));
+					hasQuantity = true;
+				}
+				catch (Exception)
+				{
+					hasQuantity = false;
+				}
+                string description = line.Substring((int)DataStart.DESCRIPTION, (int)DataLength.DESCRIPTION);
+                string size = line.Substring((int)DataStart.SIZE, (int)DataLength.SIZE);
+                int cost = Int32.Parse(line.Substring((int)DataStart.COST, (int)DataLength.COST));
+                string commandString = (hasQuantity) ? "INSERT INTO Item(Stock_ID, Size, Cost, Description, Quantity) VALUES('" + id + "', '" + size + "', '" + cost + "', '" + description + "', '" + quantity + "')" :
+					"INSERT INTO Item(Stock_ID, Size, Cost, Description) VALUES('" + id + "', '" + size + "', '" + cost + "', '" + description + "')";
+                SqlCommand command = new SqlCommand(commandString, connection);
+				command.ExecuteNonQuery();
+                command.Dispose();
+				double updatedProgress = (bytesRead * 100) / fileSize;
+				if (updatedProgress < 100) progress = (int)updatedProgress; // ok because it will always be less than a hundred
+			}
+			progress = 100;
 			file.Close();
 		}
 
-		private static void importInventory(System.IO.StreamReader file, SqlConnection connection)
+		private static void importMedical(System.IO.StreamReader file, SqlConnection connection, long fileSize)
 		{
-			string line;
-			while ((line = file.ReadLine()) != null) // all casts are just integer enumerations to make it more readable
-			{
-                string id = line.Substring((int)DataStart.STOCKID, (int)DataLength.STOCKID);
-                string quantity = line.Substring((int)DataStart.QUANTITY, (int)DataLength.QUANTITY);
-                string description = line.Substring((int)DataStart.DESCRIPTION, (int)DataLength.DESCRIPTION);
-                string size = line.Substring((int)DataStart.SIZE, (int)DataLength.SIZE);
-                string cost = line.Substring((int)DataStart.COST, (int)DataLength.COST);
-                string commandString = "INSERT INTO Item(Stock_ID, Size, Cost, Item_Description, Quantity) VALUES('" + id + "', '" + size + "', '" + cost + "', '" + description + "', '" + quantity + "')";
-                SqlCommand command = new SqlCommand(commandString, connection);
-                command.ExecuteNonQuery();
-                command.Dispose();
-            }
-		}
-
-		private static void importMedical(System.IO.StreamReader file, SqlConnection connection)
-		{
+			int bytesRead = 0;
 			string line;
 			while ((line = file.ReadLine()) != null)
 			{
+				bytesRead += line.Length;
 				string lastName = line.Substring((int)DataStart.LASTNAME, (int)DataLength.LASTNAME);
-				lastName = lastName.Replace("'", "''");
 				string firstName = line.Substring((int)DataStart.FIRSTNAME, (int)DataLength.FIRSTNAME);
-				firstName = firstName.Replace("'", "''");
 				string middleInitial = line.Substring((int)DataStart.MIDDLEINITIAL, (int)DataLength.MIDDLEINITIAL);
 				string gender = line.Substring((int)DataStart.GENDER, (int)DataLength.GENDER);
 				string ssn = line.Substring((int)DataStart.SSN, (int)DataLength.SSN);
 				string birthDate = line.Substring((int)DataStart.BIRTHDATE, (int)DataLength.BIRTHDATE);
 				string entryDateTime = line.Substring((int)DataStart.ENTRYDATETIME, (int)DataLength.ENTRYDATETIME);
-				entryDateTime = entryDateTime.Substring(0, (int)DataLength.ENTRYDATETIMEADDJUSTED);
 				string exitDateTime = line.Substring((int)DataStart.EXITDATETIME, (int)DataLength.EXITDATETIME);
-				exitDateTime = exitDateTime.Substring(0, (int)DataLength.EXITDATETIMEADDJUSTED);
 				string attendingPhys = line.Substring((int)DataStart.ATTENDINGPHY, (int)DataLength.ATTENDINGPHY);
 				string roomNo = line.Substring((int)DataStart.ROOMNO, (int)DataLength.ROOMNO);
 				string symptom1 = line.Substring((int)DataStart.SYMPTOM1, (int)DataLength.SYMPTOM1);
@@ -545,35 +598,139 @@ namespace Middleware
 				string addressLine1 = line.Substring((int)DataStart.ADDRESSLINE1, (int)DataLength.ADDRESSLINE1);
 				string addressLine2 = line.Substring((int)DataStart.ADDRESSLINE2, (int)DataLength.ADDRESSLINE2);
 				string addressCity = line.Substring((int)DataStart.ADDRESSCITY, (int)DataLength.ADDRESSCITY);
-				addressCity = addressCity.Replace("'", "''");
 				string addressState = line.Substring((int)DataStart.ADDRESSSTATE, (int)DataLength.ADDRESSSTATE);
 				string addressZip = line.Substring((int)DataStart.ADDRESSZIP, (int)DataLength.ADDRESSZIP);
 				string dnrStatus = line.Substring((int)DataStart.DNRSTATUS, (int)DataLength.DNRSTATUS);
 				string organDonor = line.Substring((int)DataStart.ORGANDONOR, (int)DataLength.ORGANDONOR);
-				string commandString = "INSERT INTO Patient(Last_Name, First_Name, Middle_Initial, Gender, SSN, Birth_Date, Address_Line1, Address_Line2, Address_City, Address_State, Address_Zip, DNR_Status, Organ_Donor) VALUES('" + 
-					lastName + "', '" + firstName + "', '" + middleInitial + "', '" + gender + "', '" + ssn + "', '" + birthDate + "', '" + addressLine1 + "', '" + addressLine2 + "', '" + addressCity + "', '" + addressState + "', '" + 
-					addressZip + "', '" + dnrStatus + "', '" + organDonor + "')";
-				SqlCommand command = new SqlCommand(commandString, connection);
-				command.ExecuteNonQuery();
 
-				commandString = "INSERT INTO Visited_History(Patient_SSN, Entry_Date, Exit_Date, Diagnosis, Insurer, Notes) VALUES('" + ssn + "', '" +
-					entryDateTime + "', '" + exitDateTime + "', '" + diagnosis + "', '" + insurer + "', '" + notes + "')";
-				command = new SqlCommand(commandString, connection);
-				command.ExecuteNonQuery();
+				string queryString = "Import_Patient";
+				SqlCommand command = new SqlCommand(queryString, connection);
+				command.CommandType = System.Data.CommandType.StoredProcedure;
+				command.Parameters.Add(new SqlParameter("@lastName", lastName));
+				command.Parameters.Add(new SqlParameter("@firstName", firstName));
+				command.Parameters.Add(new SqlParameter("@middleInitial", middleInitial));
+				command.Parameters.Add(new SqlParameter("@gender", gender));
+				command.Parameters.Add(new SqlParameter("@ssn", ssn));
+				command.Parameters.Add(new SqlParameter("@birthDate", birthDate));
+				command.Parameters.Add(new SqlParameter("@addressLine1", addressLine1));
+				command.Parameters.Add(new SqlParameter("@addressLine2", addressLine2));
+				command.Parameters.Add(new SqlParameter("@addressCity", addressCity));
+				command.Parameters.Add(new SqlParameter("@addressState", addressState));
+				command.Parameters.Add(new SqlParameter("@addressZip", addressZip));
+				command.Parameters.Add(new SqlParameter("@dnrStatus", dnrStatus));
+				command.Parameters.Add(new SqlParameter("@organDonor", organDonor));
+				try
+				{
+					command.ExecuteNonQuery();
+				}
+				catch (Exception) { } // This is for the duplictes that occur
 
-				// TODO: !!!!!!!!!!!!!!!!!STILL NEED ATTENDING PHYSICIAN AND SYMPTOMS!!!!!!!!!!!!!!!!!!!!!!!
+				queryString = "Import_Medical_Record";
+				command = new SqlCommand(queryString, connection);
+				command.CommandType = System.Data.CommandType.StoredProcedure;
+				command.Parameters.Add(new SqlParameter("@ssn", ssn));
+				command.Parameters.Add(new SqlParameter("@entryDateTime", entryDateTime));
+				command.Parameters.Add(new SqlParameter("@exitDateTime", exitDateTime));
+				command.Parameters.Add(new SqlParameter("@diagnosis", diagnosis));
+				command.Parameters.Add(new SqlParameter("@insurer", insurer));
+				command.Parameters.Add(new SqlParameter("@notes", notes));
+				try
+				{
+					command.ExecuteNonQuery();
+				}
+				catch (Exception) { } // This is for the duplictes that occur
+
+				string[] symptomList = { symptom1, symptom2, symptom3, symptom4, symptom5, symptom6 };
+				foreach (string symptom in symptomList)
+				{
+					bool alreadyExists = false;
+					queryString = "Retrieve_Symptom";
+					command = new SqlCommand(queryString, connection);
+					command.CommandType = System.Data.CommandType.StoredProcedure;
+					command.Parameters.Add(new SqlParameter("@symptomName", symptom));
+					SqlDataReader dataReader = command.ExecuteReader();
+					while (dataReader.Read())
+					{
+						alreadyExists = true;
+					}
+					dataReader.Close();
+
+					if (!alreadyExists)
+					{
+						queryString = "Import_Symptom";
+						command = new SqlCommand(queryString, connection);
+						command.CommandType = System.Data.CommandType.StoredProcedure;
+						command.Parameters.Add(new SqlParameter("@symptomName", symptom));
+						try
+						{
+							command.ExecuteNonQuery();
+						}
+						catch (Exception) { } // This is for the duplictes that occur
+					}
+
+					queryString = "Import_Show_Signs";
+					command = new SqlCommand(queryString, connection);
+					command.CommandType = System.Data.CommandType.StoredProcedure;
+					command.Parameters.Add(new SqlParameter("@symptomName", symptom));
+					command.Parameters.Add(new SqlParameter("@ssn", ssn));
+					command.Parameters.Add(new SqlParameter("@entryDate", entryDateTime));
+					try
+					{
+						command.ExecuteNonQuery();
+					}
+					catch (Exception) { } // This is for the duplictes that occur
+				}
+
+				queryString = "Import_Stayed_In";
+				command = new SqlCommand(queryString, connection);
+				command.CommandType = System.Data.CommandType.StoredProcedure;
+				command.Parameters.Add(new SqlParameter("@roomNumber", roomNo));
+				command.Parameters.Add(new SqlParameter("@ssn", ssn));
+				command.Parameters.Add(new SqlParameter("@entryDate", entryDateTime));
+				try
+				{
+					command.ExecuteNonQuery();
+				}
+				catch (Exception) { } // This is for the duplictes that occur
+
+				// TODO: !!!!!!!!!!!!!!!!!STILL NEED ATTENDING PHYSICIAN!!!!!!!!!!!!!!!!!!!!!!!
 
 				command.Dispose();
+				double updatedProgress = (bytesRead * 100) / fileSize;
+				if (updatedProgress < 100) progress = (int)updatedProgress; // ok because it will always be less than a hundred
 			}
+			progress = 100;
+			file.Close();
 		}
 
-		private static void importRoom(System.IO.StreamReader file, SqlConnection connection)
+		private static void importRoom(System.IO.StreamReader file, SqlConnection connection, long fileSize)
 		{
+			int bytesRead = 0;
 			string line;
 			while ((line = file.ReadLine()) != null)
 			{
-				System.Console.WriteLine(line);
+				bytesRead += line.Length;
+				string roomNumber = line.Substring((int)DataStart.ROOMNUMBER, (int)DataLength.ROOMNUMBER);
+				int hourlyRate = Int32.Parse(line.Substring((int)DataStart.HOURLYRATE, (int)DataLength.HOURLYRATE));
+				string effectiveDate = line.Substring((int)DataStart.EFFECTIVEDATE, (int)DataLength.EFFECTIVEDATE);
+				string queryString = "Import_Room";
+				SqlCommand command = new SqlCommand(queryString, connection);
+				command.CommandType = System.Data.CommandType.StoredProcedure;
+				command.Parameters.Add(new SqlParameter("@roomNumber", roomNumber));
+				command.Parameters.Add(new SqlParameter("@hourlyRate", hourlyRate));
+				command.Parameters.Add(new SqlParameter("@effectiveDate", effectiveDate));
+				try
+				{
+					command.ExecuteNonQuery();
+				}
+				catch (Exception) { } // This is for the duplictes that occur
+
+				command.Dispose();
+				double updatedProgress = (bytesRead * 100) / fileSize;
+				if (updatedProgress < 100) progress = (int)updatedProgress; // ok because it will always be less than a hundred
 			}
+			progress = 100;
+			file.Close();
 		}
 	}
 }
