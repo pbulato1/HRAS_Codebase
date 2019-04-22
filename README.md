@@ -1,5 +1,7 @@
 # HRAS_Codebase
-All of the contributor can log-in to the demo system by their first name as user name and last name as their password.
+Users can log in with the default admin username="admin" password="password" after running this script. Make sure that the spacing doesn't get messed up when you copy and paste, and make sure that the server is set up to allow SQL authentication.
+
+Before using the software the connection string will have to be set to the correct server name. Leave the rest of the connection string as is, the account used is created in this script.
 
 CREATE DATABASE HRAS_iTas_Test  --this is a changable name but make sure you change it everywhere here and in the singalton pattern in the C# code.
 
