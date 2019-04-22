@@ -3,6 +3,8 @@ Users can log in with the default admin username="admin" password="password" aft
 
 Before using the software the connection string will have to be set to the correct server name. Leave the rest of the connection string as is, the account used is created in this script.
 
+NOTE: When importing files, make sure to import rooms before medical records because the system will not allow for visits to non-existing rooms.
+
 CREATE DATABASE HRAS_iTas_Test  --this is a changable name but make sure you change it everywhere here and in the singalton pattern in the C# code.
 
 GO
