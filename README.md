@@ -350,8 +350,8 @@ GRANT EXECUTE ON OBJECT::Verify_Username
     TO HRAS_MW_iTas;  
 GO  
 
-ALTER LOGIN HRAS_MW_iTas ENABLE;
-GO
+ALTER LOGIN HRAS_MW_iTas ENABLE;  
+GO  
 
 USE [HRAS_iTas]
 INSERT INTO Staff([User_Name], [Password], [User_Type], [Failed_Login]) VALUES('admin', 'W6ph5Mm5Pz8GgiULbPgzG37mj9g=', 'A', 0)
