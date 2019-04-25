@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Middleware;
 using System.Security.Cryptography;
+using System.Timers;
 
 namespace Interface
 {
@@ -22,10 +23,21 @@ namespace Interface
     /// </summary>
     public partial class MainWindow : Window
     {
+		public static Timer logoffTimer = new Timer();
+		int AFKTime = 0; // in minutes
+		int warningThreshold = 10;
+		int logoffThreshold = 15;
+
 		public MainWindow()
         {
             InitializeComponent();
-        }
+			logoffTimer.Interval = 60 * 1000; // set for 60 seconds, aka one minute
+			logoffTimer.Elapsed += OnTimedEvent;
+			logoffTimer.AutoReset = true;
+			logoffTimer.Enabled = false;
+			btnHiddenLogoff.Visibility = Visibility.Hidden;
+		}
+
 		private void Button_Click(object sender, RoutedEventArgs e)
 		{
 			byte[] passwordBytes = Encoding.ASCII.GetBytes(password.Password);
@@ -38,6 +50,7 @@ namespace Interface
 			try
 			{
 				currentSession = Session.establishSession(Account.Text, hashedPassword);
+				//logoffTimer.Enabled = true;
 				MainMenu m = new MainMenu();
 				m.Show();
 				this.Close();
@@ -63,12 +76,31 @@ namespace Interface
 					MessageBox.Show(this, "Your account is locked!", "Locked", MessageBoxButton.OK, MessageBoxImage.Stop);
 				}
 			}
-
-
-            
-            /// I found this is very important in here the lock-out feature is not actually acknowledge which user_ID
-            /// They will increase false attempt when every the USER_ID and PASSWORD are not both matched the data base
-            /// and then when we enter the right one => we suppose to get into the system.
-        }
+		}
+		private void OnTimedEvent(Object source, System.Timers.ElapsedEventArgs e)
+		{
+			AFKTime++;
+			if (AFKTime == warningThreshold)
+			{
+				btnHiddenLogoff.Dispatcher.Invoke(() =>
+				{
+					MessageBox.Show(this, "No operation for 10 minutes, do you want to exit?", "System Idle", MessageBoxButton.OK, MessageBoxImage.Stop);
+				});
+			}
+			if (AFKTime == logoffThreshold)
+			{
+				btnHiddenLogoff.Dispatcher.Invoke(() =>
+				{
+					Session.getCurrentSession().getCurrentUser().logout();
+					MainWindow m = new MainWindow();
+					m.lockedInfo.Content = "Your session timed out.";
+					m.Show();
+					foreach (Window w in App.Current.Windows)
+					{
+						if (w != m) w.Close();
+					}
+				});
+			}
+		}
 	}
 }

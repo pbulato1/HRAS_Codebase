@@ -23,13 +23,13 @@ namespace Interface
         public MainMenu()
         {
             InitializeComponent();
-            /*
 			if (Session.getCurrentSession().getCurrentUser().getPrivilegeLevel() != (int)PrivilegeLevels.A)
 			{
-				btnImportTool.IsEnabled = false;
-				btnImportTool.Visibility = Visibility.Hidden;
+				btnImportFile.IsEnabled = false;
+				btnImportFile.Visibility = Visibility.Hidden;
+				btnAccountInformation.IsEnabled = false;
+				btnAccountInformation.Visibility = Visibility.Hidden;
 			}
-            */
 		}
 
         private void Button_Click_InvertoryRecords(object sender, RoutedEventArgs e)
