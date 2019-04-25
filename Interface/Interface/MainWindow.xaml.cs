@@ -22,8 +22,8 @@ namespace Interface
     /// </summary>
     public partial class MainWindow : Window
     {
-		int failedAttempts = 0;
-		int attemptThreshold = 5;
+		private int failedAttempts = 0;
+		private int attemptThreshold = 5;
 
 		public MainWindow()
         {
@@ -31,11 +31,8 @@ namespace Interface
         }
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-			byte[] passwordBytes = Encoding.ASCII.GetBytes(password.Password);
-			HashAlgorithm sha = new SHA1CryptoServiceProvider();
-			byte[] hashedBytes = sha.ComputeHash(passwordBytes);
-			string hashedPassword = Convert.ToBase64String(hashedBytes);
-
+            string hashedPassword = PasswordHasher.hashPassword(password.Password);
+            string accountID = Account.Text;
 			Session currentSession = Session.establishSession(Account.Text, hashedPassword);
 
 			if (currentSession.verifySession())
