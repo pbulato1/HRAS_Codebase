@@ -26,7 +26,8 @@ namespace Middleware.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
-        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=localhost;Initial Catalog=HRAS_iTas;Integrated Security=true;")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=localhost;Initial Catalog=HRAS_iTas;Integrated Security=false; User I" +
+            "D=HRAS_MW_iTas; Password=ZMNv01X")]
         public string CONNECTIONSTRING {
             get {
                 return ((string)(this["CONNECTIONSTRING"]));

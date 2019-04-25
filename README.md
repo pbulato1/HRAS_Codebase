@@ -1,5 +1,9 @@
 # HRAS_Codebase
-All of the contributor can log-in to the demo system by their first name as user name and last name as their password.
+Users can log in with the default admin username="admin" password="password" after running this script. Make sure that the spacing doesn't get messed up when you copy and paste, and make sure that the server is set up to allow SQL authentication.
+
+Before using the software the connection string will have to be set to the correct server name. Leave the rest of the connection string as is, the account used is created in this script. The connection string can be found in the settings file of the middleware.
+
+NOTE: When importing files, make sure to import rooms before medical records because the system will not allow for visits to non-existing rooms.
 
 CREATE DATABASE HRAS_iTas_Test  --this is a changable name but make sure you change it everywhere here and in the singalton pattern in the C# code.
 
@@ -162,106 +166,192 @@ CONSTRAINT FK_Use_Visited_History FOREIGN KEY
 GO
 
 CREATE PROCEDURE Verify_Login @username nvarchar(25), @password varchar(50)
-AS
+AS 
 BEGIN
-SELECT User_Name, User_Type
-FROM Staff
-WHERE User_Name = @username 
-AND Password = @password
+IF EXISTS (SELECT User_Name, User_Type FROM Staff WHERE User_Name = @username AND Password = @password)
+BEGIN
+SELECT User_Name, User_Type, Failed_Login FROM Staff WHERE User_Name = @username AND Password = @password
+END
+ELSE
+BEGIN
+IF EXISTS (SELECT User_Name, User_Type FROM Staff WHERE User_Name = @username)
+BEGIN
+UPDATE Staff SET Failed_Login = Failed_Login + 1 WHERE User_Name = @username
+END
+END
 END
 
 GO
 
-CREATE PROCEDURE Import_Medical_Record @ssn varchar(9), @entryDateTime varchar(12), @exitDateTime varchar(12), @diagnosis varchar(75), @insurer varchar(5), @notes varchar(100)
-AS
-BEGIN
-INSERT INTO Visited_History(Patient_SSN, Entry_Date, Exit_Date, Diagnosis, Insurer, Notes) VALUES(@ssn, @entryDateTime, @exitDateTime, @diagnosis, @insurer, @notes)
-END
+CREATE PROCEDURE Import_Medical_Record @ssn char(9), @entryDateTime datetime, @exitDateTime datetime, @diagnosis varchar(75), @insurer varchar(5), @notes varchar(100) AS BEGIN INSERT INTO Visited_History(Patient_SSN, Entry_Date, Exit_Date, Diagnosis, Insurer, Notes) VALUES(@ssn, @entryDateTime, @exitDateTime, @diagnosis, @insurer, @notes) END
 
 GO
 
-CREATE PROCEDURE Import_Patient @lastName varchar(50), @firstName varchar(25), @middleInitial varchar(1), @gender varchar(1), @ssn varchar(9), @birthDate varchar(8), @addressLine1 varchar(35), @addressLine2 varchar(35), @addressCity varchar(25), @addressState varchar(2), @addressZip varchar(5), @dnrStatus varchar(1), @organDonor varchar(1)
-AS
-BEGIN
-INSERT INTO Patient(Last_Name, First_Name, Middle_Initial, Gender, SSN, Birth_Date, Address_Line1, Address_Line2, Address_City, Address_State, Address_Zip, DNR_Status, Organ_Donor) VALUES(@lastName, @firstName, @middleInitial, @gender, @ssn, @birthDate, @addressLine1, @addressLine2, @addressCity, @addressState, @addressZip, @dnrStatus, @organDonor)
-END
+CREATE PROCEDURE Import_Patient @lastName varchar(50), @firstName varchar(25), @middleInitial varchar(1), @gender varchar(1), @ssn varchar(9), @birthDate varchar(8), @addressLine1 varchar(35), @addressLine2 varchar(35), @addressCity varchar(25), @addressState varchar(2), @addressZip varchar(5), @dnrStatus varchar(1), @organDonor varchar(1) AS BEGIN INSERT INTO Patient(Last_Name, First_Name, Middle_Initial, Gender, SSN, Birth_Date, Address_Line1, Address_Line2, Address_City, Address_State, Address_Zip, DNR_Status, Organ_Donor) VALUES(@lastName, @firstName, @middleInitial, @gender, @ssn, @birthDate, @addressLine1, @addressLine2, @addressCity, @addressState, @addressZip, @dnrStatus, @organDonor) END
 
 GO
 
-CREATE PROCEDURE Import_Item @stockID char(5), @quantity numeric(5,0) = null, @description varchar(35), @size varchar(3), @cost numeric(8,0)
-AS
-BEGIN
-INSERT INTO Item(Stock_ID, Quantity, [Description], Size, Cost) VALUES(@stockID, @quantity, @description, @size, @cost)
-END
+CREATE PROCEDURE Import_Item @stockID char(5), @quantity numeric(5,0) = null, @description varchar(35), @size varchar(3), @cost numeric(8,0) AS BEGIN INSERT INTO Item(Stock_ID, Quantity, [Description], Size, Cost) VALUES(@stockID, @quantity, @description, @size, @cost) END
 
 GO
 
-CREATE PROCEDURE Import_Room @roomNumber char(9), @hourlyRate numeric(5,2), @effectiveDate char(8)
-AS
-BEGIN
-INSERT INTO Room(Room_Number, Hourly_Rate, Effective_Date) VALUES(@roomNumber, @hourlyRate, @effectiveDate)
-END
+CREATE PROCEDURE Import_Room @roomNumber char(9), @hourlyRate numeric(5,2), @effectiveDate char(8) AS BEGIN INSERT INTO Room(Room_Number, Hourly_Rate, Effective_Date) VALUES(@roomNumber, @hourlyRate, @effectiveDate) END
 
 GO
 
-CREATE PROCEDURE Import_Show_Signs @symptomName varchar(25), @ssn numeric(9), @entryDate varchar(12)
-AS
-BEGIN
-INSERT INTO Show_Signs(Symptom_Name, Patient_SSN, Entry_Date) VALUES(@symptomName, @ssn, @entryDate)
-END
+CREATE PROCEDURE Import_Show_Signs @symptomName varchar(25), @ssn char(9), @entryDate datetime AS BEGIN INSERT INTO Show_Signs(Symptom_Name, Patient_SSN, Entry_Date) VALUES(@symptomName, @ssn, @entryDate) END
 
 GO
 
-CREATE PROCEDURE Import_Symptom @symptomName varchar(25)
-AS
-BEGIN
-INSERT INTO Symptom(Name) VALUES(@symptomName)
-END
+CREATE PROCEDURE Import_Symptom @symptomName varchar(25) AS BEGIN INSERT INTO Symptom(Name) VALUES(@symptomName) END
 
 GO
 
-CREATE PROCEDURE Retrieve_Symptom @symptomName varchar(25)
-AS
-BEGIN
-Select [Name] FROM Symptom WHERE [Name] = @symptomName
-END
+CREATE PROCEDURE Retrieve_Symptom @symptomName varchar(25) AS BEGIN Select [Name] FROM Symptom WHERE [Name] = @symptomName END
 
 GO
 
-CREATE PROCEDURE Retrieve_Item @stockID char(5)
-AS
-BEGIN
-Select Stock_ID FROM Item WHERE Stock_ID = @stockID
-END
+CREATE PROCEDURE Retrieve_Item @stockID char(5) AS BEGIN Select Stock_ID FROM Item WHERE Stock_ID = @stockID END
 
 GO
 
-CREATE PROCEDURE Import_Stayed_In @roomNumber varchar(9), @ssn varchar(9), @entryDate varchar(12)
-AS
-BEGIN
-INSERT INTO Stayed_In(Room_Number, Patient_SSN, Entry_Date) VALUES(@roomNumber, @ssn, @entryDate)
-END
+CREATE PROCEDURE Import_Stayed_In @roomNumber varchar(9), @ssn varchar(9), @entryDate datetime AS BEGIN INSERT INTO Stayed_In(Room_Number, Patient_SSN, Entry_Date) VALUES(@roomNumber, @ssn, @entryDate) END
 
 GO
 
-CREATE PROCEDURE Add_To_Existing_Inventory @stockID char(5), @quantity numeric(5,0)
-AS
-BEGIN
-UPDATE Item
-SET Quantity = Quantity + @quantity
-WHERE Stock_ID = @stockID
-END
+CREATE PROCEDURE Import_Inventory @stockID char(5), @quantity numeric(5,0), @description varchar(35), @size varchar(3), @cost numeric(8,0) AS BEGIN INSERT INTO Item(Stock_ID, Quantity, [Description], Size, Cost) VALUES(@stockID, @quantity, @description, @size, @cost) END
 
 GO
 
-CREATE USER HRAS_MW_iTas IDENTIFIED BY ZMNv01X
-IDENTIFIED WITH READ
-IDENTIFIED WITH WRITE
-IDENTIFIED WITH Verify_Login
-IDENTIFIED WITH Import_Medical_Record
-IDENTIFIED WITH Import_Patient
-IDENTIFIED WITH Import_Room
-IDENTIFIED WITH Import_Show_Signs
-IDENTIFIED WITH Import_Symptom
-IDENTIFIED WITH Retrieve_Symptom
-IDENTIFIED WITH Import_Stayed_In
+CREATE PROCEDURE Add_To_Existing_Inventory @stockID char(5), @quantity numeric(5,0) AS BEGIN UPDATE Item SET Quantity = Quantity + @quantity WHERE Stock_ID = @stockID END
+
+GO
+
+CREATE PROCEDURE Get_Items_Top AS BEGIN SELECT TOP 1000 * FROM Item END
+
+GO
+
+CREATE PROCEDURE Get_Medical_Records_Top AS BEGIN SELECT TOP 1000 Patient.First_Name, Patient.Last_Name, Visited_History.* FROM Visited_History INNER JOIN Patient ON Visited_History.Patient_SSN = Patient.SSN END
+
+GO
+
+CREATE PROCEDURE Search_Items @stockID varchar(5), @description varchar(35), @size varchar(3) AS BEGIN SELECT * FROM Item WHERE [Description] like '%' + @description + '%' AND Stock_ID like '%' + @stockID + '%' AND Size like '%' + @size + '%' END
+
+GO
+
+CREATE PROCEDURE Search_Medical_Records @input varchar(50) AS BEGIN SELECT Patient.First_Name, Patient.Last_Name, Visited_History.* FROM Visited_History INNER JOIN Patient ON Visited_History.Patient_SSN = Patient.SSN where First_Name  LIKE '%' + @input + '%' OR Last_Name  LIKE '%' + @input + '%' OR Patient_SSN  LIKE '%' + @input + '%' END
+
+GO
+
+CREATE PROCEDURE Get_Failed_Attempts @userName varchar(25) AS BEGIN SELECT Failed_Login FROM Staff WHERE [User_Name] = @userName END
+
+GO
+
+CREATE PROCEDURE Verify_Username @userName varchar(25) AS BEGIN SELECT [User_Name] FROM Staff WHERE [User_Name] = @userName END
+
+GO
+
+USE [HRAS_iTas]
+CREATE LOGIN HRAS_MW_iTas  
+    WITH PASSWORD = 'ZMNv01X';  
+GO  
+
+USE [HRAS_iTas]
+CREATE USER HRAS_MW_iTas FOR LOGIN HRAS_MW_iTas;  
+GO  
+
+USE [HRAS_iTas]
+GRANT EXECUTE ON OBJECT::Import_Item
+    TO HRAS_MW_iTas;  
+GO   
+
+USE [HRAS_iTas]
+GRANT EXECUTE ON OBJECT::Add_To_Existing_Inventory
+    TO HRAS_MW_iTas;  
+GO   
+
+USE [HRAS_iTas]
+GRANT EXECUTE ON OBJECT::Import_Medical_Record
+    TO HRAS_MW_iTas;  
+GO   
+
+USE [HRAS_iTas]
+GRANT EXECUTE ON OBJECT::Import_Patient
+    TO HRAS_MW_iTas;  
+GO   
+
+USE [HRAS_iTas]
+GRANT EXECUTE ON OBJECT::Import_Room
+    TO HRAS_MW_iTas;  
+GO   
+
+USE [HRAS_iTas]
+GRANT EXECUTE ON OBJECT::Import_Show_Signs
+    TO HRAS_MW_iTas;  
+GO   
+
+USE [HRAS_iTas]
+GRANT EXECUTE ON OBJECT::Import_Stayed_In
+    TO HRAS_MW_iTas;  
+GO   
+
+USE [HRAS_iTas]
+GRANT EXECUTE ON OBJECT::Import_Symptom
+    TO HRAS_MW_iTas;  
+GO   
+
+USE [HRAS_iTas]
+GRANT EXECUTE ON OBJECT::Import_Inventory
+    TO HRAS_MW_iTas;  
+GO 
+
+USE [HRAS_iTas]
+GRANT EXECUTE ON OBJECT::Retrieve_Item
+    TO HRAS_MW_iTas;  
+GO   
+
+USE [HRAS_iTas]
+GRANT EXECUTE ON OBJECT::Retrieve_Symptom
+    TO HRAS_MW_iTas;  
+GO   
+
+USE [HRAS_iTas]
+GRANT EXECUTE ON OBJECT::Verify_Login
+    TO HRAS_MW_iTas;  
+GO  
+
+USE [HRAS_iTas]
+GRANT EXECUTE ON OBJECT::Get_Items_Top
+    TO HRAS_MW_iTas;  
+GO    
+
+USE [HRAS_iTas]
+GRANT EXECUTE ON OBJECT::Get_Medical_Records_Top
+    TO HRAS_MW_iTas;  
+GO   
+
+USE [HRAS_iTas]
+GRANT EXECUTE ON OBJECT::Search_Items
+    TO HRAS_MW_iTas;  
+GO   
+
+USE [HRAS_iTas]
+GRANT EXECUTE ON OBJECT::Search_Medical_Records
+    TO HRAS_MW_iTas;  
+GO  
+
+USE [HRAS_iTas]
+GRANT EXECUTE ON OBJECT::Get_Failed_Attempts
+    TO HRAS_MW_iTas;  
+GO  
+
+USE [HRAS_iTas]
+GRANT EXECUTE ON OBJECT::Verify_Username
+    TO HRAS_MW_iTas;  
+GO  
+
+ALTER LOGIN HRAS_MW_iTas ENABLE;  
+GO  
+
+USE [HRAS_iTas]
+INSERT INTO Staff([User_Name], [Password], [User_Type], [Failed_Login]) VALUES('admin', 'W6ph5Mm5Pz8GgiULbPgzG37mj9g=', 'A', 0)

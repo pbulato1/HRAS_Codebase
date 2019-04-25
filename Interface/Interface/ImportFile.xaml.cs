@@ -66,6 +66,11 @@ namespace Interface
 			type = ImportType.ROOM;
 		}
 
+		private void Button_Click_tbtnUsers(object sender, RoutedEventArgs e)
+		{
+			type = ImportType.USERS;
+		}
+
 		private void Button_Click_btnImport(object sender, RoutedEventArgs e)
 		{
 			pbImport.Value = 0;
@@ -94,6 +99,11 @@ namespace Interface
 			OpenFileDialog openFileDialog = new OpenFileDialog();
 			if (openFileDialog.ShowDialog() == true)
 				tfFilePath.Text = openFileDialog.FileName;
+		}
+
+		private void pbImport_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+		{
+
 		}
 	}
 }

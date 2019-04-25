@@ -52,8 +52,11 @@ namespace Interface
 
         private void Button_Click_Search(object sender, RoutedEventArgs e)
         {
-
-        }
+			DataTable records = Middleware.MedicalRecord.searchMedicalRecords(Account.Text);
+			M1.ItemsSource = records.DefaultView;
+			M1.AutoGenerateColumns = true;
+			M1.CanUserAddRows = false;
+		}
 
       
 
@@ -70,14 +73,7 @@ namespace Interface
 			M1.AutoGenerateColumns = true;
 			M1.CanUserAddRows = false;
 		}
-
-        private void Search_TextChanged(object sender, TextChangedEventArgs e)
-        {
-			DataTable records = Middleware.MedicalRecord.searchMedicalRecords(Account.Text);
-			M1.ItemsSource = records.DefaultView;
-			M1.AutoGenerateColumns = true;
-			M1.CanUserAddRows = false;
-		}
+		
 
 		private void IR_DataChange(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {

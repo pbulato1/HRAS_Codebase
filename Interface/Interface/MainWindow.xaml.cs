@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Middleware;
 using System.Security.Cryptography;
+using System.Timers;
 
 namespace Interface
 {
@@ -22,41 +23,84 @@ namespace Interface
     /// </summary>
     public partial class MainWindow : Window
     {
-		private int failedAttempts = 0;
-		private int attemptThreshold = 5;
+		public static Timer logoffTimer = new Timer();
+		int AFKTime = 0; // in minutes
+		int warningThreshold = 10;
+		int logoffThreshold = 15;
 
 		public MainWindow()
         {
             InitializeComponent();
-        }
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            string hashedPassword = PasswordHasher.hashPassword(password.Password);
-            string accountID = Account.Text;
-			Session currentSession = Session.establishSession(Account.Text, hashedPassword);
+			logoffTimer.Interval = 60 * 1000; // set for 60 seconds, aka one minute
+			logoffTimer.Elapsed += OnTimedEvent;
+			logoffTimer.AutoReset = true;
+			logoffTimer.Enabled = false;
+			btnHiddenLogoff.Visibility = Visibility.Hidden;
+		}
 
-			if (currentSession.verifySession())
+		private void Button_Click(object sender, RoutedEventArgs e)
+		{
+			byte[] passwordBytes = Encoding.ASCII.GetBytes(password.Password);
+			HashAlgorithm sha = new SHA1CryptoServiceProvider();
+			byte[] hashedBytes = sha.ComputeHash(passwordBytes);
+			string hashedPassword = Convert.ToBase64String(hashedBytes);
+
+			Session currentSession;
+
+			try
 			{
+				currentSession = Session.establishSession(Account.Text, hashedPassword);
+				//logoffTimer.Enabled = true;
 				MainMenu m = new MainMenu();
 				m.Show();
 				this.Close();
-				failedAttempts = 0;
 			}
-            failedAttempts++;
-
-            if (failedAttempts < attemptThreshold)
-            {
-                lockedInfo.Content = "Your account currently has " + failedAttempts + " strike. It will be locked when you reach " + attemptThreshold + " strikes.";
-            }
-            else
+			catch (Exception ex)
 			{
-                lockedInfo.Content = "Your account currently has " + failedAttempts + " strike. It will be locked when you reach " + attemptThreshold + " strikes.";
-                MessageBox.Show(this, "Your account is locked!", "Locked", MessageBoxButton.OK, MessageBoxImage.Stop);
+				if (ex == User.failedLoginException)
+				{
+					int failedAttempts = User.getFailedAttempts(Account.Text);
+					string plural = (failedAttempts == 1) ? "" : "s";
+					lockedInfo.Content = "Your account currently has " + failedAttempts + " strike" + plural + ". It will be locked when you reach 5 strikes.";
+				}
+				else if (ex == User.noAccountException)
+				{
+					lockedInfo.Content = "The specified user does not exist.";
+				}
+				else if (ex == Session.failedConnectionException)
+				{
+					lockedInfo.Content = "A connection to the database could not be established.";
+				}
+				else if (ex == User.accountLockedException)
+				{
+					MessageBox.Show(this, "Your account is locked!", "Locked", MessageBoxButton.OK, MessageBoxImage.Stop);
+				}
 			}
-            
-            /// I found this is very important in here the lock-out feature is not actually acknowledge which user_ID
-            /// They will increase false attempt when every the USER_ID and PASSWORD are not both matched the data base
-            /// and then when we enter the right one => we suppose to get into the system.
-        }
+		}
+		private void OnTimedEvent(Object source, System.Timers.ElapsedEventArgs e)
+		{
+			AFKTime++;
+			if (AFKTime == warningThreshold)
+			{
+				btnHiddenLogoff.Dispatcher.Invoke(() =>
+				{
+					MessageBox.Show(this, "No operation for 10 minutes, do you want to exit?", "System Idle", MessageBoxButton.OK, MessageBoxImage.Stop);
+				});
+			}
+			if (AFKTime == logoffThreshold)
+			{
+				btnHiddenLogoff.Dispatcher.Invoke(() =>
+				{
+					Session.getCurrentSession().getCurrentUser().logout();
+					MainWindow m = new MainWindow();
+					m.lockedInfo.Content = "Your session timed out.";
+					m.Show();
+					foreach (Window w in App.Current.Windows)
+					{
+						if (w != m) w.Close();
+					}
+				});
+			}
+		}
 	}
 }

@@ -24,7 +24,8 @@ namespace Middleware
 	{
 		MEDICAL = 0,
 		INVENTORY = 1,
-		ROOM = 2
+		ROOM = 2,
+		USERS = 4
 	}
 
     public enum DataLength
@@ -65,7 +66,11 @@ namespace Middleware
 		//ROOM
 		ROOMNUMBER = 9,
 		HOURLYRATE = 5,
-		EFFECTIVEDATE = 8
+		EFFECTIVEDATE = 8,
+		//USERS
+		USERNAME = 25,
+		PASSWORD = 50,
+		USERTYPE = 1
     }
 
     public enum DataStart
@@ -106,8 +111,12 @@ namespace Middleware
 		//ROOM
 		ROOMNUMBER = 0,
 		HOURLYRATE = ROOMNUMBER + DataLength.ROOMNUMBER,
-		EFFECTIVEDATE = HOURLYRATE + DataLength.HOURLYRATE
-    }
+		EFFECTIVEDATE = HOURLYRATE + DataLength.HOURLYRATE,
+		//USERS
+		USERNAME = 0,
+		PASSWORD = DataLength.USERNAME + USERNAME,
+		USERTYPE = DataLength.PASSWORD + PASSWORD
+	}
 
     public class Session
 	{
@@ -132,8 +141,7 @@ namespace Middleware
 			}
 			catch (Exception e)
 			{
-				if (e == User.failedLoginException) throw User.failedLoginException;
-				throw failedConnectionException;
+				throw e;
 			}
 		}
 
@@ -141,7 +149,14 @@ namespace Middleware
         {
             if (theSession == null)
             {
-                theSession = new Session(username, password);
+				try
+				{
+					theSession = new Session(username, password);
+				}
+				catch (Exception e)
+				{
+					throw e;
+				}
 			}
             return theSession;
         }
@@ -229,23 +244,41 @@ namespace Middleware
 		int logoffThreshold = 15;
 		int warningThreshold = 10;
 		bool loggedIn = false;
-		public static Exception failedLoginException = new Exception("Incorrect username or password");
+		public static Exception failedLoginException = new Exception("Incorrect username or password.");
+		public static Exception noAccountException = new Exception("The username given does not exist.");
+		public static Exception accountLockedException = new Exception("The specified account is locked.");
+		int loginAttemptThreshold = 5;
 
 		public bool login(string enteredUsername, string enteredPassword, SqlConnection connection)
 		{
 			bool matchFound = false;
-			string queryString = "Verify_Login";
+			string queryString = "Verify_Username";
 			SqlCommand command = new SqlCommand(queryString, connection);
+			command.CommandType = System.Data.CommandType.StoredProcedure;
+			command.Parameters.Add(new SqlParameter("@userName", enteredUsername));
+			SqlDataReader dataReader = command.ExecuteReader();
+			bool userExists = false;
+			while (dataReader.Read())
+			{
+				userExists = true;
+			}
+			if (!userExists) throw noAccountException;
+			queryString = "Verify_Login";
+			command = new SqlCommand(queryString, connection);
 			command.CommandType = System.Data.CommandType.StoredProcedure;
 			command.Parameters.Add(new SqlParameter("@username", enteredUsername));
 			command.Parameters.Add(new SqlParameter("@password", enteredPassword));
-			SqlDataReader dataReader = command.ExecuteReader();
+			dataReader.Close();
+			dataReader = command.ExecuteReader();
 			while (dataReader.Read())
 			{
 				int indexUsername = dataReader.GetOrdinal("User_Name");
+				int failedLogins = dataReader.GetOrdinal("Failed_Login");
 				string retrievedUsername = dataReader.GetString(indexUsername);
 				if (retrievedUsername == enteredUsername) // not necessary, but in case of hacker mischief
 				{
+					int loginAttempts = dataReader.GetInt32(failedLogins);
+					if (loginAttempts >= loginAttemptThreshold) throw accountLockedException;
 					matchFound = true;
 					username = enteredUsername;
 					password = enteredPassword;
@@ -253,17 +286,34 @@ namespace Middleware
 					string privilege = dataReader.GetString(index);
 					privilegeLevel = (int)(Enum.Parse(typeof(PrivilegeLevels), privilege));
 					AFKTime = 0;
-					//logoffTimer.Interval = timerThreshold;
-					//logoffTimer.Elapsed += OnTimedEvent;
-					//logoffTimer.Enabled = true;
 					loggedIn = true;
 				}
-				else throw new Exception("An error occurred while logging the user in.");
+				else throw failedLoginException;
 			}
 			dataReader.Close();
 			command.Dispose();
 
 			return matchFound;
+		}
+
+		public static int getFailedAttempts(string userName)
+		{
+			string connectionString = Properties.Settings1.Default.CONNECTIONSTRING;
+			SqlConnection connection = new SqlConnection(connectionString);
+			connection.Open();
+			string queryString = "Get_Failed_Attempts";
+			SqlCommand command = new SqlCommand(queryString, connection);
+			command.CommandType = System.Data.CommandType.StoredProcedure;
+			command.Parameters.Add(new SqlParameter("@userName", userName));
+			SqlDataReader dataReader = command.ExecuteReader();
+			int indexAttempts = dataReader.GetOrdinal("Failed_Login");
+			int fails = 5;
+			while (dataReader.Read())
+			{
+				fails = dataReader.GetInt32(indexAttempts);
+			}
+			connection.Close();
+			return fails;
 		}
 
 		private void OnTimedEvent(Object source, System.Timers.ElapsedEventArgs e)
@@ -372,7 +422,9 @@ namespace Middleware
 		{
 			DataTable records = new DataTable();
 			SqlConnection connection = Session.getCurrentSession().getConnection();
-			SqlCommand command = new SqlCommand("SELECT TOP 1000 Patient.First_Name, Patient.Last_Name, Visited_History.* FROM Visited_History INNER JOIN Patient ON Visited_History.Patient_SSN = Patient.SSN", connection);
+			string queryString = "Get_Medical_Records_Top";
+			SqlCommand command = new SqlCommand(queryString, connection);
+			command.CommandType = System.Data.CommandType.StoredProcedure;
 			SqlDataReader reader = command.ExecuteReader();
 			records.Load(reader);
 			return records;
@@ -382,8 +434,10 @@ namespace Middleware
 		{
 			DataTable records = new DataTable();
 			SqlConnection connection = Session.getCurrentSession().getConnection();
-			
-			SqlCommand command = new SqlCommand(("SELECT Patient.First_Name, Patient.Last_Name, Visited_History.* FROM Visited_History INNER JOIN Patient ON Visited_History.Patient_SSN = Patient.SSN where First_Name  LIKE '%" + input + "%' OR Last_Name  LIKE '%" + input + "%' OR Patient_SSN  LIKE '%" + input + "%'"), connection);
+			string queryString = "Search_Medical_Records";
+			SqlCommand command = new SqlCommand(queryString, connection);
+			command.CommandType = System.Data.CommandType.StoredProcedure;
+			command.Parameters.Add(new SqlParameter("@input", input));
 			SqlDataReader reader = command.ExecuteReader();
 			records.Load(reader);
 			return records;
@@ -460,9 +514,11 @@ namespace Middleware
         {
             DataTable inventory = new DataTable();
             SqlConnection connection = Session.getCurrentSession().getConnection();
-            SqlCommand command = new SqlCommand("Select * FROM Item", connection);
-            SqlDataReader reader = command.ExecuteReader();
-            inventory.Load(reader);
+			string queryString = "Get_Items_Top";
+			SqlCommand command = new SqlCommand(queryString, connection);
+			command.CommandType = System.Data.CommandType.StoredProcedure;
+			SqlDataReader reader = command.ExecuteReader();
+			inventory.Load(reader);
             return inventory;
         }
 
@@ -470,11 +526,86 @@ namespace Middleware
         {
             DataTable inventory = new DataTable();
             SqlConnection connection = Session.getCurrentSession().getConnection();
-            SqlCommand command = new SqlCommand("Select * FROM Item WHERE Description like '%" + description + "%' AND Stock_ID like '%" + id + "%' AND Size like '%" + size + "%'", connection);
-            SqlDataReader reader = command.ExecuteReader();
+			string queryString = "Search_Items";
+			SqlCommand command = new SqlCommand(queryString, connection);
+			command.CommandType = System.Data.CommandType.StoredProcedure;
+			command.Parameters.Add(new SqlParameter("@stockID", id));
+			command.Parameters.Add(new SqlParameter("@description", description));
+			command.Parameters.Add(new SqlParameter("@size", size));
+			SqlDataReader reader = command.ExecuteReader();
             inventory.Load(reader);
             return inventory;
         }
+
+		public static bool addInventory(string description, string stockID, string size, string quantity, string price)
+		{
+			int numQuantity = 0;
+			int numPrice = 0;
+			bool priceEntered = false;
+			bool quantityEntered = false;
+			if (quantity != "")
+			{
+				try
+				{
+					numQuantity = Int32.Parse(quantity);
+					quantityEntered = true;
+				}
+				catch (Exception e) { return false; }
+			}
+			if (price != "")
+			{
+				try
+				{
+					numPrice = Int32.Parse(price);
+					priceEntered = true;
+				}
+				catch (Exception e) { return false; }
+			}
+			SqlConnection connection = Session.getCurrentSession().getConnection();
+			bool alreadyExists = false;
+			string queryString = "Retrieve_Item";
+			SqlCommand command = new SqlCommand(queryString, connection);
+			command.CommandType = System.Data.CommandType.StoredProcedure;
+			command.Parameters.Add(new SqlParameter("@stockID", stockID));
+			SqlDataReader dataReader = command.ExecuteReader();
+			while (dataReader.Read())
+			{
+				alreadyExists = true;
+			}
+			dataReader.Close();
+
+			if (!alreadyExists)
+			{
+				queryString = "Import_Item";
+				command = new SqlCommand(queryString, connection);
+				command.CommandType = System.Data.CommandType.StoredProcedure;
+				command.Parameters.Add(new SqlParameter("@stockID", stockID));
+				command.Parameters.Add(new SqlParameter("@description", description));
+				command.Parameters.Add(new SqlParameter("@size", size));
+				if (priceEntered) command.Parameters.Add(new SqlParameter("@cost", numPrice));
+				if (quantityEntered) command.Parameters.Add(new SqlParameter("@quantity", numQuantity));
+				try
+				{
+					command.ExecuteNonQuery();
+					return true;
+				}
+				catch (Exception) { return false; }
+			}
+			else
+			{
+				queryString = "Add_To_Existing_Inventory";
+				command = new SqlCommand(queryString, connection);
+				command.CommandType = System.Data.CommandType.StoredProcedure;
+				command.Parameters.Add(new SqlParameter("@stockID", stockID));
+				command.Parameters.Add(new SqlParameter("@quantity", numQuantity));
+				try
+				{
+					command.ExecuteNonQuery();
+					return true;
+				}
+				catch (Exception) { return false; }
+			}
+		}
     }
 
 	public class Room
@@ -532,6 +663,10 @@ namespace Middleware
 					thread = new Thread(() => importRoom(file, session.getConnection(), fileSize));
 					thread.Start();
 					break;
+				case ImportType.USERS:
+					thread = new Thread(() => importUser(file, session.getConnection(), fileSize));
+					thread.Start();
+					break;
 			}
 		}
 
@@ -557,10 +692,20 @@ namespace Middleware
                 string description = line.Substring((int)DataStart.DESCRIPTION, (int)DataLength.DESCRIPTION);
                 string size = line.Substring((int)DataStart.SIZE, (int)DataLength.SIZE);
                 int cost = Int32.Parse(line.Substring((int)DataStart.COST, (int)DataLength.COST));
-                string commandString = (hasQuantity) ? "INSERT INTO Item(Stock_ID, Size, Cost, Description, Quantity) VALUES('" + id + "', '" + size + "', '" + cost + "', '" + description + "', '" + quantity + "')" :
-					"INSERT INTO Item(Stock_ID, Size, Cost, Description) VALUES('" + id + "', '" + size + "', '" + cost + "', '" + description + "')";
-                SqlCommand command = new SqlCommand(commandString, connection);
-				command.ExecuteNonQuery();
+
+				string queryString = "Import_Inventory";
+				SqlCommand command = new SqlCommand(queryString, connection);
+				command.CommandType = System.Data.CommandType.StoredProcedure;
+				command.Parameters.Add(new SqlParameter("@stockID", id));
+				command.Parameters.Add(new SqlParameter("@quantity", quantity));
+				command.Parameters.Add(new SqlParameter("@description", description));
+				command.Parameters.Add(new SqlParameter("@size", size));
+				command.Parameters.Add(new SqlParameter("@cost", cost));
+				try
+				{
+					command.ExecuteNonQuery();
+				}
+				catch (Exception) { } // This is for the duplictes that occur
                 command.Dispose();
 				double updatedProgress = (bytesRead * 100) / fileSize;
 				if (updatedProgress < 100) progress = (int)updatedProgress; // ok because it will always be less than a hundred
@@ -583,7 +728,9 @@ namespace Middleware
 				string ssn = line.Substring((int)DataStart.SSN, (int)DataLength.SSN);
 				string birthDate = line.Substring((int)DataStart.BIRTHDATE, (int)DataLength.BIRTHDATE);
 				string entryDateTime = line.Substring((int)DataStart.ENTRYDATETIME, (int)DataLength.ENTRYDATETIME);
+				DateTime dtEntryDateTime = DateTime.ParseExact(entryDateTime, "MMddyyyyHHmm", null);
 				string exitDateTime = line.Substring((int)DataStart.EXITDATETIME, (int)DataLength.EXITDATETIME);
+				DateTime dtExitDateTime = DateTime.ParseExact(exitDateTime, "MMddyyyyHHmm", null);
 				string attendingPhys = line.Substring((int)DataStart.ATTENDINGPHY, (int)DataLength.ATTENDINGPHY);
 				string roomNo = line.Substring((int)DataStart.ROOMNO, (int)DataLength.ROOMNO);
 				string symptom1 = line.Substring((int)DataStart.SYMPTOM1, (int)DataLength.SYMPTOM1);
@@ -629,8 +776,8 @@ namespace Middleware
 				command = new SqlCommand(queryString, connection);
 				command.CommandType = System.Data.CommandType.StoredProcedure;
 				command.Parameters.Add(new SqlParameter("@ssn", ssn));
-				command.Parameters.Add(new SqlParameter("@entryDateTime", entryDateTime));
-				command.Parameters.Add(new SqlParameter("@exitDateTime", exitDateTime));
+				command.Parameters.Add(new SqlParameter("@entryDateTime", dtEntryDateTime));
+				command.Parameters.Add(new SqlParameter("@exitDateTime", dtExitDateTime));
 				command.Parameters.Add(new SqlParameter("@diagnosis", diagnosis));
 				command.Parameters.Add(new SqlParameter("@insurer", insurer));
 				command.Parameters.Add(new SqlParameter("@notes", notes));
@@ -673,7 +820,7 @@ namespace Middleware
 					command.CommandType = System.Data.CommandType.StoredProcedure;
 					command.Parameters.Add(new SqlParameter("@symptomName", symptom));
 					command.Parameters.Add(new SqlParameter("@ssn", ssn));
-					command.Parameters.Add(new SqlParameter("@entryDate", entryDateTime));
+					command.Parameters.Add(new SqlParameter("@entryDate", dtEntryDateTime));
 					try
 					{
 						command.ExecuteNonQuery();
@@ -686,7 +833,7 @@ namespace Middleware
 				command.CommandType = System.Data.CommandType.StoredProcedure;
 				command.Parameters.Add(new SqlParameter("@roomNumber", roomNo));
 				command.Parameters.Add(new SqlParameter("@ssn", ssn));
-				command.Parameters.Add(new SqlParameter("@entryDate", entryDateTime));
+				command.Parameters.Add(new SqlParameter("@entryDate", dtEntryDateTime));
 				try
 				{
 					command.ExecuteNonQuery();
@@ -711,7 +858,8 @@ namespace Middleware
 			{
 				bytesRead += line.Length;
 				string roomNumber = line.Substring((int)DataStart.ROOMNUMBER, (int)DataLength.ROOMNUMBER);
-				int hourlyRate = Int32.Parse(line.Substring((int)DataStart.HOURLYRATE, (int)DataLength.HOURLYRATE));
+				decimal hourlyRate = Decimal.Parse(line.Substring((int)DataStart.HOURLYRATE, (int)DataLength.HOURLYRATE));
+				hourlyRate /= 100;
 				string effectiveDate = line.Substring((int)DataStart.EFFECTIVEDATE, (int)DataLength.EFFECTIVEDATE);
 				string queryString = "Import_Room";
 				SqlCommand command = new SqlCommand(queryString, connection);
@@ -719,6 +867,40 @@ namespace Middleware
 				command.Parameters.Add(new SqlParameter("@roomNumber", roomNumber));
 				command.Parameters.Add(new SqlParameter("@hourlyRate", hourlyRate));
 				command.Parameters.Add(new SqlParameter("@effectiveDate", effectiveDate));
+				try
+				{
+					command.ExecuteNonQuery();
+				}
+				catch (Exception) { } // This is for the duplictes that occur
+
+				command.Dispose();
+				double updatedProgress = (bytesRead * 100) / fileSize;
+				if (updatedProgress < 100) progress = (int)updatedProgress; // ok because it will always be less than a hundred
+			}
+			progress = 100;
+			file.Close();
+		}
+
+		private static void importUser(System.IO.StreamReader file, SqlConnection connection, long fileSize)
+		{
+			int bytesRead = 0;
+			string line;
+			while ((line = file.ReadLine()) != null)
+			{
+				bytesRead += line.Length;
+				string username = line.Substring((int)DataStart.USERNAME, (int)DataLength.USERNAME);
+				username = username.Replace(" ", "");
+				string password = line.Substring((int)DataStart.PASSWORD, (int)DataLength.PASSWORD);
+				password = password.Replace(" ", "");
+				string hashedPassword = PasswordHasher.hashPassword(password);
+				string userType = line.Substring((int)DataStart.USERTYPE, (int)DataLength.USERTYPE);
+				string queryString = "Import_User";
+				SqlCommand command = new SqlCommand(queryString, connection);
+				command.CommandType = System.Data.CommandType.StoredProcedure;
+				command.Parameters.Add(new SqlParameter("@username", username));
+				command.Parameters.Add(new SqlParameter("@password", hashedPassword));
+				command.Parameters.Add(new SqlParameter("@userType", userType));
+				command.Parameters.Add(new SqlParameter("@failedLogins", '0'));
 				try
 				{
 					command.ExecuteNonQuery();

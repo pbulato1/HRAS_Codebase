@@ -11,7 +11,7 @@
         <Label Content="HRAS Medical Records" FontSize="30" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,20,0,0"/>
         <DataGrid HorizontalAlignment="Center" Height="441" Margin="34,153,29.6,0" VerticalAlignment="Top" Width="1266" Name="M1" ItemsSource="{Binding}" AutoGenerateColumns="False" SelectionChanged="IR_DataChange"/>
         <Button Content="Search" FontSize="13" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,90,30,0" Height="30" Width="75" Click="Button_Click_Search"/>
-        <TextBox Name="Account" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,90,120,0" TextWrapping="Wrap" Text=" Searchbox" FontSize="13" Height="30" Width="250" TextChanged="Search_TextChanged"/>
+        <TextBox Name="Account" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,90,120,0" TextWrapping="Wrap" Text=" Searchbox" FontSize="13" Height="30" Width="250"/>
         <Button Content="Advance Search" FontSize="13" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,90,400,0" Height="30" Width="200" Click="Button_Click_AdvanceSearch"/>
 
         <Button Content="Main Menu" Background="White" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Bottom"  Margin="60,0,0,30" Height="35" Width="75" Click="Button_Click_BackMenu" />
