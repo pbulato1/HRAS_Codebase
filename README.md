@@ -3,7 +3,8 @@ Users can log in with the default admin username="admin" password="password" aft
 
 Before using the software the connection string will have to be set to the correct server name. Leave the rest of the connection string as is, the account used is created in this script. The connection string can be found in the settings file of the middleware.
 
-NOTEs: 
+NOTES: 
+
 *When importing files, make sure to import rooms before medical records because the system will not allow for visits to non-existing rooms.
 
 *SQL code is in database folder.
