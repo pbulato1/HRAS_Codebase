@@ -23,12 +23,13 @@ namespace Interface
         public MainMenu()
         {
             InitializeComponent();
+            
 			if (Session.getCurrentSession().getCurrentUser().getPrivilegeLevel() != (int)PrivilegeLevels.A)
 			{
-				btnImportFile.IsEnabled = false;
-				btnImportFile.Visibility = Visibility.Hidden;
-				btnAccountInformation.IsEnabled = false;
-				btnAccountInformation.Visibility = Visibility.Hidden;
+				ImportFile.IsEnabled = false;
+				ImportFile.Visibility = Visibility.Hidden;
+                AccountInfo.IsEnabled = false;
+                AccountInfo.Visibility = Visibility.Hidden;
 			}
 		}
 

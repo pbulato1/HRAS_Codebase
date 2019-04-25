@@ -1,5 +1,9 @@
 # HRAS_Codebase
-All of the contributor can log-in to the demo system by their first name as user name and last name as their password.
+Users can log in with the default admin username="admin" password="password" after running this script. Make sure that the spacing doesn't get messed up when you copy and paste, and make sure that the server is set up to allow SQL authentication.
+
+Before using the software the connection string will have to be set to the correct server name. Leave the rest of the connection string as is, the account used is created in this script. The connection string can be found in the settings file of the middleware.
+
+NOTE: When importing files, make sure to import rooms before medical records because the system will not allow for visits to non-existing rooms.
 
 CREATE DATABASE HRAS_iTas_Test  --this is a changable name but make sure you change it everywhere here and in the singalton pattern in the C# code.
 
@@ -253,8 +257,8 @@ CREATE LOGIN HRAS_MW_iTas
 GO  
 
 USE [HRAS_iTas]
-CREATE USER HRAS_MW_iTas FOR LOGIN HRAS_MW_iTas
-GO
+CREATE USER HRAS_MW_iTas FOR LOGIN HRAS_MW_iTas;  
+GO  
 
 USE [HRAS_iTas]
 GRANT EXECUTE ON OBJECT::Import_Item
@@ -346,8 +350,8 @@ GRANT EXECUTE ON OBJECT::Verify_Username
     TO HRAS_MW_iTas;  
 GO  
 
-ALTER LOGIN HRAS_MW_iTas ENABLE
-GO
+ALTER LOGIN HRAS_MW_iTas ENABLE;  
+GO  
 
 USE [HRAS_iTas]
 INSERT INTO Staff([User_Name], [Password], [User_Type], [Failed_Login]) VALUES('admin', 'W6ph5Mm5Pz8GgiULbPgzG37mj9g=', 'A', 0)
