@@ -5,4 +5,5 @@ Before using the software the connection string will have to be set to the corre
 
 NOTEs: 
 *When importing files, make sure to import rooms before medical records because the system will not allow for visits to non-existing rooms.
+
 *SQL code is in database folder.
