@@ -75,6 +75,8 @@ namespace Interface
 		{
 			pbImport.Value = 0;
 			lblStatus.Content = "Import Status: In Progress";
+            //If(getFileType = type)
+            
 			ImportData.import(tfFilePath.Text, type, Session.getCurrentSession());
 			timer.Interval = 250;
 			timer.Elapsed += OnTimedEvent;

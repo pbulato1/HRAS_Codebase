@@ -38,15 +38,14 @@ namespace Interface
 			btnHiddenLogoff.Visibility = Visibility.Hidden;
 		}
 
-		private void Button_Click(object sender, RoutedEventArgs e)
+		private void LogIn_Click(object sender, RoutedEventArgs e)
 		{
+
 			byte[] passwordBytes = Encoding.ASCII.GetBytes(password.Password);
 			HashAlgorithm sha = new SHA1CryptoServiceProvider();
 			byte[] hashedBytes = sha.ComputeHash(passwordBytes);
 			string hashedPassword = Convert.ToBase64String(hashedBytes);
-
 			Session currentSession;
-
 			try
 			{
 				currentSession = Session.establishSession(Account.Text, hashedPassword);
@@ -102,5 +101,7 @@ namespace Interface
 				});
 			}
 		}
-	}
+
+
+    }
 }

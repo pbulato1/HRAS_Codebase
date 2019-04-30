@@ -14,7 +14,7 @@
         <Button Content="Check in" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="270,320,0,0" Height="100" Width="250" Click="Button_Click_CheckIn"/>
         <Button Content="Diagnosis wizard" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="-270,440,0,0" Height="100" Width="250" Click="Button_Click_DiagnosisWizard"/>
         <Button Content="Medical records" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="270,440,0,0" Height="100" Width="250" Click="Button_Click_MedicalRecords"/>
-        <Button x:Name="ImportFile" Content="Import File" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="-270,560,0,0" Height="100" Width="250" Click="Button_Click_ImportFile" Background="Bisque"/>
+        <Button x:Name="ImportFiles" Content="Import Files" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="-270,560,0,0" Height="100" Width="250" Click="Button_Click_ImportFile" Background="Bisque"/>
         <Button x:Name="AccountInfo" Content="Account information" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="270,560,0,0" Height="100" Width="250" Click="Button_Click_AccountInformation" Background="Bisque"/>
         <Button Content="Log out" Background="White" FontWeight="Bold" HorizontalAlignment="Right" VerticalAlignment="Bottom"  Margin="0,0,60,30" Height="35" Width="75" Click="Button_Click_LogOut" />
     </Grid>

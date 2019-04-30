@@ -26,8 +26,8 @@ namespace Interface
             
 			if (Session.getCurrentSession().getCurrentUser().getPrivilegeLevel() != (int)PrivilegeLevels.A)
 			{
-				ImportFile.IsEnabled = false;
-				ImportFile.Visibility = Visibility.Hidden;
+				ImportFiles.IsEnabled = false;
+				ImportFiles.Visibility = Visibility.Hidden;
                 AccountInfo.IsEnabled = false;
                 AccountInfo.Visibility = Visibility.Hidden;
 			}
