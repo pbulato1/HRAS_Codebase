@@ -238,11 +238,6 @@ namespace Middleware
 		string username;
 		string password;
 		int privilegeLevel;
-		//Timer logoffTimer; // This needs to be moved to the parent of the front end
-		int AFKTime;
-		int timerThreshold = 1000 * 60; // 1000 = 1 second, 60 seconds = 1 minute
-		int logoffThreshold = 15;
-		int warningThreshold = 10;
 		bool loggedIn = false;
 		public static Exception failedLoginException = new Exception("Incorrect username or password.");
 		public static Exception noAccountException = new Exception("The username given does not exist.");
@@ -263,6 +258,11 @@ namespace Middleware
 				userExists = true;
 			}
 			if (!userExists) throw noAccountException;
+			else
+			{
+				int loginAttempts = getFailedAttempts(enteredUsername);
+				if (loginAttempts >= loginAttemptThreshold) throw accountLockedException;
+			}
 			queryString = "Verify_Login";
 			command = new SqlCommand(queryString, connection);
 			command.CommandType = System.Data.CommandType.StoredProcedure;
@@ -273,19 +273,15 @@ namespace Middleware
 			while (dataReader.Read())
 			{
 				int indexUsername = dataReader.GetOrdinal("User_Name");
-				int failedLogins = dataReader.GetOrdinal("Failed_Login");
 				string retrievedUsername = dataReader.GetString(indexUsername);
 				if (retrievedUsername == enteredUsername) // not necessary, but in case of hacker mischief
 				{
-					int loginAttempts = dataReader.GetInt32(failedLogins);
-					if (loginAttempts >= loginAttemptThreshold) throw accountLockedException;
 					matchFound = true;
 					username = enteredUsername;
 					password = enteredPassword;
 					int index = dataReader.GetOrdinal("User_Type");
 					string privilege = dataReader.GetString(index);
 					privilegeLevel = (int)(Enum.Parse(typeof(PrivilegeLevels), privilege));
-					AFKTime = 0;
 					loggedIn = true;
 				}
 				else throw failedLoginException;
@@ -316,18 +312,7 @@ namespace Middleware
 			return fails;
 		}
 
-		private void OnTimedEvent(Object source, System.Timers.ElapsedEventArgs e)
-		{
-			AFKTime++;
-			if (AFKTime == warningThreshold)
-			{
-				// code to display a warning here
-			}
-			if (AFKTime == logoffThreshold)
-			{
-				logout();
-			}
-		}
+
 
 		public bool logout()
 		{
@@ -337,7 +322,6 @@ namespace Middleware
 				password = "";
 				privilegeLevel = (int)PrivilegeLevels.NONE; // this is ok becuase PrivilegeLevels is an enumeration thus the values are actually ints
 				//logoffTimer = null;
-				AFKTime = 0;
 				loggedIn = false;
 				Session currentSession = Session.getCurrentSession();
 				currentSession.closeConnection();
@@ -352,13 +336,6 @@ namespace Middleware
 		public bool isLoggedIn()
 		{
 			return loggedIn;
-		}
-
-		public void resetTimer()
-		{
-			AFKTime = 0;
-			//logoffTimer.Stop();
-			//logoffTimer.Start();
 		}
 
         public string getUsername()
