@@ -699,7 +699,9 @@ namespace Middleware
 			{
 				bytesRead += line.Length;
 				string lastName = line.Substring((int)DataStart.LASTNAME, (int)DataLength.LASTNAME);
+				lastName = lastName.Trim();
 				string firstName = line.Substring((int)DataStart.FIRSTNAME, (int)DataLength.FIRSTNAME);
+				firstName = firstName.Trim();
 				string middleInitial = line.Substring((int)DataStart.MIDDLEINITIAL, (int)DataLength.MIDDLEINITIAL);
 				string gender = line.Substring((int)DataStart.GENDER, (int)DataLength.GENDER);
 				string ssn = line.Substring((int)DataStart.SSN, (int)DataLength.SSN);
@@ -711,12 +713,19 @@ namespace Middleware
 				string attendingPhys = line.Substring((int)DataStart.ATTENDINGPHY, (int)DataLength.ATTENDINGPHY);
 				string roomNo = line.Substring((int)DataStart.ROOMNO, (int)DataLength.ROOMNO);
 				string symptom1 = line.Substring((int)DataStart.SYMPTOM1, (int)DataLength.SYMPTOM1);
+				symptom1 = symptom1.Trim();
 				string symptom2 = line.Substring((int)DataStart.SYMPTOM2, (int)DataLength.SYMPTOM2);
+				symptom2 = symptom2.Trim();
 				string symptom3 = line.Substring((int)DataStart.SYMPTOM3, (int)DataLength.SYMPTOM3);
+				symptom3 = symptom3.Trim();
 				string symptom4 = line.Substring((int)DataStart.SYMPTOM4, (int)DataLength.SYMPTOM4);
+				symptom4 = symptom4.Trim();
 				string symptom5 = line.Substring((int)DataStart.SYMPTOM5, (int)DataLength.SYMPTOM5);
+				symptom5 = symptom5.Trim();
 				string symptom6 = line.Substring((int)DataStart.SYMPTOM6, (int)DataLength.SYMPTOM6);
+				symptom6 = symptom6.Trim();
 				string diagnosis = line.Substring((int)DataStart.DIAGNOSIS, (int)DataLength.DIAGNOSIS);
+				diagnosis = diagnosis.Trim();
 				string notes = line.Substring((int)DataStart.NOTES, (int)DataLength.NOTES);
 				string insurer = line.Substring((int)DataStart.INSURER, (int)DataLength.INSURER);
 				string addressLine1 = line.Substring((int)DataStart.ADDRESSLINE1, (int)DataLength.ADDRESSLINE1);
@@ -866,9 +875,9 @@ namespace Middleware
 			{
 				bytesRead += line.Length;
 				string username = line.Substring((int)DataStart.USERNAME, (int)DataLength.USERNAME);
-				username = username.Replace(" ", "");
+				username = username.Trim();
 				string password = line.Substring((int)DataStart.PASSWORD, (int)DataLength.PASSWORD);
-				password = password.Replace(" ", "");
+				password = password.Trim();
 				string hashedPassword = PasswordHasher.hashPassword(password);
 				string userType = line.Substring((int)DataStart.USERTYPE, (int)DataLength.USERTYPE);
 				string queryString = "Import_User";

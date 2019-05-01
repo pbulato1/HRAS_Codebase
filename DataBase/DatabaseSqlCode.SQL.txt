@@ -56,6 +56,10 @@ CREATE PROCEDURE Import_Symptom @symptomName varchar(25) AS BEGIN INSERT INTO Sy
 
 GO
 
+CREATE PROCEDURE Import_User @username varchar(25), @password varchar(50), @userType char(1), @failedLogins int AS BEGIN INSERT INTO Staff([User_Name], [Password], User_Type, Failed_Login) VALUES(@username, @password, @userType, @failedLogins) END
+
+GO
+
 CREATE PROCEDURE Retrieve_Symptom @symptomName varchar(25) AS BEGIN Select [Name] FROM Symptom WHERE [Name] = @symptomName END
 
 GO
@@ -159,6 +163,9 @@ USE [HRAS_iTas] GRANT EXECUTE ON OBJECT::Get_Failed_Attempts TO HRAS_MW_iTas;
 GO
 
 USE [HRAS_iTas] GRANT EXECUTE ON OBJECT::Verify_Username TO HRAS_MW_iTas;
+GO
+
+USE [HRAS_iTas] GRANT EXECUTE ON OBJECT::Import_User TO HRAS_MW_iTas;
 GO
 
 ALTER LOGIN HRAS_MW_iTas ENABLE;
