@@ -8,7 +8,7 @@ CREATE TABLE Staff ( [User_Name] varchar(25), [Password] varchar(50), User_Type 
 
 CREATE TABLE Patient ( Last_Name varchar(50), First_Name varchar(25), Middle_initial char, Gender char, SSN char(9), Birth_Date char(8), Address_Line1 varchar(35), Address_Line2 varchar(35), Address_City varchar(25), Address_State char(2), Address_Zip char(5), DNR_Status char, Organ_Donor char, CONSTRAINT PK_Patient PRIMARY KEY (SSN) )
 
-CREATE TABLE Visited_History ( Patient_SSN char(9), Entry_Date datetime, Exit_Date datetime, Insurer varchar(5), Diagnosis varchar(75), Notes varchar(100), Bill NUMERIC(7,2), CONSTRAINT PK_Visited_History PRIMARY KEY (Patient_SSN, Entry_Date), CONSTRAINT FK_Visited_History_Patient FOREIGN KEY (Patient_SSN) REFERENCES Patient (SSN) )
+CREATE TABLE Visited_History ( Patient_SSN char(9), Entry_Date datetime, Exit_Date datetime, Insurer varchar(5), Diagnosis varchar(75), Attending_Physician char(5), Notes varchar(100), Bill NUMERIC(7,2), CONSTRAINT PK_Visited_History PRIMARY KEY (Patient_SSN, Entry_Date), CONSTRAINT FK_Visited_History_Patient FOREIGN KEY (Patient_SSN) REFERENCES Patient (SSN) )
 
 CREATE TABLE Room ( Room_Number char(9), Hourly_Rate NUMERIC(5,2), Effective_Date char(8), CONSTRAINT PK_Room PRIMARY KEY (Room_Number) )
 
