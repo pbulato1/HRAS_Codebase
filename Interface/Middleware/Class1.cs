@@ -216,7 +216,9 @@ namespace Middleware
 
         private Boolean askQuestion(string name)
         {
-            return true;// need to hook up to interface and get response from te yes/ no bubles after they hit enter
+            string question = "Is the patient  show signs of " + name + "?";
+
+            return true;// need to hook up to interface which asks the questiom and get response from te yes/ no bubles after they hit enter
         }
 
         private string[,] getDiagnosisPercentages(string DiagnosisList)
