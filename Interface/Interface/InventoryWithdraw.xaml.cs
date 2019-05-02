@@ -33,7 +33,7 @@ namespace Interface
 
         private void Button_Click_Submit(object sender, RoutedEventArgs e)
         {
-            if (ItemName.Text.Equals("") || ItemID.Text.Equals("") || Quantity.Text.Equals("") || PatientID.Text.Equals("")) MessageBox.Show(this, "You have to fill all required fields", "Fill required fields", MessageBoxButton.OK, MessageBoxImage.Warning);
+            /*if (ItemName.Text.Equals("") || ItemID.Text.Equals("") || Quantity.Text.Equals("") || PatientID.Text.Equals("")) MessageBox.Show(this, "You have to fill all required fields", "Fill required fields", MessageBoxButton.OK, MessageBoxImage.Warning);
             else
             {
                 bool success = false;
@@ -54,7 +54,7 @@ namespace Interface
                     grid.CanUserAddRows = false;
                     this.Close();
                 }
-            }
+            }*/
         }
 
         private void Button_Click_Cancel(object sender, RoutedEventArgs e)
