@@ -35,7 +35,7 @@ namespace Interface
 
         private void Button_Click_Withdraw(object sender, RoutedEventArgs e)
         {
-            InventoryWithdraw inventoryWithdraw = new InventoryWithdraw();
+            InventoryWithdraw inventoryWithdraw = new InventoryWithdraw(DG1);
             inventoryWithdraw.Show();
         }
 

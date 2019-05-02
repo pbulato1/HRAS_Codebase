@@ -90,10 +90,10 @@ namespace Interface
 			bool currentAddExists = InventoryItem.itemExists(ItemID.Text);
 			if (currentAddExists)
 			{
-				Warning.Content = "";
 				if (!InventoryItem.addInventory(ItemID.Text, Quantity.Text))
 				{
-					Warning.Content = "An error occurred while adding to the database.";
+					MessageBox.Show(this, "An error occurred while adding to the database, make sure that the data format " +
+						"is correct.", "Error", MessageBoxButton.OK, MessageBoxImage.Stop);
 				}
 				else { success = true; };
 			}
@@ -101,15 +101,26 @@ namespace Interface
 			{
 				if (ItemID.Text.Length != ItemIDStandardLength)
 				{
-					Warning.Content = "The Item ID must be of length " + ItemIDStandardLength;
+					MessageBox.Show(this, "The Item ID must be of length " + ItemIDStandardLength, "Error", MessageBoxButton.OK, MessageBoxImage.Stop);
 				}
 				else
 				{
-					if (!InventoryItem.addInventory(ItemName.Text, ItemID.Text, Size.Text, Quantity.Text, Price.Text))
+					try
 					{
-						Warning.Content = "An error occurred while adding to the database.";
+						if (!InventoryItem.addInventory(ItemName.Text, ItemID.Text, Size.Text, Quantity.Text, Price.Text))
+						{
+							MessageBox.Show(this, "An error occurred while adding to the database, make sure that the data format " +
+								"is correct.", "Error", MessageBoxButton.OK, MessageBoxImage.Stop);
+						}
+						else { success = true; }
 					}
-					else { success = true; }
+					catch (Exception ex)
+					{
+						if (ex == InventoryItem.invalidInput)
+						{
+							MessageBox.Show(this, "The input format you entered was invalid.", "Error", MessageBoxButton.OK, MessageBoxImage.Stop);
+						}
+					}
 				}
 			}
 			if (grid != null && success == true)
