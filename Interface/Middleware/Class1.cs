@@ -523,10 +523,14 @@ namespace Middleware
 			command.Parameters.Add(new SqlParameter("@stockID", stockID));
 			command.Parameters.Add(new SqlParameter("@description", description));
 			command.Parameters.Add(new SqlParameter("@size", size));
-			int numQuantity = Int32.Parse(quantity);
-			int numPrice = Int32.Parse(price);
-			command.Parameters.Add(new SqlParameter("@cost", numPrice));
-			command.Parameters.Add(new SqlParameter("@quantity", numQuantity));
+			try
+			{
+				int numQuantity = Int32.Parse(quantity);
+				int numPrice = Int32.Parse(price);
+				command.Parameters.Add(new SqlParameter("@cost", numPrice));
+				command.Parameters.Add(new SqlParameter("@quantity", numQuantity));
+			}
+			catch (Exception) { return false; }
 			try
 			{
 				command.ExecuteNonQuery();
