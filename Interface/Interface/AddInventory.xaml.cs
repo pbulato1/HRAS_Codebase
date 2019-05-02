@@ -24,12 +24,6 @@ namespace Interface
 
     public partial class AddInventory : Window
     {
-        private bool isTextBoxEmpty()
-        {
-            if (ItemName.Text.Equals("") || ItemID.Text.Equals("") || Quantity.Text.Equals("") || DayPicker.SelectedDate.Equals("")/*this is not right yet*/) return true;
-            return false;
-        }
-
 		DataGrid grid;
 		int ItemIDStandardLength = 5;
 
@@ -37,13 +31,9 @@ namespace Interface
 		{
 			grid = previousPageDataGrid;
 			InitializeComponent();
-		}
-
-
-        public AddInventory()
-        {
-            InitializeComponent();
-		}
+            Date.Text = DateTime.Now.ToString("MM/dd/yyyy hh:mm:ss");
+            Date.IsEnabled = false;
+        }
 
         private void ItemName_TextChanged(object sender, TextChangedEventArgs e)
         {
@@ -74,26 +64,13 @@ namespace Interface
 			}
 		}
 
-        private void Quantity_TextChanged(object sender, TextChangedEventArgs e)
-        {
-
-        }
-
-        private void Price_TextChanged(object sender, TextChangedEventArgs e)
-        {
-
-        }
-        private void Date_TextChanged(object sender, TextChangedEventArgs e)
-        {
-
-        }
-
         private void Button_Click_Submit(object sender, RoutedEventArgs e)
         {
             bool success = false;
             bool currentAddExists = InventoryItem.itemExists(ItemID.Text);
 
-            if (!isTextBoxEmpty())
+            if (ItemName.Text.Equals("") || ItemID.Text.Equals("") || Quantity.Text.Equals("")) MessageBox.Show(this, "You have to fill all required fields", "Fill required fields", MessageBoxButton.OK, MessageBoxImage.Warning);
+            else
             {
                 MessageBoxResult result = MessageBox.Show(this, "Do you want to submit?", "Submit", MessageBoxButton.YesNo, MessageBoxImage.Warning);
                 if (result == MessageBoxResult.Yes)
@@ -143,15 +120,12 @@ namespace Interface
                     }
                 }
             }
-            else
-            {
-                MessageBox.Show(this, "You have to fill all required fields", "Fill required fields", MessageBoxButton.OK, MessageBoxImage.Warning);
-            }
         }
 
         private void Button_Click_Cancel(object sender, RoutedEventArgs e)
         {
-            if (!isTextBoxEmpty())
+            if (ItemName.Text.Equals("") && ItemID.Text.Equals("") && Quantity.Text.Equals("") && Price.Text.Equals("") && Size.Text.Equals("")) this.Close();
+            else
             {
                 MessageBoxResult result = MessageBox.Show(this, "There are unsave contents, do you still want to exit?", "Unsave Content", MessageBoxButton.YesNo, MessageBoxImage.Warning);
                 if (result == MessageBoxResult.Yes)
@@ -159,7 +133,6 @@ namespace Interface
                     this.Close();
                 }
             }
-            else this.Close();
         }
         
     }

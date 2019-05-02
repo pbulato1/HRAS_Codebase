@@ -21,82 +21,46 @@ namespace Interface
     /// </summary>
     public partial class InventoryWithdraw : Window
     {
-        private bool isTextBoxEmpty()
-        {
-            if (ItemName.Text.Equals("") || ItemID.Text.Equals("") || Quantity.Text.Equals("") || DayPicker.SelectedDate.Equals("")/*this is not right yet*/) return true;
-            return false;
-        }
-
         DataGrid grid;
 
 		public InventoryWithdraw(DataGrid previousPageDataGrid)
 		{
-			grid = previousPageDataGrid;
-			InitializeComponent();
-			ItemName.IsEnabled = false;
-			ItemName.Background = Brushes.Gray;
-		}
-
-		public InventoryWithdraw()
-        {
+            grid = previousPageDataGrid;
             InitializeComponent();
-		}
-
-        private void ItemName_TextChanged(object sender, TextChangedEventArgs e)
-        {
-
-        }
-
-        private void ItemID_TextChanged(object sender, TextChangedEventArgs e)
-        {
-
-        }
-
-        private void Quantity_TextChanged(object sender, TextChangedEventArgs e)
-        {
-
-        }
-
-        private void Price_TextChanged(object sender, TextChangedEventArgs e)
-        {
-
-        }
-
-        private void Date_TextChanged(object sender, TextChangedEventArgs e)
-        {
-
-        }
-
-        private void PatientID_TextChanged(object sender, TextChangedEventArgs e)
-        {
-
+            Date.Text = DateTime.Now.ToString("MM/dd/yyyy hh:mm:ss");
+            Date.IsEnabled = false;
         }
 
         private void Button_Click_Submit(object sender, RoutedEventArgs e)
         {
-			bool success = false;
-			try
-			{
-				if (InventoryItem.withdrawItem(ItemID.Text, Quantity.Text, PatientID.Text)) success = true;
-				else MessageBox.Show(this, "An error occured.", "Error", MessageBoxButton.OK, MessageBoxImage.Stop);
-			}
-			catch (Exception ex)
-			{
-				MessageBox.Show(this, ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Stop);
-			}
-			if (grid != null && success == true)
-			{
-				DataTable inventory = InventoryItem.searchInventory(ItemID.Text, "", "");
-				grid.ItemsSource = inventory.DefaultView;
-				grid.AutoGenerateColumns = true;
-				grid.CanUserAddRows = false;
-				this.Close();
-			}
+            if (ItemName.Text.Equals("") || ItemID.Text.Equals("") || Quantity.Text.Equals("") || PatientID.Text.Equals("")) MessageBox.Show(this, "You have to fill all required fields", "Fill required fields", MessageBoxButton.OK, MessageBoxImage.Warning);
+            else
+            {
+                bool success = false;
+                try
+                {
+                    if (InventoryItem.withdrawItem(ItemID.Text, Quantity.Text, PatientID.Text)) success = true;
+                    else MessageBox.Show(this, "An error occured.", "Error", MessageBoxButton.OK, MessageBoxImage.Stop);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(this, ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Stop);
+                }
+                if (grid != null && success == true)
+                {
+                    DataTable inventory = InventoryItem.searchInventory(ItemID.Text, "", "");
+                    grid.ItemsSource = inventory.DefaultView;
+                    grid.AutoGenerateColumns = true;
+                    grid.CanUserAddRows = false;
+                    this.Close();
+                }
+            }
         }
 
         private void Button_Click_Cancel(object sender, RoutedEventArgs e)
         {
-            if (!isTextBoxEmpty())
+            if (ItemID.Text.Equals("") && Quantity.Text.Equals("") && PatientID.Text.Equals("")) this.Close();
+            else
             {
                 MessageBoxResult result = MessageBox.Show(this, "There are unsave contents, do you still want to exit?", "Unsave Content", MessageBoxButton.YesNo, MessageBoxImage.Warning);
                 if (result == MessageBoxResult.Yes)
@@ -104,7 +68,6 @@ namespace Interface
                     this.Close();
                 }
             }
-            else this.Close();
         }
     }
 }
