@@ -52,6 +52,10 @@ CREATE PROCEDURE Import_Show_Signs @symptomName varchar(25), @ssn char(9), @entr
 
 GO
 
+CREATE PROCEDURE Retrieve_Hourly_Rate @hourlyRate NUMERIC(5,2) AS BEGIN Select Hourly_Rate FROM Room WHERE Hourly_Rate = @hourlyrate END
+
+GO
+
 CREATE PROCEDURE Import_Symptom @symptomName varchar(25) AS BEGIN INSERT INTO Symptom(Name) VALUES(@symptomName) END
 
 GO
@@ -104,7 +108,12 @@ CREATE PROCEDURE Retrieve_Item_Quantity @stockID char(5) AS BEGIN Select Quantit
 
 GO
 
-CREATE PROCEDURE Withdraw_Inventory @stockID char(5), @quantity numeric(5,0) AS BEGIN UPDATE Item SET Quantity = Quantity - @quantity WHERE Stock_ID = @stockID END
+CREATE PROCEDURE Withdraw_Inventory  @stockID char(5), @username varchar(25), @ssn char(9), @entryDate datetime, @quantity numeric(5,0), @date date 
+AS 
+BEGIN 
+UPDATE Item SET Quantity = Quantity - @quantity WHERE Stock_ID = @stockID 
+INSERT INTO [Use](Stock_ID, [User_Name], Patient_SSN, Entry_Date, Quantity_Used, [Date]) Values(@stockID, @username, @ssn, @entryDate, @quantity, @date)
+END
 
 GO
 
@@ -113,6 +122,10 @@ CREATE PROCEDURE Retrieve_SSN @ssn char(9) AS BEGIN Select SSN FROM Patient WHER
 GO
 
 CREATE PROCEDURE Verify_Username @userName varchar(25) AS BEGIN SELECT [User_Name] FROM Staff WHERE [User_Name] = @userName END
+
+GO
+
+CREATE PROCEDURE Get_Entry_Date @ssn char(9) AS BEGIN SELECT Visited_History.Entry_Date FROM Visited_History INNER JOIN Patient ON Visited_History.Patient_SSN = Patient.SSN WHERE Visited_History.Entry_Date IS NOT NULL AND Visited_History.Exit_Date IS NULL ORDER BY Visited_History.Entry_Date DESC END
 
 GO
 
@@ -184,6 +197,9 @@ USE [HRAS_iTas] GRANT EXECUTE ON OBJECT::Retrieve_Item_Quantity TO HRAS_MW_iTas;
 GO
 
 USE [HRAS_iTas] GRANT EXECUTE ON OBJECT::Withdraw_Inventory TO HRAS_MW_iTas;
+GO
+
+USE [HRAS_iTas] GRANT EXECUTE ON OBJECT::Get_Entry_Date TO HRAS_MW_iTas;
 GO
 
 ALTER LOGIN HRAS_MW_iTas ENABLE;
