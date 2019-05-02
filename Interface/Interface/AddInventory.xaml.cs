@@ -35,11 +35,6 @@ namespace Interface
             Date.IsEnabled = false;
         }
 
-        private void ItemName_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            // check if the format of the box is correct or not for every text box.
-        }
-
         private void ItemID_TextChanged(object sender, TextChangedEventArgs e)
         {
 			bool currentAddExists = InventoryItem.itemExists(ItemID.Text);

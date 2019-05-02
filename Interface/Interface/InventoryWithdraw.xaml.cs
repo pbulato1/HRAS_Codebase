@@ -27,19 +27,19 @@ namespace Interface
 		{
             grid = previousPageDataGrid;
             InitializeComponent();
-            Date.Text = DateTime.Now.ToString("MM/dd/yyyy hh:mm:ss");
-            Date.IsEnabled = false;
+            WithdrawDate.Text = DateTime.Now.ToString("MM/dd/yyyy hh:mm:ss");
+            WithdrawDate.IsEnabled = false;
         }
 
         private void Button_Click_Submit(object sender, RoutedEventArgs e)
         {
-            /*if (ItemName.Text.Equals("") || ItemID.Text.Equals("") || Quantity.Text.Equals("") || PatientID.Text.Equals("")) MessageBox.Show(this, "You have to fill all required fields", "Fill required fields", MessageBoxButton.OK, MessageBoxImage.Warning);
+            if (ItemID.Text.Equals("") || Quantity.Text.Equals("") || PatientID.Text.Equals("")) MessageBox.Show(this, "You have to fill all required fields", "Fill required fields", MessageBoxButton.OK, MessageBoxImage.Warning);
             else
             {
                 bool success = false;
                 try
                 {
-                    if (InventoryItem.withdrawItem(ItemID.Text, Quantity.Text, PatientID.Text)) success = true;
+                    if (InventoryItem.withdrawItem(ItemID.Text, Quantity.Text, PatientID.Text, WithdrawDate.Text)) success = true;
                     else MessageBox.Show(this, "An error occured.", "Error", MessageBoxButton.OK, MessageBoxImage.Stop);
                 }
                 catch (Exception ex)
@@ -54,7 +54,7 @@ namespace Interface
                     grid.CanUserAddRows = false;
                     this.Close();
                 }
-            }*/
+            }
         }
 
         private void Button_Click_Cancel(object sender, RoutedEventArgs e)

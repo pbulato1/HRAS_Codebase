@@ -19,7 +19,7 @@
         <Label Content="(*)" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="400,150,0,0" FontSize="10" Height="30" Foreground="Red"/>
 
         <Label Content="Date: " HorizontalAlignment="Left" VerticalAlignment="Top" Margin="30,230,0,0" FontSize="13" Height="30"/>
-        <TextBox x:Name="Date" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="150,230,0,0" TextWrapping="Wrap" Text="" FontSize="15" Height="30" Width="250"/>
+        <TextBox x:Name="WithdrawDate" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="150,230,0,0" TextWrapping="Wrap" Text="" FontSize="15" Height="30" Width="250"/>
 
         <Label Content="Patient ID: " HorizontalAlignment="Left" VerticalAlignment="Top" Margin="30,190,0,0" FontSize="13" Height="30"/>
         <TextBox x:Name="PatientID" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="150,190,0,0" TextWrapping="Wrap" Text="" FontSize="15" Height="30" Width="250"/>
