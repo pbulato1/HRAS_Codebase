@@ -21,14 +21,18 @@ namespace Interface
     /// </summary>
     public partial class InventoryWithdraw : Window
     {
-		DataGrid grid;
+        private bool isTextBoxEmpty()
+        {
+            if (ItemName.Text.Equals("") || ItemID.Text.Equals("") || Quantity.Text.Equals("") || DayPicker.SelectedDate.Equals("")/*this is not right yet*/) return true;
+            return false;
+        }
+
+        DataGrid grid;
 
 		public InventoryWithdraw(DataGrid previousPageDataGrid)
 		{
 			grid = previousPageDataGrid;
 			InitializeComponent();
-			Price.IsEnabled = false;
-			Price.Background = Brushes.Gray;
 			ItemName.IsEnabled = false;
 			ItemName.Background = Brushes.Gray;
 			Date.Text = DateTime.Today.ToString("MM/dd/yyyy hh:mm:ss");
@@ -38,12 +42,6 @@ namespace Interface
 		public InventoryWithdraw()
         {
             InitializeComponent();
-			Price.IsEnabled = false;
-			Price.Background = Brushes.Gray;
-			ItemName.IsEnabled = false;
-			ItemName.Background = Brushes.Gray;
-			Date.Text = DateTime.Today.ToString("MM/dd/yyyy hh:mm:ss");
-			Date.IsEnabled = false;
 		}
 
         private void ItemName_TextChanged(object sender, TextChangedEventArgs e)
@@ -100,8 +98,15 @@ namespace Interface
 
         private void Button_Click_Cancel(object sender, RoutedEventArgs e)
         {
-            //Need warning sign here
-            this.Close();
+            if (!isTextBoxEmpty())
+            {
+                MessageBoxResult result = MessageBox.Show(this, "There are unsave contents, do you still want to exit?", "Unsave Content", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                if (result == MessageBoxResult.Yes)
+                {
+                    this.Close();
+                }
+            }
+            else this.Close();
         }
     }
 }

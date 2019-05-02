@@ -7,31 +7,34 @@
         mc:Ignorable="d"
         Title="Add Inventory" Height="500" Width="500">
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="189*"/>
-            <ColumnDefinition Width="58*"/>
-        </Grid.ColumnDefinitions>
-        <Label Content="Add Inventory" FontSize="30" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="140,20,9.6,0" Width="228"/>
-        <Label Content="The fields with (*) are required fields. " HorizontalAlignment="Center" VerticalAlignment="Top" Margin="160,63,44,0" FontSize="10" Height="30" Foreground="Red"/>
-        <Label Content="Item Name: " HorizontalAlignment="Left" VerticalAlignment="Top" Margin="30,150,0,0" FontSize="13" Height="30"/>
-        <TextBox Name="ItemName" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="150,150,0,0" TextWrapping="Wrap" Text="" FontSize="15" Height="30" Width="250" TextChanged="ItemName_TextChanged" Grid.ColumnSpan="2"/>
-        <Label Name="ItemTag" Content="(*)" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="22,150,0,0" FontSize="10" Height="30" Foreground="Red" Grid.Column="1"/>
-        <Label Content="Item ID: " HorizontalAlignment="Left" VerticalAlignment="Top" Margin="30,109,0,0" FontSize="13" Height="30"/>
-        <TextBox x:Name="ItemID" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="150,109,0,0" TextWrapping="Wrap" Text="" FontSize="15" Height="30" Width="250" TextChanged="ItemID_TextChanged" Grid.ColumnSpan="2"/>
-        <Label Name="IDTag" Content="(*)" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="22,109,0,0" FontSize="10" Height="30" Foreground="Red" Grid.Column="1"/>
+        <Label Content="Add Inventory" FontSize="30" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,20,0,0"/>
+        <Label Content="The fields with (*) are required fields. " HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,70,0,0" FontSize="10" Height="30" Foreground="Red"/>
+        
+        <Label Content="Item Name: " HorizontalAlignment="Left" VerticalAlignment="Top" Margin="30,110,0,0" FontSize="13" Height="30"/>
+        <TextBox Name="ItemName" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="150,110,0,0" TextWrapping="Wrap" Text="" FontSize="15" Height="30" Width="250" TextChanged="ItemName_TextChanged"/>
+        <Label Content="(*)" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="400,110,0,0" FontSize="10" Height="30" Foreground="Red"/>
+        
+        <Label Content="Item ID: " HorizontalAlignment="Left" VerticalAlignment="Top" Margin="30,150,0,0" FontSize="13" Height="30"/>
+        <TextBox x:Name="ItemID" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="150,150,0,0" TextWrapping="Wrap" Text="" FontSize="15" Height="30" Width="250" TextChanged="ItemID_TextChanged"/>
+        <Label Content="(*)" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="400,150,0,0" FontSize="10" Height="30" Foreground="Red"/>
+        
         <Label Content="Quantity: " HorizontalAlignment="Left" VerticalAlignment="Top" Margin="30,190,0,0" FontSize="13" Height="30"/>
-        <TextBox x:Name="Quantity" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="150,190,0,0" TextWrapping="Wrap" Text="" FontSize="15" Height="30" Width="250" TextChanged="Quantity_TextChanged" Grid.ColumnSpan="2"/>
-        <Label Name="QuantityTag" Content="(*)" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="22,190,0,0" FontSize="10" Height="30" Foreground="Red" Grid.Column="1"/>
+        <TextBox x:Name="Quantity" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="150,190,0,0" TextWrapping="Wrap" Text="" FontSize="15" Height="30" Width="250" TextChanged="Quantity_TextChanged"/>
+        <Label Content="(*)" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="400,190,0,0" FontSize="10" Height="30" Foreground="Red"/>
+        
         <Label Content="Price ($USD): " HorizontalAlignment="Left" VerticalAlignment="Top" Margin="30,230,0,0" FontSize="13" Height="30"/>
-        <TextBox x:Name="Price" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="150,230,0,0" TextWrapping="Wrap" Text="" FontSize="15" Height="30" Width="250" TextChanged="Price_TextChanged" Grid.ColumnSpan="2"/>
-        <Label Content="(For new items)" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="22,230,0,0" FontSize="10" Height="30" Foreground="Black" Grid.Column="1"/>
-        <Label Content="Date: " HorizontalAlignment="Left" VerticalAlignment="Top" Margin="30,306,0,0" FontSize="13" Height="30"/>
-        <TextBox x:Name="Date" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="150,307,0,0" TextWrapping="Wrap" Text="" FontSize="15" Height="30" Width="250" TextChanged="Date_TextChanged" Grid.ColumnSpan="2"/>
-        <Label Name="DateTag" Content="(*)" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="22,306,0,0" FontSize="10" Height="30" Foreground="Red" Grid.Column="1"/>
-        <Button Content="Submit" HorizontalAlignment="Left" VerticalAlignment="Bottom"  Margin="90,0,0,50.4" FontSize="15" Height="35" Width="75" Click="Button_Click_Submit"/>
-        <Button Content="Cancel" HorizontalAlignment="Right" VerticalAlignment="Bottom"  Margin="0,0,89.6,50.4" FontSize="15" Height="35" Width="75" Click="Button_Click_Cancel" Grid.ColumnSpan="2"/>
-        <Label Content="Size: " HorizontalAlignment="Left" VerticalAlignment="Top" Margin="30,269,0,0" FontSize="13" Height="30"/>
-        <TextBox x:Name="Size" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="150,269,0,0" TextWrapping="Wrap" Text="" FontSize="15" Height="30" Width="250" TextChanged="Price_TextChanged" Grid.ColumnSpan="2"/>
-        <Label Content="(For new items)" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="22,269,0,0" FontSize="10" Height="30" Foreground="Black" Grid.Column="1"/>
+        <TextBox x:Name="Price" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="150,230,0,0" TextWrapping="Wrap" Text="" FontSize="15" Height="30" Width="250" TextChanged="Price_TextChanged"/>
+        <Label Content="(For new items)" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="400,230,0,0" FontSize="10" Height="30" Foreground="Black"/>
+        
+        <Label Content="Size: " HorizontalAlignment="Left" VerticalAlignment="Top" Margin="30,270,0,0" FontSize="13" Height="30"/>
+        <TextBox x:Name="Size" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="150,270,0,0" TextWrapping="Wrap" Text="" FontSize="15" Height="30" Width="250" TextChanged="Price_TextChanged"/>
+        <Label Content="(For new items)" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="400,270,0,0" FontSize="10" Height="30" Foreground="Black"/>
+        
+        <Label Content="Date: " HorizontalAlignment="Left" VerticalAlignment="Top" Margin="30,310,0,0" FontSize="13" Height="30"/>
+        <DatePicker x:Name="DayPicker" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="150,310,0,0" FontSize="13" Height="30"/>
+        <Label Content="(*)" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="260,310,0,0" FontSize="10" Height="30" Foreground="Red"/>
+        
+        <Button Content="Submit" HorizontalAlignment="Left" VerticalAlignment="Bottom"  Margin="90,0,0,50" FontSize="15" Height="35" Width="75" Click="Button_Click_Submit"/>
+        <Button Content="Cancel" HorizontalAlignment="Right" VerticalAlignment="Bottom"  Margin="0,0,90,50" FontSize="15" Height="35" Width="75" Click="Button_Click_Cancel"/>
     </Grid>
 </Window>

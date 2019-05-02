@@ -297,7 +297,7 @@ namespace Middleware
 			string connectionString = Properties.Settings1.Default.CONNECTIONSTRING;
 			SqlConnection connection = new SqlConnection(connectionString);
 			connection.Open();
-			string queryString = "Get_Failed_Attempts";
+			string queryString = "Get_Failed_Attempts"; 
 			SqlCommand command = new SqlCommand(queryString, connection);
 			command.CommandType = System.Data.CommandType.StoredProcedure;
 			command.Parameters.Add(new SqlParameter("@userName", userName));
@@ -560,6 +560,9 @@ namespace Middleware
 		public static bool addInventory(string description, string stockID, string size, string quantity, string price)
 		{
 			SqlConnection connection = Session.getCurrentSession().getConnection();
+
+
+
 			string queryString = "Import_Item";
 			SqlCommand command = new SqlCommand(queryString, connection);
 			command.CommandType = System.Data.CommandType.StoredProcedure;
