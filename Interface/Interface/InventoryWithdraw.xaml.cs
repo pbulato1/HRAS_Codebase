@@ -27,8 +27,8 @@ namespace Interface
 		{
 			grid = previousPageDataGrid;
 			InitializeComponent();
-			Price.IsEnabled = false;
-			Price.Background = Brushes.Gray;
+			//Price.IsEnabled = false;
+			//Price.Background = Brushes.Gray
 			ItemName.IsEnabled = false;
 			ItemName.Background = Brushes.Gray;
 			Date.Text = DateTime.Today.ToString("MM/dd/yyyy");
@@ -38,8 +38,8 @@ namespace Interface
 		public InventoryWithdraw()
         {
             InitializeComponent();
-			Price.IsEnabled = false;
-			Price.Background = Brushes.Gray;
+			//Price.IsEnabled = false;
+			//Price.Background = Brushes.Gray;
 			ItemName.IsEnabled = false;
 			ItemName.Background = Brushes.Gray;
 			Date.Text = DateTime.Today.ToString("MM/dd/yyyy");
