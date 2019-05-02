@@ -52,6 +52,10 @@ CREATE PROCEDURE Import_Show_Signs @symptomName varchar(25), @ssn char(9), @entr
 
 GO
 
+CREATE PROCEDURE Retrieve_Hourly_Rate @hourlyRate NUMERIC(5,2) AS BEGIN Select Hourly_Rate FROM Room WHERE Hourly_Rate = @hourlyrate END
+
+GO
+
 CREATE PROCEDURE Import_Symptom @symptomName varchar(25) AS BEGIN INSERT INTO Symptom(Name) VALUES(@symptomName) END
 
 GO
