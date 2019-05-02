@@ -22,7 +22,7 @@
         <Button Name="btnBrowse" Content="Browse For File" HorizontalAlignment="Center" Height="17" Margin="770,171,168.6,0" VerticalAlignment="Top" Width="103" Click="Button_Click_btnBrowse"/>
         <TextBox Name="tfFilePath" HorizontalAlignment="Center" Height="17" Margin="447,171,293.6,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="301"/>
         <ProgressBar Name="pbImport" HorizontalAlignment="Center" Height="40" Margin="230,455,69.6,0" VerticalAlignment="Top" Width="742" ValueChanged="pbImport_ValueChanged"/>
-        <Button Name="btnImport" Content="Begin Import" HorizontalAlignment="Center" Height="35" Margin="750,312,202.6,0" VerticalAlignment="Top" Width="157" Click="Button_Click_btnImport"/>
+        <Button Name="BeginImport" Content="Begin Import" HorizontalAlignment="Center" Height="35" Margin="750,312,202.6,0" VerticalAlignment="Top" Width="157" Click="Button_Click_BeginImport"/>
         <Label Name="lblStatus" Content="Import Status:" HorizontalAlignment="Center" Height="84" Margin="338,366,115.6,0" VerticalAlignment="Top" Width="588"/>
         <Label Content="Import Type:" HorizontalAlignment="Center" Height="30" Margin="323,205,599.6,0" VerticalAlignment="Top" Width="119"/>
         <Label Content="Path to import file:" HorizontalAlignment="Center" Height="30" Margin="292,165,448.6,0" VerticalAlignment="Top" Width="301"/>

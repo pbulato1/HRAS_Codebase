@@ -297,7 +297,7 @@ namespace Middleware
 			string connectionString = Properties.Settings1.Default.CONNECTIONSTRING;
 			SqlConnection connection = new SqlConnection(connectionString);
 			connection.Open();
-			string queryString = "Get_Failed_Attempts";
+			string queryString = "Get_Failed_Attempts"; 
 			SqlCommand command = new SqlCommand(queryString, connection);
 			command.CommandType = System.Data.CommandType.StoredProcedure;
 			command.Parameters.Add(new SqlParameter("@userName", userName));
