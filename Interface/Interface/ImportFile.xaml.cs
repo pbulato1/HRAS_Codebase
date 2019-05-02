@@ -71,7 +71,7 @@ namespace Interface
 			type = ImportType.USERS;
 		}
 
-		private void Button_Click_btnImport(object sender, RoutedEventArgs e)
+		private void Button_Click_BeginImport(object sender, RoutedEventArgs e)
 		{
 			pbImport.Value = 0;
 			lblStatus.Content = "Import Status: In Progress";
