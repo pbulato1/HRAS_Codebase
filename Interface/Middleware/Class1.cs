@@ -380,6 +380,23 @@ namespace Middleware
         {
             
         }
+
+		public static bool checkPatient(string ssn)
+		{
+			SqlConnection connection = Session.getCurrentSession().getConnection();
+			bool alreadyExists = false;
+			string queryString = "Retrieve_SSN";
+			SqlCommand command = new SqlCommand(queryString, connection);
+			command.CommandType = System.Data.CommandType.StoredProcedure;
+			command.Parameters.Add(new SqlParameter("@ssn", ssn));
+			SqlDataReader dataReader = command.ExecuteReader();
+			while (dataReader.Read())
+			{
+				alreadyExists = true;
+			}
+			dataReader.Close();
+			return alreadyExists;
+		}
 	}
 
 	public class MedicalRecord
@@ -481,6 +498,10 @@ namespace Middleware
 		string description;
 		int size;
 		double cost;
+		public static Exception inadaquateQuantity = new Exception("The requested withdrawal exceeds the total quantity.");
+		public static Exception invalidInput = new Exception("The input format was incorrect.");
+		public static Exception itemDoesNotExist = new Exception("The specified item id does not exist in the database.");
+		public static Exception patientDoesNotExist = new Exception("The specified patient is not present in the database.");
 
 		public double getTotalCost()
 		{
@@ -516,74 +537,109 @@ namespace Middleware
 
 		public static bool addInventory(string description, string stockID, string size, string quantity, string price)
 		{
-			int numQuantity = 0;
-			int numPrice = 0;
-			bool priceEntered = false;
-			bool quantityEntered = false;
-			if (quantity != "")
+			SqlConnection connection = Session.getCurrentSession().getConnection();
+
+
+
+			string queryString = "Import_Item";
+			SqlCommand command = new SqlCommand(queryString, connection);
+			command.CommandType = System.Data.CommandType.StoredProcedure;
+			command.Parameters.Add(new SqlParameter("@stockID", stockID));
+			command.Parameters.Add(new SqlParameter("@description", description));
+			command.Parameters.Add(new SqlParameter("@size", size));
+			try
 			{
-				try
-				{
-					numQuantity = Int32.Parse(quantity);
-					quantityEntered = true;
-				}
-				catch (Exception e) { return false; }
+				int numQuantity = Int32.Parse(quantity);
+				int numPrice = Int32.Parse(price);
+				command.Parameters.Add(new SqlParameter("@cost", numPrice));
+				command.Parameters.Add(new SqlParameter("@quantity", numQuantity));
 			}
-			if (price != "")
+			catch (Exception) { throw invalidInput; }
+			try
 			{
-				try
-				{
-					numPrice = Int32.Parse(price);
-					priceEntered = true;
-				}
-				catch (Exception e) { return false; }
+				command.ExecuteNonQuery();
+				return true;
 			}
+			catch (Exception) { return false; }
+		}
+
+		public static bool addInventory(string stockID, string numQuantity)
+		{
+			string queryString = "Add_To_Existing_Inventory";
+			SqlConnection connection = Session.getCurrentSession().getConnection();
+			SqlCommand command = new SqlCommand(queryString, connection);
+			command.CommandType = System.Data.CommandType.StoredProcedure;
+			command.Parameters.Add(new SqlParameter("@stockID", stockID));
+			command.Parameters.Add(new SqlParameter("@quantity", numQuantity));
+			try
+			{
+				command.ExecuteNonQuery();
+				return true;
+			}
+			catch (Exception) { return false; }
+		}
+
+		public static bool itemExists(string id)
+		{
 			SqlConnection connection = Session.getCurrentSession().getConnection();
 			bool alreadyExists = false;
 			string queryString = "Retrieve_Item";
 			SqlCommand command = new SqlCommand(queryString, connection);
 			command.CommandType = System.Data.CommandType.StoredProcedure;
-			command.Parameters.Add(new SqlParameter("@stockID", stockID));
+			command.Parameters.Add(new SqlParameter("@stockID", id));
 			SqlDataReader dataReader = command.ExecuteReader();
 			while (dataReader.Read())
 			{
 				alreadyExists = true;
 			}
 			dataReader.Close();
-
-			if (!alreadyExists)
-			{
-				queryString = "Import_Item";
-				command = new SqlCommand(queryString, connection);
-				command.CommandType = System.Data.CommandType.StoredProcedure;
-				command.Parameters.Add(new SqlParameter("@stockID", stockID));
-				command.Parameters.Add(new SqlParameter("@description", description));
-				command.Parameters.Add(new SqlParameter("@size", size));
-				if (priceEntered) command.Parameters.Add(new SqlParameter("@cost", numPrice));
-				if (quantityEntered) command.Parameters.Add(new SqlParameter("@quantity", numQuantity));
-				try
-				{
-					command.ExecuteNonQuery();
-					return true;
-				}
-				catch (Exception) { return false; }
-			}
-			else
-			{
-				queryString = "Add_To_Existing_Inventory";
-				command = new SqlCommand(queryString, connection);
-				command.CommandType = System.Data.CommandType.StoredProcedure;
-				command.Parameters.Add(new SqlParameter("@stockID", stockID));
-				command.Parameters.Add(new SqlParameter("@quantity", numQuantity));
-				try
-				{
-					command.ExecuteNonQuery();
-					return true;
-				}
-				catch (Exception) { return false; }
-			}
+			return alreadyExists;
 		}
-    }
+
+		public static decimal getItemQuantity(string id)
+		{
+			decimal retrievedQuantity = 0;
+			SqlConnection connection = Session.getCurrentSession().getConnection();
+			string queryString = "Retrieve_Item_Quantity";
+			SqlCommand command = new SqlCommand(queryString, connection);
+			command.CommandType = System.Data.CommandType.StoredProcedure;
+			command.Parameters.Add(new SqlParameter("@stockID", id));
+			SqlDataReader dataReader = command.ExecuteReader();
+			while (dataReader.Read())
+			{
+				int index = dataReader.GetOrdinal("Quantity");
+				retrievedQuantity = dataReader.GetDecimal(index);
+			}
+			dataReader.Close();
+			return retrievedQuantity;
+		}
+
+		public static bool withdrawItem(string id, string quantity, string ssn)
+		{
+			if (!itemExists(id)) throw itemDoesNotExist;
+			if (!Patient.checkPatient(ssn)) throw patientDoesNotExist;
+			SqlConnection connection = Session.getCurrentSession().getConnection();
+			decimal numQuantity = 0;
+			try
+			{
+				numQuantity = Decimal.Parse(quantity);
+			}
+			catch (Exception) { throw invalidInput; }
+			if (getItemQuantity(id) < numQuantity) throw inadaquateQuantity;
+			string queryString = "Withdraw_Inventory";
+			SqlCommand command = new SqlCommand(queryString, connection);
+			command.CommandType = System.Data.CommandType.StoredProcedure;
+			command.Parameters.Add(new SqlParameter("@stockID", id));
+			command.Parameters.Add(new SqlParameter("@quantity", quantity));
+			try
+			{
+				command.ExecuteNonQuery();
+				return true;
+			}
+			catch (Exception) { return false; }
+		}
+
+	}
 
 	public class Room
 	{
@@ -699,7 +755,9 @@ namespace Middleware
 			{
 				bytesRead += line.Length;
 				string lastName = line.Substring((int)DataStart.LASTNAME, (int)DataLength.LASTNAME);
+				lastName = lastName.Trim();
 				string firstName = line.Substring((int)DataStart.FIRSTNAME, (int)DataLength.FIRSTNAME);
+				firstName = firstName.Trim();
 				string middleInitial = line.Substring((int)DataStart.MIDDLEINITIAL, (int)DataLength.MIDDLEINITIAL);
 				string gender = line.Substring((int)DataStart.GENDER, (int)DataLength.GENDER);
 				string ssn = line.Substring((int)DataStart.SSN, (int)DataLength.SSN);
@@ -711,12 +769,19 @@ namespace Middleware
 				string attendingPhys = line.Substring((int)DataStart.ATTENDINGPHY, (int)DataLength.ATTENDINGPHY);
 				string roomNo = line.Substring((int)DataStart.ROOMNO, (int)DataLength.ROOMNO);
 				string symptom1 = line.Substring((int)DataStart.SYMPTOM1, (int)DataLength.SYMPTOM1);
+				symptom1 = symptom1.Trim();
 				string symptom2 = line.Substring((int)DataStart.SYMPTOM2, (int)DataLength.SYMPTOM2);
+				symptom2 = symptom2.Trim();
 				string symptom3 = line.Substring((int)DataStart.SYMPTOM3, (int)DataLength.SYMPTOM3);
+				symptom3 = symptom3.Trim();
 				string symptom4 = line.Substring((int)DataStart.SYMPTOM4, (int)DataLength.SYMPTOM4);
+				symptom4 = symptom4.Trim();
 				string symptom5 = line.Substring((int)DataStart.SYMPTOM5, (int)DataLength.SYMPTOM5);
+				symptom5 = symptom5.Trim();
 				string symptom6 = line.Substring((int)DataStart.SYMPTOM6, (int)DataLength.SYMPTOM6);
+				symptom6 = symptom6.Trim();
 				string diagnosis = line.Substring((int)DataStart.DIAGNOSIS, (int)DataLength.DIAGNOSIS);
+				diagnosis = diagnosis.Trim();
 				string notes = line.Substring((int)DataStart.NOTES, (int)DataLength.NOTES);
 				string insurer = line.Substring((int)DataStart.INSURER, (int)DataLength.INSURER);
 				string addressLine1 = line.Substring((int)DataStart.ADDRESSLINE1, (int)DataLength.ADDRESSLINE1);
@@ -866,9 +931,9 @@ namespace Middleware
 			{
 				bytesRead += line.Length;
 				string username = line.Substring((int)DataStart.USERNAME, (int)DataLength.USERNAME);
-				username = username.Replace(" ", "");
+				username = username.Trim();
 				string password = line.Substring((int)DataStart.PASSWORD, (int)DataLength.PASSWORD);
-				password = password.Replace(" ", "");
+				password = password.Trim();
 				string hashedPassword = PasswordHasher.hashPassword(password);
 				string userType = line.Substring((int)DataStart.USERTYPE, (int)DataLength.USERTYPE);
 				string queryString = "Import_User";

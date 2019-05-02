@@ -25,17 +25,37 @@ namespace Interface
     {
 		public static Timer logoffTimer = new Timer();
 		int AFKTime = 0; // in minutes
-		int warningThreshold = 5;
-		int logoffThreshold = 10;
+		int warningThreshold = 10;
+		int logoffThreshold = 15;
 
 		public MainWindow()
         {
             InitializeComponent();
-			logoffTimer.Interval = 60 * 100; // set for 60 seconds, aka one minute
+			logoffTimer.Interval = 60 * 1000; // set for 60 seconds, aka one minute
 			logoffTimer.Elapsed += OnTimedEvent;
 			logoffTimer.AutoReset = true;
 			logoffTimer.Enabled = false;
 			btnHiddenLogoff.Visibility = Visibility.Hidden;
+			//RegisterAllEvents();
+		}
+
+		public static void RegisterAllEvents(Type type, FrameworkElement target)
+		{
+			var events = EventManager.GetRoutedEvents();
+			foreach (var routedEvent in events)
+			{
+				EventManager.RegisterClassHandler(type,
+									routedEvent, new RoutedEventHandler((sender, args) =>
+									{
+										logoffTimer.Stop();
+										logoffTimer.Start();
+									}));
+			}
+		}
+
+		static void OnButtonClick(object sender, RoutedEventArgs e)
+		{
+			//Do awesome stuff with the button click
 		}
 
 		private void LogIn_Click(object sender, RoutedEventArgs e)

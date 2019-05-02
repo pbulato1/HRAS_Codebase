@@ -8,7 +8,7 @@ CREATE TABLE Staff ( [User_Name] varchar(25), [Password] varchar(50), User_Type 
 
 CREATE TABLE Patient ( Last_Name varchar(50), First_Name varchar(25), Middle_initial char, Gender char, SSN char(9), Birth_Date char(8), Address_Line1 varchar(35), Address_Line2 varchar(35), Address_City varchar(25), Address_State char(2), Address_Zip char(5), DNR_Status char, Organ_Donor char, CONSTRAINT PK_Patient PRIMARY KEY (SSN) )
 
-CREATE TABLE Visited_History ( Patient_SSN char(9), Entry_Date datetime, Exit_Date datetime, Insurer varchar(5), Diagnosis varchar(75), Notes varchar(100), Bill NUMERIC(7,2), CONSTRAINT PK_Visited_History PRIMARY KEY (Patient_SSN, Entry_Date), CONSTRAINT FK_Visited_History_Patient FOREIGN KEY (Patient_SSN) REFERENCES Patient (SSN) )
+CREATE TABLE Visited_History ( Patient_SSN char(9), Entry_Date datetime, Exit_Date datetime, Insurer varchar(5), Diagnosis varchar(75), Attending_Physician char(5), Notes varchar(100), Bill NUMERIC(7,2), CONSTRAINT PK_Visited_History PRIMARY KEY (Patient_SSN, Entry_Date), CONSTRAINT FK_Visited_History_Patient FOREIGN KEY (Patient_SSN) REFERENCES Patient (SSN) )
 
 CREATE TABLE Room ( Room_Number char(9), Hourly_Rate NUMERIC(5,2), Effective_Date char(8), CONSTRAINT PK_Room PRIMARY KEY (Room_Number) )
 
@@ -24,7 +24,7 @@ CREATE TABLE Attended_Physican ( [User_Name] varchar(25), Patient_SSN char(9), E
 
 CREATE TABLE Takes_Care ( Patient_SSN char(9), [User_Name] varchar(25), CONSTRAINT PK_Takes_Care PRIMARY KEY (Patient_SSN, [User_Name]), CONSTRAINT FK_Takes_Care_Patient FOREIGN KEY (Patient_SSN) REFERENCES Patient (SSN), CONSTRAINT FK_Takes_Care_Staff FOREIGN KEY ([User_Name]) REFERENCES Staff ([User_Name]) )
 
-CREATE TABLE [Use] ( Stock_ID char(5), [User_Name] varchar(25), Patient_SSN char(9), Entry_Date datetime, Quantity_Used NUMERIC(5,0), [Date] char(18), CONSTRAINT PK_Use PRIMARY KEY (Stock_ID, [User_Name], Patient_SSN, Entry_Date), CONSTRAINT FK_Use_Item FOREIGN KEY (Stock_ID) REFERENCES Item (Stock_ID), CONSTRAINT FK_Use_Staff FOREIGN KEY ([User_Name]) REFERENCES Staff ([User_Name]), CONSTRAINT FK_Use_Visited_History FOREIGN KEY (Patient_SSN, Entry_Date) REFERENCES Visited_History (Patient_SSN, Entry_Date) )
+CREATE TABLE [Use] ( Stock_ID char(5), [User_Name] varchar(25), Patient_SSN char(9), Entry_Date datetime, Quantity_Used NUMERIC(5,0), [Date] datetime, CONSTRAINT PK_Use PRIMARY KEY (Stock_ID, [User_Name], Patient_SSN, Entry_Date, [DATE]), CONSTRAINT FK_Use_Item FOREIGN KEY (Stock_ID) REFERENCES Item (Stock_ID), CONSTRAINT FK_Use_Staff FOREIGN KEY ([User_Name]) REFERENCES Staff ([User_Name]), CONSTRAINT FK_Use_Visited_History FOREIGN KEY (Patient_SSN, Entry_Date) REFERENCES Visited_History (Patient_SSN, Entry_Date) )
 
 GO
 
@@ -53,6 +53,10 @@ CREATE PROCEDURE Import_Show_Signs @symptomName varchar(25), @ssn char(9), @entr
 GO
 
 CREATE PROCEDURE Import_Symptom @symptomName varchar(25) AS BEGIN INSERT INTO Symptom(Name) VALUES(@symptomName) END
+
+GO
+
+CREATE PROCEDURE Import_User @username varchar(25), @password varchar(50), @userType char(1), @failedLogins int AS BEGIN INSERT INTO Staff([User_Name], [Password], User_Type, Failed_Login) VALUES(@username, @password, @userType, @failedLogins) END
 
 GO
 
@@ -93,6 +97,18 @@ CREATE PROCEDURE Search_Medical_Records @input varchar(50) AS BEGIN SELECT Patie
 GO
 
 CREATE PROCEDURE Get_Failed_Attempts @userName varchar(25) AS BEGIN SELECT Failed_Login FROM Staff WHERE [User_Name] = @userName END
+
+GO
+
+CREATE PROCEDURE Retrieve_Item_Quantity @stockID char(5) AS BEGIN Select Quantity FROM Item WHERE Stock_ID = @stockID END
+
+GO
+
+CREATE PROCEDURE Withdraw_Inventory @stockID char(5), @quantity numeric(5,0) AS BEGIN UPDATE Item SET Quantity = Quantity - @quantity WHERE Stock_ID = @stockID END
+
+GO
+
+CREATE PROCEDURE Retrieve_SSN @ssn char(9) AS BEGIN Select SSN FROM Patient WHERE SSN = @ssn END
 
 GO
 
@@ -161,7 +177,19 @@ GO
 USE [HRAS_iTas] GRANT EXECUTE ON OBJECT::Verify_Username TO HRAS_MW_iTas;
 GO
 
+USE [HRAS_iTas] GRANT EXECUTE ON OBJECT::Import_User TO HRAS_MW_iTas;
+GO
+
+USE [HRAS_iTas] GRANT EXECUTE ON OBJECT::Retrieve_Item_Quantity TO HRAS_MW_iTas;
+GO
+
+USE [HRAS_iTas] GRANT EXECUTE ON OBJECT::Withdraw_Inventory TO HRAS_MW_iTas;
+GO
+
 ALTER LOGIN HRAS_MW_iTas ENABLE;
+GO
+
+USE [HRAS_iTas] GRANT EXECUTE ON OBJECT::Retrieve_SSN TO HRAS_MW_iTas;
 GO
 
 USE [HRAS_iTas] INSERT INTO Staff([User_Name], [Password], [User_Type], [Failed_Login]) VALUES('admin', 'W6ph5Mm5Pz8GgiULbPgzG37mj9g=', 'A', 0)
