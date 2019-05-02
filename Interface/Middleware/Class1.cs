@@ -583,6 +583,8 @@ namespace Middleware
 				catch (Exception) { return false; }
 			}
 		}
+
+        // add an inventory withdraw method in here.
     }
 
 	public class Room

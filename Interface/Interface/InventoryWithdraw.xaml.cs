@@ -19,6 +19,12 @@ namespace Interface
     /// </summary>
     public partial class InventoryWithdraw : Window
     {
+        private bool isTextBoxEmpty()
+        {
+            if (ItemName.Text.Equals("") || ItemID.Text.Equals("") || Quantity.Text.Equals("") || DayPicker.SelectedDate.Equals("")/*this is not right yet*/ || PatientID.Text.Equals("")) return true;
+            return false;
+        }
+
         public InventoryWithdraw()
         {
             InitializeComponent();
@@ -56,14 +62,34 @@ namespace Interface
 
         private void Button_Click_Submit(object sender, RoutedEventArgs e)
         {
-            //Need connection here
-            this.Close();
+            if (!isTextBoxEmpty())
+            {
+                MessageBoxResult result = MessageBox.Show(this, "Do you want to submit?", "Submit", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                if (result == MessageBoxResult.Yes)
+                {
+                    this.Close();
+                    InventoryItem.addInventory(ItemName.Text, ItemID.Text, Quantity.Text, Price.Text);
+                }
+                InventoryItem.addInventory(ItemName.Text, ItemID.Text, Quantity.Text, Price.Text);
+                this.Close();
+            }
+            else
+            {
+                MessageBox.Show(this, "You have to fill all required fields", "Fill required fields", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
         }
 
         private void Button_Click_Cancel(object sender, RoutedEventArgs e)
         {
-            //Need warning sign here
-            this.Close();
+            if (!isTextBoxEmpty())
+            {
+                MessageBoxResult result = MessageBox.Show(this, "There are unsave contents, do you still want to exit?", "Unsave Content", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                if (result == MessageBoxResult.Yes)
+                {
+                    this.Close();
+                }
+            }
+            else this.Close();
         }
     }
 }
