@@ -31,7 +31,7 @@ namespace Interface
 			Price.Background = Brushes.Gray;
 			ItemName.IsEnabled = false;
 			ItemName.Background = Brushes.Gray;
-			Date.Text = DateTime.Today.ToString("MM/dd/yyyy");
+			Date.Text = DateTime.Today.ToString("MM/dd/yyyy hh:mm:ss");
 			Date.IsEnabled = false;
 		}
 
@@ -42,7 +42,7 @@ namespace Interface
 			Price.Background = Brushes.Gray;
 			ItemName.IsEnabled = false;
 			ItemName.Background = Brushes.Gray;
-			Date.Text = DateTime.Today.ToString("MM/dd/yyyy");
+			Date.Text = DateTime.Today.ToString("MM/dd/yyyy hh:mm:ss");
 			Date.IsEnabled = false;
 		}
 
@@ -81,7 +81,7 @@ namespace Interface
 			bool success = false;
 			try
 			{
-				if (InventoryItem.withdrawItem(ItemID.Text, Quantity.Text, PatientID.Text)) success = true;
+				if (InventoryItem.withdrawItem(ItemID.Text, Quantity.Text, PatientID.Text, Date.Text)) success = true;
 				else MessageBox.Show(this, "An error occured.", "Error", MessageBoxButton.OK, MessageBoxImage.Stop);
 			}
 			catch (Exception ex)

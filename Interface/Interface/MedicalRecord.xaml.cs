@@ -26,10 +26,19 @@ namespace Interface
         public MedicalRecord()
         {
             InitializeComponent();
-            Loaded += MedicalRecord_Loaded;
+			M1.IsReadOnly = true;
+			M1.MouseDoubleClick += openRecord;
+			Loaded += MedicalRecord_Loaded;
 		}
 
-        private void Button_Click_BackMenu(object sender, RoutedEventArgs e)
+		private void openRecord(object sender, RoutedEventArgs e)
+		{
+			PatientInfo login = new PatientInfo();
+			login.Show();
+			this.Close();
+		}
+
+		private void Button_Click_BackMenu(object sender, RoutedEventArgs e)
         {
             MainMenu menu = new MainMenu();
             menu.Show();

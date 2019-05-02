@@ -29,14 +29,14 @@ namespace Interface
 		{
 			grid = previousPageDataGrid;
 			InitializeComponent();
-			Date.Text = DateTime.Today.ToString("MM/dd/yyyy");
+			Date.Text = DateTime.Now.ToString("MM/dd/yyyy hh:mm:ss");
 			Date.IsEnabled = false;
 		}
 
         public AddInventory()
         {
             InitializeComponent();
-			Date.Text = DateTime.Today.ToString("MM/dd/yyyy");
+			Date.Text = DateTime.Now.ToString("MM/dd/yyyy hh:mm:ss");
 			Date.IsEnabled = false;
 		}
 

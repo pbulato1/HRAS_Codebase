@@ -24,6 +24,7 @@ namespace Interface
         public InventoryRecord()
         {
             InitializeComponent();
+			DG1.IsReadOnly = true;
             Loaded += InventoryRecord_Loaded;
         }
 

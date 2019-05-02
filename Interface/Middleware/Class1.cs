@@ -375,6 +375,7 @@ namespace Middleware
 		BasicAddress address;
 		bool dnrStatus;
 		bool organDonor;
+		public static Exception noPatient = new Exception("No patient with the provided ssn is checked in.");
 
         public Patient(string theLastName, string theFirstName, char middle, char theGender, string SSN, DateTime birthdate, BasicAddress theAddress, bool theDnrStatus, bool Donor)
         {
@@ -396,6 +397,27 @@ namespace Middleware
 			}
 			dataReader.Close();
 			return alreadyExists;
+		}
+
+		public static DateTime getEntryDate(string ssn)
+		{
+			bool entryExists = false;
+			DateTime entryDate = DateTime.Now;
+			SqlConnection connection = Session.getCurrentSession().getConnection();
+			string queryString = "Get_Entry_Date";
+			SqlCommand command = new SqlCommand(queryString, connection);
+			command.CommandType = System.Data.CommandType.StoredProcedure;
+			command.Parameters.Add(new SqlParameter("@ssn", ssn));
+			SqlDataReader dataReader = command.ExecuteReader();
+			while (dataReader.Read())
+			{
+				int index = dataReader.GetOrdinal("Entry_Date");
+				entryDate = dataReader.GetDateTime(index);
+				entryExists = true;
+			}
+			dataReader.Close();
+			if (!entryExists) throw noPatient;
+			return entryDate;
 		}
 	}
 
@@ -611,7 +633,7 @@ namespace Middleware
 			return retrievedQuantity;
 		}
 
-		public static bool withdrawItem(string id, string quantity, string ssn)
+		public static bool withdrawItem(string id, string quantity, string ssn, string date)
 		{
 			if (!itemExists(id)) throw itemDoesNotExist;
 			if (!Patient.checkPatient(ssn)) throw patientDoesNotExist;
@@ -627,7 +649,14 @@ namespace Middleware
 			SqlCommand command = new SqlCommand(queryString, connection);
 			command.CommandType = System.Data.CommandType.StoredProcedure;
 			command.Parameters.Add(new SqlParameter("@stockID", id));
+			string username = Session.getCurrentSession().getCurrentUser().getUsername();
+			command.Parameters.Add(new SqlParameter("@username", username));
+			command.Parameters.Add(new SqlParameter("@ssn", ssn));
+			DateTime entryDate = Patient.getEntryDate(ssn);
+			command.Parameters.Add(new SqlParameter("@entryDate", entryDate));
 			command.Parameters.Add(new SqlParameter("@quantity", quantity));
+			DateTime dtEntryDateTime = DateTime.ParseExact(date, "MM/dd/yyyy hh:mm:ss", null);
+			command.Parameters.Add(new SqlParameter("@date", date));
 			try
 			{
 				command.ExecuteNonQuery();
