@@ -188,41 +188,91 @@ namespace Middleware
 		}
 	}
 
-	class DiagnosisWizard
-	{
-		Dictionary<Diagnosis, double> diagnosisList;
-        string diagnosisQuery = "SELECT Diagnosis, COUNT(Diagnosis)/COUNT(Symptom) " +
-            "FROM Visited_History inner join Show_signs " +
-            "ON (Show_signs.Patient_SSN = Visited_History.Patient_SSN AND Show_signs.Entry_Date = Visited_History.Entry_Date " +
-            "Where ";
+    class DiagnosisWizard
+    {
+        string SymptomList = "Where Symptom_Name <> ''";
+        string DiagnosisList = "Where Symptom_Name <> ''";
+        Boolean exit = false;
 
-        string symptomQuery = "SELECT Diagnosis, COUNT(Diagnosis)/COUNT(Symptom) " +
-            "FROM Visited_History inner join Show_signs " +
-            "ON (Show_signs.Patient_SSN = Visited_History.Patient_SSN AND Show_signs.Entry_Date = Visited_History.Entry_Date " +
-            "Where ";
+        public void RunDiagnosisWizard()
+        {
+            while (!exit)// connect exit to the exit button to leave the diagnosis wizard
+            {
+                string fiftyName = getSymptomName(SymptomList);
+                Boolean response = askQuestion(fiftyName);
 
-        string whereQuery;
+                if (response == true)
+                {
+                    DiagnosisList += (" OR Symptom_Name = '" + fiftyName + "'");
+                }
+                else
+                {
+                   DiagnosisList += (" OR Symptom_Name <> '" + fiftyName + "'");
+                }
 
-		public void eliminateSymptom(string symptom, bool has)
-		{
-			string operand = (has) ? "=" : "<>";
-			diagnosisQuery = diagnosisQuery + " AND Symptom " + operand + " '" + symptom + "'";
-		}
+                SymptomList += (" AND Symptom_Name <> '" + fiftyName + "'");
+            }
+        }
 
-		public string getNextSymptom(string symptomQuery)
-		{
-			return "";
-		}
+        private Boolean askQuestion(string name)
+        {
+            return true;// need to hook up to interface and get response from te yes/ no bubles after they hit enter
+        }
 
-		private Dictionary<Diagnosis, double> calculateProbabilities()
-		{
-			return new Dictionary<Diagnosis, double>();
-		}
+        private string[,] getDiagnosisPercentages(string DiagnosisList)
+        {
+            string DiagnosisScript = "SELECT TOP 10 * FROM(" +
+                "SELECT Diagnosis, (COUNT(Diagnosis) *100)/" +
+                "(SELECT COUNT(Diagnosis) " +
+                "FROM(Visited_History inner join Show_signs " +
+                "ON Show_signs.Patient_SSN = Visited_History.Patient_SSN AND Show_signs.Entry_Date = Visited_History.Entry_Date)" +
+                DiagnosisList +
+                ") AS Diagnosis_Percentage " +
+                "FROM(Visited_History inner join Show_signs " +
+                "ON Show_signs.Patient_SSN = Visited_History.Patient_SSN AND Show_signs.Entry_Date = Visited_History.Entry_Date) " +
+                DiagnosisList +
+                "Group By Diagnosis " +
+                ") AS DiagnosisTempTable " +
+                "Where DiagnosisTempTable.Diagnosis_Percentage<> 0 " +
+                "ORDER BY DiagnosisTempTable.Diagnosis_Percentage DESC;";
 
-		public Dictionary<Diagnosis, double> getProbableDiagnosis(string diagnosisQuery)
-		{
-			return new Dictionary<Diagnosis, double>();
-		}
+            SqlCommand querySymptom = new SqlCommand(DiagnosisScript);
+            querySymptom.CommandType = System.Data.CommandType.Text;
+            SqlDataReader DiagnosisPercents = querySymptom.ExecuteReader();
+            
+
+            string[,] PercentsList = new string[10,2];
+            int i = 0;
+            while(DiagnosisPercents.Read())
+            {
+                PercentsList[i, 0] = DiagnosisPercents.GetString(0);
+                PercentsList[i, 1] = DiagnosisPercents.GetString(1);
+                i++;
+            }
+            return PercentsList;
+        }
+
+        private string getSymptomName(string SymptomList)
+        {
+            string SymptomScript = "SELECT TOP 1 Symptom_Name FROM(" +
+                "Select Symptom_Name, ABS(500-(COUNT(Symptom_Name) *1000/" +
+                "(SELECT COUNT(Symptom_Name) " +
+                "FROM Show_Signs " +
+                SymptomList +
+                "))) AS SymptomNumber " +
+                "FROM Show_signs " +
+                SymptomList +
+                "Group By Symptom_Name " +
+                ") As SymptomTempTable " +
+                "ORDER BY SymptomTempTable.SymptomNumber ASC;";
+
+            SqlCommand querySymptom = new SqlCommand(SymptomScript);
+            querySymptom.CommandType = System.Data.CommandType.Text;
+            SqlDataReader SymNameReader = querySymptom.ExecuteReader();
+            SymNameReader.Read();
+
+            return SymNameReader.GetString(0);
+        }
 	}
 
 	public class Diagnosis
