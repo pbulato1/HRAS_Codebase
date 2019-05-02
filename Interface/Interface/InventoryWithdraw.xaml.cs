@@ -23,7 +23,7 @@ namespace Interface
     {
         private bool isTextBoxEmpty()
         {
-            if (ItemName.Text.Equals("") || ItemID.Text.Equals("") || Quantity.Text.Equals("") || DayPicker.SelectedDate.Equals("")/*this is not right yet*/) return true;
+            if (ItemName.Text.Equals("") || ItemID.Text.Equals("") || Quantity.Text.Equals("")) return true;
             return false;
         }
 
