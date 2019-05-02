@@ -516,74 +516,59 @@ namespace Middleware
 
 		public static bool addInventory(string description, string stockID, string size, string quantity, string price)
 		{
-			int numQuantity = 0;
-			int numPrice = 0;
-			bool priceEntered = false;
-			bool quantityEntered = false;
-			if (quantity != "")
+			SqlConnection connection = Session.getCurrentSession().getConnection();
+			string queryString = "Import_Item";
+			SqlCommand command = new SqlCommand(queryString, connection);
+			command.CommandType = System.Data.CommandType.StoredProcedure;
+			command.Parameters.Add(new SqlParameter("@stockID", stockID));
+			command.Parameters.Add(new SqlParameter("@description", description));
+			command.Parameters.Add(new SqlParameter("@size", size));
+			int numQuantity = Int32.Parse(quantity);
+			int numPrice = Int32.Parse(price);
+			command.Parameters.Add(new SqlParameter("@cost", numPrice));
+			command.Parameters.Add(new SqlParameter("@quantity", numQuantity));
+			try
 			{
-				try
-				{
-					numQuantity = Int32.Parse(quantity);
-					quantityEntered = true;
-				}
-				catch (Exception e) { return false; }
+				command.ExecuteNonQuery();
+				return true;
 			}
-			if (price != "")
+			catch (Exception) { return false; }
+		}
+
+		public static bool addInventory(string stockID, string numQuantity)
+		{
+			string queryString = "Add_To_Existing_Inventory";
+			SqlConnection connection = Session.getCurrentSession().getConnection();
+			SqlCommand command = new SqlCommand(queryString, connection);
+			command.CommandType = System.Data.CommandType.StoredProcedure;
+			command.Parameters.Add(new SqlParameter("@stockID", stockID));
+			command.Parameters.Add(new SqlParameter("@quantity", numQuantity));
+			try
 			{
-				try
-				{
-					numPrice = Int32.Parse(price);
-					priceEntered = true;
-				}
-				catch (Exception e) { return false; }
+				command.ExecuteNonQuery();
+				return true;
 			}
+			catch (Exception) { return false; }
+		}
+
+		public static bool itemExists(string id)
+		{
 			SqlConnection connection = Session.getCurrentSession().getConnection();
 			bool alreadyExists = false;
 			string queryString = "Retrieve_Item";
 			SqlCommand command = new SqlCommand(queryString, connection);
 			command.CommandType = System.Data.CommandType.StoredProcedure;
-			command.Parameters.Add(new SqlParameter("@stockID", stockID));
+			command.Parameters.Add(new SqlParameter("@stockID", id));
 			SqlDataReader dataReader = command.ExecuteReader();
 			while (dataReader.Read())
 			{
 				alreadyExists = true;
 			}
 			dataReader.Close();
-
-			if (!alreadyExists)
-			{
-				queryString = "Import_Item";
-				command = new SqlCommand(queryString, connection);
-				command.CommandType = System.Data.CommandType.StoredProcedure;
-				command.Parameters.Add(new SqlParameter("@stockID", stockID));
-				command.Parameters.Add(new SqlParameter("@description", description));
-				command.Parameters.Add(new SqlParameter("@size", size));
-				if (priceEntered) command.Parameters.Add(new SqlParameter("@cost", numPrice));
-				if (quantityEntered) command.Parameters.Add(new SqlParameter("@quantity", numQuantity));
-				try
-				{
-					command.ExecuteNonQuery();
-					return true;
-				}
-				catch (Exception) { return false; }
-			}
-			else
-			{
-				queryString = "Add_To_Existing_Inventory";
-				command = new SqlCommand(queryString, connection);
-				command.CommandType = System.Data.CommandType.StoredProcedure;
-				command.Parameters.Add(new SqlParameter("@stockID", stockID));
-				command.Parameters.Add(new SqlParameter("@quantity", numQuantity));
-				try
-				{
-					command.ExecuteNonQuery();
-					return true;
-				}
-				catch (Exception) { return false; }
-			}
+			return alreadyExists;
 		}
-    }
+
+	}
 
 	public class Room
 	{

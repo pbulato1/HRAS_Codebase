@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,10 +22,23 @@ namespace Interface
     /// </summary>
     public partial class AddInventory : Window
     {
+		DataGrid grid;
+		int ItemIDStandardLength = 5;
+
+		public AddInventory(DataGrid previousPageDataGrid)
+		{
+			grid = previousPageDataGrid;
+			InitializeComponent();
+			Date.Text = DateTime.Today.ToString("MM/dd/yyyy");
+			Date.IsEnabled = false;
+		}
+
         public AddInventory()
         {
             InitializeComponent();
-        }
+			Date.Text = DateTime.Today.ToString("MM/dd/yyyy");
+			Date.IsEnabled = false;
+		}
 
         private void ItemName_TextChanged(object sender, TextChangedEventArgs e)
         {
@@ -32,8 +47,28 @@ namespace Interface
 
         private void ItemID_TextChanged(object sender, TextChangedEventArgs e)
         {
-
-        }
+			bool currentAddExists = InventoryItem.itemExists(ItemID.Text);
+			if (currentAddExists)
+			{
+				Price.IsEnabled = false;
+				Price.Background = Brushes.Gray;
+				ItemName.IsEnabled = false;
+				ItemName.Background = Brushes.Gray;
+				Size.IsEnabled = false;
+				Size.Background = Brushes.Gray;
+				ItemTag.Visibility = Visibility.Hidden;
+			}
+			else
+			{
+				Price.IsEnabled = true;
+				Price.Background = Brushes.White;
+				ItemName.IsEnabled = true;
+				ItemName.Background = Brushes.White;
+				Size.IsEnabled = true;
+				Size.Background = Brushes.White;
+				ItemTag.Visibility = Visibility.Visible;
+			}
+		}
 
         private void Quantity_TextChanged(object sender, TextChangedEventArgs e)
         {
@@ -51,9 +86,40 @@ namespace Interface
 
         private void Button_Click_Submit(object sender, RoutedEventArgs e)
         {
-			//Need connection here
-			InventoryItem.addInventory(ItemName.Text, ItemID.Text, Size.Text, Quantity.Text, Price.Text);
-            this.Close();
+			bool success = false;
+			bool currentAddExists = InventoryItem.itemExists(ItemID.Text);
+			if (currentAddExists)
+			{
+				Warning.Content = "";
+				if (!InventoryItem.addInventory(ItemID.Text, Quantity.Text))
+				{
+					Warning.Content = "An error occurred while adding to the database.";
+				}
+				else { success = true; };
+			}
+			else
+			{
+				if (ItemID.Text.Length != ItemIDStandardLength)
+				{
+					Warning.Content = "The Item ID must be of length " + ItemIDStandardLength;
+				}
+				else
+				{
+					if (!InventoryItem.addInventory(ItemName.Text, ItemID.Text, Size.Text, Quantity.Text, Price.Text))
+					{
+						Warning.Content = "An error occurred while adding to the database.";
+					}
+					else { success = true; }
+				}
+			}
+			if (grid != null && success == true)
+			{
+				DataTable inventory = InventoryItem.searchInventory(ItemID.Text, "", "");
+				grid.ItemsSource = inventory.DefaultView;
+				grid.AutoGenerateColumns = true;
+				grid.CanUserAddRows = false;
+				this.Close();
+			}
         }
 
         private void Button_Click_Cancel(object sender, RoutedEventArgs e)

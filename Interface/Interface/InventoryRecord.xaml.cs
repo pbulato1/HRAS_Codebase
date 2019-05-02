@@ -29,7 +29,7 @@ namespace Interface
 
         private void Button_Click_Add(object sender, RoutedEventArgs e)
         {
-            AddInventory addInventory = new AddInventory();
+            AddInventory addInventory = new AddInventory(DG1);
             addInventory.Show();
         }
 
