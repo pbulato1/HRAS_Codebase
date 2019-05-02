@@ -11,29 +11,28 @@
         <Label Content="The fields with (*) are required fields. " HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,70,0,0" FontSize="10" Height="30" Foreground="Red"/>
         
         <Label Content="Item Name: " HorizontalAlignment="Left" VerticalAlignment="Top" Margin="30,110,0,0" FontSize="13" Height="30"/>
-        <TextBox Name="ItemName" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="150,110,0,0" TextWrapping="Wrap" Text="" FontSize="15" Height="30" Width="250" TextChanged="ItemName_TextChanged"/>
+        <TextBox Name="ItemName" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="150,110,0,0" TextWrapping="Wrap" Text="" FontSize="15" Height="30" Width="250"/>
         <Label Content="(*)" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="400,110,0,0" FontSize="10" Height="30" Foreground="Red"/>
         
         <Label Content="Item ID: " HorizontalAlignment="Left" VerticalAlignment="Top" Margin="30,150,0,0" FontSize="13" Height="30"/>
-        <TextBox x:Name="ItemID" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="150,150,0,0" TextWrapping="Wrap" Text="" FontSize="15" Height="30" Width="250" TextChanged="ItemID_TextChanged"/>
+        <TextBox x:Name="ItemID" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="150,150,0,0" TextWrapping="Wrap" Text="" FontSize="15" Height="30" Width="250"/>
         <Label Content="(*)" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="400,150,0,0" FontSize="10" Height="30" Foreground="Red"/>
         
         <Label Content="Quantity: " HorizontalAlignment="Left" VerticalAlignment="Top" Margin="30,190,0,0" FontSize="13" Height="30"/>
-        <TextBox x:Name="Quantity" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="150,190,0,0" TextWrapping="Wrap" Text="" FontSize="15" Height="30" Width="250" TextChanged="Quantity_TextChanged"/>
+        <TextBox x:Name="Quantity" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="150,190,0,0" TextWrapping="Wrap" Text="" FontSize="15" Height="30" Width="250" />
         <Label Content="(*)" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="400,190,0,0" FontSize="10" Height="30" Foreground="Red"/>
         
         <Label Content="Price ($USD): " HorizontalAlignment="Left" VerticalAlignment="Top" Margin="30,230,0,0" FontSize="13" Height="30"/>
-        <TextBox x:Name="Price" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="150,230,0,0" TextWrapping="Wrap" Text="" FontSize="15" Height="30" Width="250" TextChanged="Price_TextChanged"/>
+        <TextBox x:Name="Price" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="150,230,0,0" TextWrapping="Wrap" Text="" FontSize="15" Height="30" Width="250"/>
         <Label Content="(For new items)" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="400,230,0,0" FontSize="10" Height="30" Foreground="Black"/>
         
         <Label Content="Size: " HorizontalAlignment="Left" VerticalAlignment="Top" Margin="30,270,0,0" FontSize="13" Height="30"/>
-        <TextBox x:Name="Size" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="150,270,0,0" TextWrapping="Wrap" Text="" FontSize="15" Height="30" Width="250" TextChanged="Price_TextChanged"/>
+        <TextBox x:Name="Size" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="150,270,0,0" TextWrapping="Wrap" Text="" FontSize="15" Height="30" Width="250"/>
         <Label Content="(For new items)" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="400,270,0,0" FontSize="10" Height="30" Foreground="Black"/>
         
         <Label Content="Date: " HorizontalAlignment="Left" VerticalAlignment="Top" Margin="30,310,0,0" FontSize="13" Height="30"/>
-        <DatePicker x:Name="DayPicker" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="150,310,0,0" FontSize="13" Height="30"/>
-        <Label Content="(*)" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="260,310,0,0" FontSize="10" Height="30" Foreground="Red"/>
-        
+        <TextBox x:Name="Date" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="150,310,0,0" TextWrapping="Wrap" Text="" FontSize="15" Height="30" Width="250"/>
+
         <Button Content="Submit" HorizontalAlignment="Left" VerticalAlignment="Bottom"  Margin="90,0,0,50" FontSize="15" Height="35" Width="75" Click="Button_Click_Submit"/>
         <Button Content="Cancel" HorizontalAlignment="Right" VerticalAlignment="Bottom"  Margin="0,0,90,50" FontSize="15" Height="35" Width="75" Click="Button_Click_Cancel"/>
     </Grid>

@@ -8,7 +8,22 @@
         Title="Diagnois Wizard Result" Height="700" Width="500">
     <Grid>
         <Label Content="Diagnosis Result" FontSize="30" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,20,0,0"/>
-        
-        
+        <TextBox Name="CheckInDate" HorizontalAlignment="Left" Height="26" Margin="142,112,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="260"/>
+        <TextBox Name="Room" HorizontalAlignment="Left" Height="26" Margin="104,143,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="299"/>
+        <TextBox Name="StayDuration" HorizontalAlignment="Left" Height="26" Margin="142,174,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="260"/>
+        <TextBox Name="HourlyRate" HorizontalAlignment="Left" Height="26" Margin="131,205,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="271"/>
+        <DataGrid Name="ItemGrid" HorizontalAlignment="Left" Height="179" Margin="85,285,0,0" VerticalAlignment="Top" Width="318"/>
+        <Label Content="Items used:" HorizontalAlignment="Left" Margin="85,256,0,0" VerticalAlignment="Top" Height="24" Width="274"/>
+        <Label Content="Check in date:" HorizontalAlignment="Left" Height="26" Margin="59,112,0,0" VerticalAlignment="Top" Width="96"/>
+        <Label Content="Room:" HorizontalAlignment="Left" Height="26" Margin="59,143,0,0" VerticalAlignment="Top" Width="96"/>
+        <Label Content="Stay duration:" HorizontalAlignment="Left" Height="26" Margin="59,174,0,0" VerticalAlignment="Top" Width="96"/>
+        <Label Content="Hourly rate:" HorizontalAlignment="Left" Height="26" Margin="59,205,0,0" VerticalAlignment="Top" Width="96"/>
+        <Button Name="btnCheckOut" Content="Check Out" HorizontalAlignment="Left" Height="27" Margin="59,553,0,0" VerticalAlignment="Top" Width="93"/>
+        <Button Name="btnCancel" Content="Cancel" HorizontalAlignment="Left" Height="27" Margin="316,553,0,0" VerticalAlignment="Top" Width="107"/>
+        <Label Content="-------------------------------------------------------------------" HorizontalAlignment="Left" Height="26" Margin="79,464,0,0" VerticalAlignment="Top" Width="344"/>
+        <Label Content="Total:" HorizontalAlignment="Left" Height="25" Margin="85,506,0,0" VerticalAlignment="Top" Width="41"/>
+        <Label Content="0.00$" HorizontalAlignment="Left" Height="25" Margin="126,506,0,0" VerticalAlignment="Top" Width="227"/>
+
+
     </Grid>
 </Window>
