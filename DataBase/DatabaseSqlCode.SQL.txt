@@ -100,6 +100,18 @@ CREATE PROCEDURE Get_Failed_Attempts @userName varchar(25) AS BEGIN SELECT Faile
 
 GO
 
+CREATE PROCEDURE Retrieve_Item_Quantity @stockID char(5) AS BEGIN Select Quantity FROM Item WHERE Stock_ID = @stockID END
+
+GO
+
+CREATE PROCEDURE Withdraw_Inventory @stockID char(5), @quantity numeric(5,0) AS BEGIN UPDATE Item SET Quantity = Quantity - @quantity WHERE Stock_ID = @stockID END
+
+GO
+
+CREATE PROCEDURE Retrieve_SSN @ssn char(9) AS BEGIN Select SSN FROM Patient WHERE SSN = @ssn END
+
+GO
+
 CREATE PROCEDURE Verify_Username @userName varchar(25) AS BEGIN SELECT [User_Name] FROM Staff WHERE [User_Name] = @userName END
 
 GO
@@ -168,7 +180,16 @@ GO
 USE [HRAS_iTas] GRANT EXECUTE ON OBJECT::Import_User TO HRAS_MW_iTas;
 GO
 
+USE [HRAS_iTas] GRANT EXECUTE ON OBJECT::Retrieve_Item_Quantity TO HRAS_MW_iTas;
+GO
+
+USE [HRAS_iTas] GRANT EXECUTE ON OBJECT::Withdraw_Inventory TO HRAS_MW_iTas;
+GO
+
 ALTER LOGIN HRAS_MW_iTas ENABLE;
+GO
+
+USE [HRAS_iTas] GRANT EXECUTE ON OBJECT::Retrieve_SSN TO HRAS_MW_iTas;
 GO
 
 USE [HRAS_iTas] INSERT INTO Staff([User_Name], [Password], [User_Type], [Failed_Login]) VALUES('admin', 'W6ph5Mm5Pz8GgiULbPgzG37mj9g=', 'A', 0)

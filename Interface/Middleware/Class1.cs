@@ -380,6 +380,23 @@ namespace Middleware
         {
             
         }
+
+		public static bool checkPatient(string ssn)
+		{
+			SqlConnection connection = Session.getCurrentSession().getConnection();
+			bool alreadyExists = false;
+			string queryString = "Retrieve_SSN";
+			SqlCommand command = new SqlCommand(queryString, connection);
+			command.CommandType = System.Data.CommandType.StoredProcedure;
+			command.Parameters.Add(new SqlParameter("@ssn", ssn));
+			SqlDataReader dataReader = command.ExecuteReader();
+			while (dataReader.Read())
+			{
+				alreadyExists = true;
+			}
+			dataReader.Close();
+			return alreadyExists;
+		}
 	}
 
 	public class MedicalRecord
@@ -481,6 +498,10 @@ namespace Middleware
 		string description;
 		int size;
 		double cost;
+		public static Exception inadaquateQuantity = new Exception("The requested withdrawal exceeds the total quantity.");
+		public static Exception invalidInput = new Exception("The input format was incorrect.");
+		public static Exception itemDoesNotExist = new Exception("The specified item id does not exist in the database.");
+		public static Exception patientDoesNotExist = new Exception("The specified patient is not present in the database.");
 
 		public double getTotalCost()
 		{
@@ -516,76 +537,106 @@ namespace Middleware
 
 		public static bool addInventory(string description, string stockID, string size, string quantity, string price)
 		{
-			int numQuantity = 0;
-			int numPrice = 0;
-			bool priceEntered = false;
-			bool quantityEntered = false;
-			if (quantity != "")
+			SqlConnection connection = Session.getCurrentSession().getConnection();
+			string queryString = "Import_Item";
+			SqlCommand command = new SqlCommand(queryString, connection);
+			command.CommandType = System.Data.CommandType.StoredProcedure;
+			command.Parameters.Add(new SqlParameter("@stockID", stockID));
+			command.Parameters.Add(new SqlParameter("@description", description));
+			command.Parameters.Add(new SqlParameter("@size", size));
+			try
 			{
-				try
-				{
-					numQuantity = Int32.Parse(quantity);
-					quantityEntered = true;
-				}
-				catch (Exception e) { return false; }
+				int numQuantity = Int32.Parse(quantity);
+				int numPrice = Int32.Parse(price);
+				command.Parameters.Add(new SqlParameter("@cost", numPrice));
+				command.Parameters.Add(new SqlParameter("@quantity", numQuantity));
 			}
-			if (price != "")
+			catch (Exception) { throw invalidInput; }
+			try
 			{
-				try
-				{
-					numPrice = Int32.Parse(price);
-					priceEntered = true;
-				}
-				catch (Exception e) { return false; }
+				command.ExecuteNonQuery();
+				return true;
 			}
+			catch (Exception) { return false; }
+		}
+
+		public static bool addInventory(string stockID, string numQuantity)
+		{
+			string queryString = "Add_To_Existing_Inventory";
+			SqlConnection connection = Session.getCurrentSession().getConnection();
+			SqlCommand command = new SqlCommand(queryString, connection);
+			command.CommandType = System.Data.CommandType.StoredProcedure;
+			command.Parameters.Add(new SqlParameter("@stockID", stockID));
+			command.Parameters.Add(new SqlParameter("@quantity", numQuantity));
+			try
+			{
+				command.ExecuteNonQuery();
+				return true;
+			}
+			catch (Exception) { return false; }
+		}
+
+		public static bool itemExists(string id)
+		{
 			SqlConnection connection = Session.getCurrentSession().getConnection();
 			bool alreadyExists = false;
 			string queryString = "Retrieve_Item";
 			SqlCommand command = new SqlCommand(queryString, connection);
 			command.CommandType = System.Data.CommandType.StoredProcedure;
-			command.Parameters.Add(new SqlParameter("@stockID", stockID));
+			command.Parameters.Add(new SqlParameter("@stockID", id));
 			SqlDataReader dataReader = command.ExecuteReader();
 			while (dataReader.Read())
 			{
 				alreadyExists = true;
 			}
 			dataReader.Close();
-
-			if (!alreadyExists)
-			{
-				queryString = "Import_Item";
-				command = new SqlCommand(queryString, connection);
-				command.CommandType = System.Data.CommandType.StoredProcedure;
-				command.Parameters.Add(new SqlParameter("@stockID", stockID));
-				command.Parameters.Add(new SqlParameter("@description", description));
-				command.Parameters.Add(new SqlParameter("@size", size));
-				if (priceEntered) command.Parameters.Add(new SqlParameter("@cost", numPrice));
-				if (quantityEntered) command.Parameters.Add(new SqlParameter("@quantity", numQuantity));
-				try
-				{
-					command.ExecuteNonQuery();
-					return true;
-				}
-				catch (Exception) { return false; }
-			}
-			else
-			{
-				queryString = "Add_To_Existing_Inventory";
-				command = new SqlCommand(queryString, connection);
-				command.CommandType = System.Data.CommandType.StoredProcedure;
-				command.Parameters.Add(new SqlParameter("@stockID", stockID));
-				command.Parameters.Add(new SqlParameter("@quantity", numQuantity));
-				try
-				{
-					command.ExecuteNonQuery();
-					return true;
-				}
-				catch (Exception) { return false; }
-			}
+			return alreadyExists;
 		}
 
-        // add an inventory withdraw method in here.
-    }
+		public static decimal getItemQuantity(string id)
+		{
+			decimal retrievedQuantity = 0;
+			SqlConnection connection = Session.getCurrentSession().getConnection();
+			string queryString = "Retrieve_Item_Quantity";
+			SqlCommand command = new SqlCommand(queryString, connection);
+			command.CommandType = System.Data.CommandType.StoredProcedure;
+			command.Parameters.Add(new SqlParameter("@stockID", id));
+			SqlDataReader dataReader = command.ExecuteReader();
+			while (dataReader.Read())
+			{
+				int index = dataReader.GetOrdinal("Quantity");
+				retrievedQuantity = dataReader.GetDecimal(index);
+			}
+			dataReader.Close();
+			return retrievedQuantity;
+		}
+
+		public static bool withdrawItem(string id, string quantity, string ssn)
+		{
+			if (!itemExists(id)) throw itemDoesNotExist;
+			if (!Patient.checkPatient(ssn)) throw patientDoesNotExist;
+			SqlConnection connection = Session.getCurrentSession().getConnection();
+			decimal numQuantity = 0;
+			try
+			{
+				numQuantity = Decimal.Parse(quantity);
+			}
+			catch (Exception) { throw invalidInput; }
+			if (getItemQuantity(id) < numQuantity) throw inadaquateQuantity;
+			string queryString = "Withdraw_Inventory";
+			SqlCommand command = new SqlCommand(queryString, connection);
+			command.CommandType = System.Data.CommandType.StoredProcedure;
+			command.Parameters.Add(new SqlParameter("@stockID", id));
+			command.Parameters.Add(new SqlParameter("@quantity", quantity));
+			try
+			{
+				command.ExecuteNonQuery();
+				return true;
+			}
+			catch (Exception) { return false; }
+		}
+
+	}
 
 	public class Room
 	{

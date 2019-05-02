@@ -29,13 +29,13 @@ namespace Interface
 
         private void Button_Click_Add(object sender, RoutedEventArgs e)
         {
-            AddInventory addInventory = new AddInventory();
+            AddInventory addInventory = new AddInventory(DG1);
             addInventory.Show();
         }
 
         private void Button_Click_Withdraw(object sender, RoutedEventArgs e)
         {
-            InventoryWithdraw inventoryWithdraw = new InventoryWithdraw();
+            InventoryWithdraw inventoryWithdraw = new InventoryWithdraw(DG1);
             inventoryWithdraw.Show();
         }
 
