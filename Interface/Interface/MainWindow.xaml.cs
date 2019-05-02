@@ -25,13 +25,13 @@ namespace Interface
     {
 		public static Timer logoffTimer = new Timer();
 		int AFKTime = 0; // in minutes
-		int warningThreshold = 5;
-		int logoffThreshold = 10;
+		int warningThreshold = 500;
+		int logoffThreshold = 1000;
 
 		public MainWindow()
         {
             InitializeComponent();
-			logoffTimer.Interval = 60 * 100; // set for 60 seconds, aka one minute
+			logoffTimer.Interval = 60 * 1000; // set for 60 seconds, aka one minute
 			logoffTimer.Elapsed += OnTimedEvent;
 			logoffTimer.AutoReset = true;
 			logoffTimer.Enabled = false;

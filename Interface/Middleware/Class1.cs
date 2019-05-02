@@ -191,8 +191,17 @@ namespace Middleware
 	class DiagnosisWizard
 	{
 		Dictionary<Diagnosis, double> diagnosisList;
-		string diagnosisQuery;
-		string symptomQuery;
+        string diagnosisQuery = "SELECT Diagnosis, COUNT(Diagnosis)/COUNT(Symptom) " +
+            "FROM Visited_History inner join Show_signs " +
+            "ON (Show_signs.Patient_SSN = Visited_History.Patient_SSN AND Show_signs.Entry_Date = Visited_History.Entry_Date " +
+            "Where ";
+
+        string symptomQuery = "SELECT Diagnosis, COUNT(Diagnosis)/COUNT(Symptom) " +
+            "FROM Visited_History inner join Show_signs " +
+            "ON (Show_signs.Patient_SSN = Visited_History.Patient_SSN AND Show_signs.Entry_Date = Visited_History.Entry_Date " +
+            "Where ";
+
+        string whereQuery;
 
 		public void eliminateSymptom(string symptom, bool has)
 		{
