@@ -184,6 +184,9 @@ GO
 USE [HRAS_iTas] GRANT EXECUTE ON OBJECT::Search_Medical_Records TO HRAS_MW_iTas;
 GO
 
+USE [HRAS_iTas] GRANT EXECUTE ON OBJECT::Retrieve_Hourly_Rate TO HRAS_MW_iTas;
+GO
+
 USE [HRAS_iTas] GRANT EXECUTE ON OBJECT::Get_Failed_Attempts TO HRAS_MW_iTas;
 GO
 
