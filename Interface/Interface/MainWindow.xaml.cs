@@ -36,6 +36,26 @@ namespace Interface
 			logoffTimer.AutoReset = true;
 			logoffTimer.Enabled = false;
 			btnHiddenLogoff.Visibility = Visibility.Hidden;
+			//RegisterAllEvents();
+		}
+
+		public static void RegisterAllEvents(Type type, FrameworkElement target)
+		{
+			var events = EventManager.GetRoutedEvents();
+			foreach (var routedEvent in events)
+			{
+				EventManager.RegisterClassHandler(type,
+									routedEvent, new RoutedEventHandler((sender, args) =>
+									{
+										logoffTimer.Stop();
+										logoffTimer.Start();
+									}));
+			}
+		}
+
+		static void OnButtonClick(object sender, RoutedEventArgs e)
+		{
+			//Do awesome stuff with the button click
 		}
 
 		private void LogIn_Click(object sender, RoutedEventArgs e)

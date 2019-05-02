@@ -71,8 +71,7 @@ namespace Interface
         }
         private void Button_Click_LogOut(object sender, RoutedEventArgs e)
         {
-            MessageBoxResult result;
-            result = MessageBox.Show(this, "Do you want to exit?", "Log Out", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+            MessageBoxResult result = MessageBox.Show(this, "Do you want to exit?", "Log Out", MessageBoxButton.YesNo, MessageBoxImage.Warning);
             if(result == MessageBoxResult.Yes)
             {
 				Session.getCurrentSession().getCurrentUser().logout();

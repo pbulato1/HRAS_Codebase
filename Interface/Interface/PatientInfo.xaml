@@ -9,10 +9,45 @@
         Title="Patient Information" Height="720" Width="1280">
     <Grid>
         <Label Content="HRAS Patient Information" FontSize="30" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,20,0,0"/>
-        <DataGrid HorizontalAlignment="Left" Height="476" Margin="32,136,0,0" VerticalAlignment="Top" Width="1214" Name="P1" ItemsSource="{Binding}" AutoGenerateColumns="False" SelectionChanged="IR_DataChange"/>
         <Button Content="Main Menu" Background="White" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Bottom"  Margin="32,0,0,19" Height="35" Width="75" Click="Button_Click_BackMenu" />
         <Button Content="Log out" Background="White" FontWeight="Bold" HorizontalAlignment="Right" VerticalAlignment="Bottom"  Margin="0,0,26,19" Height="35" Width="75" Click="Button_Click_LogOut" />
         <Button Content="Check out" Background="White" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Bottom"  Margin="623,0,0,19" Height="35" Width="75" Click="Button_Click_Checkout" />
+        <Label x:Name="name" Content="Name:" HorizontalAlignment="Left" Height="36" Margin="51,137,0,0" VerticalAlignment="Top" Width="71" FontSize="18"/>
+        <Label x:Name="SSN" Content="SSN:" HorizontalAlignment="Left" Height="38" Margin="51,202,0,0" VerticalAlignment="Top" Width="56" FontSize="18"/>
+        <Label x:Name="Gender" Content="Gender:" HorizontalAlignment="Left" Height="37" Margin="51,273,0,0" VerticalAlignment="Top" Width="89" FontSize="18"/>
+        <Label x:Name="Birthday" Content="Birthday:" HorizontalAlignment="Left" Height="36" Margin="51,348,0,0" VerticalAlignment="Top" Width="89" FontSize="18"/>
+        <Label x:Name="Address" Content="Address:" HorizontalAlignment="Left" Height="36" Margin="51,422,0,0" VerticalAlignment="Top" Width="89" FontSize="18"/>
+        <Label x:Name="PhoneNum" Content="Phone num:" HorizontalAlignment="Left" Height="37" Margin="51,501,0,0" VerticalAlignment="Top" Width="116" FontSize="18"/>
+        <Label x:Name="EntryDate" Content="Entry date:" HorizontalAlignment="Left" Height="36" Margin="482,137,0,0" VerticalAlignment="Top" Width="98" FontSize="18"/>
+        <Label x:Name="ExitDate" Content="Exit date:" HorizontalAlignment="Left" Height="36" Margin="482,202,0,0" VerticalAlignment="Top" Width="98" FontSize="18"/>
+        <Label x:Name="AttendingPhy" Content="Attending phy:" HorizontalAlignment="Left" Height="36" Margin="482,273,0,0" VerticalAlignment="Top" Width="131" FontSize="18"/>
+        <Label x:Name="RoomNo" Content="Room No:" HorizontalAlignment="Left" Height="36" Margin="482,348,0,0" VerticalAlignment="Top" Width="98" FontSize="18"/>
+        <Label x:Name="Symptoms" Content="Symptoms:" HorizontalAlignment="Left" Height="36" Margin="482,422,0,0" VerticalAlignment="Top" Width="98" FontSize="18"/>
+        <Label x:Name="Diagnosis" Content="Diagnosis:" HorizontalAlignment="Left" Height="36" Margin="886,137,0,0" VerticalAlignment="Top" Width="98" FontSize="18"/>
+        <Label x:Name="Note" Content="Note:" HorizontalAlignment="Left" Height="36" Margin="886,202,0,0" VerticalAlignment="Top" Width="98" FontSize="18"/>
+        <Label x:Name="Insurer" Content="Insurer:" HorizontalAlignment="Left" Height="36" Margin="886,273,0,0" VerticalAlignment="Top" Width="98" FontSize="18"/>
+        <Label x:Name="Dnf" Content="Dnr Status:" HorizontalAlignment="Left" Height="36" Margin="886,348,0,0" VerticalAlignment="Top" Width="98" FontSize="18"/>
+        <Label x:Name="Organ" Content="Organ Donor:" HorizontalAlignment="Left" Height="36" Margin="886,422,0,0" VerticalAlignment="Top" Width="132" FontSize="18"/>
+        <Label x:Name="Debrief" Content="Diagnosis Debrief:" HorizontalAlignment="Left" Height="36" Margin="886,502,0,0" VerticalAlignment="Top" Width="156" FontSize="18"/>
+        
+        
+        <TextBox x:Name="Name" HorizontalAlignment="Left" Height="36" Margin="140,137,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="214"/>
+        <TextBox x:Name="ssn" HorizontalAlignment="Left" Height="36" Margin="140,202,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="214"/>
+        <TextBox x:Name="gender" HorizontalAlignment="Left" Height="36" Margin="140,274,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="214"/>
+        <TextBox x:Name="birthday" HorizontalAlignment="Left" Height="36" Margin="140,348,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="214"/>
+        <TextBox x:Name="address" HorizontalAlignment="Left" Height="60" Margin="140,422,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="310"/>
+        <TextBox x:Name="phoneNum" HorizontalAlignment="Left" Height="36" Margin="172,502,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="214"/>
+        <TextBox x:Name="entryDate" HorizontalAlignment="Left" Height="36" Margin="623,137,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="214"/>
+        <TextBox x:Name="exitDate" HorizontalAlignment="Left" Height="36" Margin="623,204,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="214"/>
+        <TextBox x:Name="attendingPhy" HorizontalAlignment="Left" Height="36" Margin="623,274,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="214"/>
+        <TextBox x:Name="roomNum" HorizontalAlignment="Left" Height="36" Margin="585,348,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="214"/>
+        <TextBox x:Name="sympotoms" HorizontalAlignment="Left" Height="116" Margin="585,422,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="252"/>
+        <TextBox x:Name="diafnosis" HorizontalAlignment="Left" Height="36" Margin="989,137,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="214"/>
+        <TextBox x:Name="note" HorizontalAlignment="Left" Height="36" Margin="989,204,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="214"/>
+        <TextBox x:Name="insurer" HorizontalAlignment="Left" Height="36" Margin="989,274,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="214"/>
+        <TextBox x:Name="dnr" HorizontalAlignment="Left" Height="36" Margin="989,348,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="214"/>
+        <TextBox x:Name="organ" HorizontalAlignment="Left" Height="36" Margin="1018,422,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="214"/>
+        <TextBox x:Name="defrief" HorizontalAlignment="Left" Height="36" Margin="1048,502,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="184"/>
 
     </Grid>
 </Window>
