@@ -538,6 +538,9 @@ namespace Middleware
 		public static bool addInventory(string description, string stockID, string size, string quantity, string price)
 		{
 			SqlConnection connection = Session.getCurrentSession().getConnection();
+
+
+
 			string queryString = "Import_Item";
 			SqlCommand command = new SqlCommand(queryString, connection);
 			command.CommandType = System.Data.CommandType.StoredProcedure;

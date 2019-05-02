@@ -21,29 +21,25 @@ namespace Interface
     /// </summary>
     public partial class InventoryWithdraw : Window
     {
-		DataGrid grid;
+        private bool isTextBoxEmpty()
+        {
+            if (ItemName.Text.Equals("") || ItemID.Text.Equals("") || Quantity.Text.Equals("") || DayPicker.SelectedDate.Equals("")/*this is not right yet*/) return true;
+            return false;
+        }
+
+        DataGrid grid;
 
 		public InventoryWithdraw(DataGrid previousPageDataGrid)
 		{
 			grid = previousPageDataGrid;
 			InitializeComponent();
-			Price.IsEnabled = false;
-			Price.Background = Brushes.Gray;
 			ItemName.IsEnabled = false;
 			ItemName.Background = Brushes.Gray;
-			Date.Text = DateTime.Today.ToString("MM/dd/yyyy");
-			Date.IsEnabled = false;
 		}
 
 		public InventoryWithdraw()
         {
             InitializeComponent();
-			Price.IsEnabled = false;
-			Price.Background = Brushes.Gray;
-			ItemName.IsEnabled = false;
-			ItemName.Background = Brushes.Gray;
-			Date.Text = DateTime.Today.ToString("MM/dd/yyyy");
-			Date.IsEnabled = false;
 		}
 
         private void ItemName_TextChanged(object sender, TextChangedEventArgs e)

@@ -24,6 +24,12 @@ namespace Interface
 
     public partial class AddInventory : Window
     {
+        private bool isTextBoxEmpty()
+        {
+            if (ItemName.Text.Equals("") || ItemID.Text.Equals("") || Quantity.Text.Equals("") || DayPicker.SelectedDate.Equals("")/*this is not right yet*/) return true;
+            return false;
+        }
+
 		DataGrid grid;
 		int ItemIDStandardLength = 5;
 
@@ -31,15 +37,12 @@ namespace Interface
 		{
 			grid = previousPageDataGrid;
 			InitializeComponent();
-			Date.Text = DateTime.Today.ToString("MM/dd/yyyy");
-			Date.IsEnabled = false;
 		}
+
 
         public AddInventory()
         {
             InitializeComponent();
-			Date.Text = DateTime.Today.ToString("MM/dd/yyyy");
-			Date.IsEnabled = false;
 		}
 
         private void ItemName_TextChanged(object sender, TextChangedEventArgs e)
@@ -58,7 +61,7 @@ namespace Interface
 				ItemName.Background = Brushes.Gray;
 				Size.IsEnabled = false;
 				Size.Background = Brushes.Gray;
-				ItemTag.Visibility = Visibility.Hidden;
+
 			}
 			else
 			{
@@ -68,7 +71,6 @@ namespace Interface
 				ItemName.Background = Brushes.White;
 				Size.IsEnabled = true;
 				Size.Background = Brushes.White;
-				ItemTag.Visibility = Visibility.Visible;
 			}
 		}
 
@@ -88,51 +90,63 @@ namespace Interface
 
         private void Button_Click_Submit(object sender, RoutedEventArgs e)
         {
-			bool success = false;
-			bool currentAddExists = InventoryItem.itemExists(ItemID.Text);
-			if (currentAddExists)
-			{
-				if (!InventoryItem.addInventory(ItemID.Text, Quantity.Text))
-				{
-					MessageBox.Show(this, "An error occurred while adding to the database, make sure that the data format " +
-						"is correct.", "Error", MessageBoxButton.OK, MessageBoxImage.Stop);
-				}
-				else { success = true; };
-			}
-			else
-			{
-				if (ItemID.Text.Length != ItemIDStandardLength)
-				{
-					MessageBox.Show(this, "The Item ID must be of length " + ItemIDStandardLength, "Error", MessageBoxButton.OK, MessageBoxImage.Stop);
-				}
-				else
-				{
-					try
-					{
-						if (!InventoryItem.addInventory(ItemName.Text, ItemID.Text, Size.Text, Quantity.Text, Price.Text))
-						{
-							MessageBox.Show(this, "An error occurred while adding to the database, make sure that the data format " +
-								"is correct.", "Error", MessageBoxButton.OK, MessageBoxImage.Stop);
-						}
-						else { success = true; }
-					}
-					catch (Exception ex)
-					{
-						if (ex == InventoryItem.invalidInput)
-						{
-							MessageBox.Show(this, "The input format you entered was invalid.", "Error", MessageBoxButton.OK, MessageBoxImage.Stop);
-						}
-					}
-				}
-			}
-			if (grid != null && success == true)
-			{
-				DataTable inventory = InventoryItem.searchInventory(ItemID.Text, "", "");
-				grid.ItemsSource = inventory.DefaultView;
-				grid.AutoGenerateColumns = true;
-				grid.CanUserAddRows = false;
-				this.Close();
-			}
+            bool success = false;
+            bool currentAddExists = InventoryItem.itemExists(ItemID.Text);
+
+            if (!isTextBoxEmpty())
+            {
+                MessageBoxResult result = MessageBox.Show(this, "Do you want to submit?", "Submit", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                if (result == MessageBoxResult.Yes)
+                {
+                    if (currentAddExists)
+                    {
+                        if (!InventoryItem.addInventory(ItemID.Text, Quantity.Text))
+                        {
+                            MessageBox.Show(this, "An error occurred while adding to the database, make sure that the data format " +
+                                "is correct.", "Error", MessageBoxButton.OK, MessageBoxImage.Stop);
+                        }
+                        else { success = true; };
+                    }
+                    else
+                    {
+                        if (ItemID.Text.Length != ItemIDStandardLength)
+                        {
+                            MessageBox.Show(this, "The Item ID must be of length " + ItemIDStandardLength, "Error", MessageBoxButton.OK, MessageBoxImage.Stop);
+                        }
+                        else
+                        {
+                            try
+                            {
+                                if (!InventoryItem.addInventory(ItemName.Text, ItemID.Text, Size.Text, Quantity.Text, Price.Text))
+                                {
+                                    MessageBox.Show(this, "An error occurred while adding to the database, make sure that the data format " +
+                                        "is correct.", "Error", MessageBoxButton.OK, MessageBoxImage.Stop);
+                                }
+                                else { success = true; }
+                            }
+                            catch (Exception ex)
+                            {
+                                if (ex == InventoryItem.invalidInput)
+                                {
+                                    MessageBox.Show(this, "The input format you entered was invalid.", "Error", MessageBoxButton.OK, MessageBoxImage.Stop);
+                                }
+                            }
+                        }
+                    }
+                    if (grid != null && success == true)
+                    {
+                        DataTable inventory = InventoryItem.searchInventory(ItemID.Text, "", "");
+                        grid.ItemsSource = inventory.DefaultView;
+                        grid.AutoGenerateColumns = true;
+                        grid.CanUserAddRows = false;
+                        this.Close();
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show(this, "You have to fill all required fields", "Fill required fields", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
         }
 
         private void Button_Click_Cancel(object sender, RoutedEventArgs e)
