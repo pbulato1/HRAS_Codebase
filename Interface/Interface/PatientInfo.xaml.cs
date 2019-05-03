@@ -42,7 +42,7 @@ namespace Interface
 			insurer.Text = record.getInsurer();
 			dnr.Text = record.getPatient().getDnrStatus().ToString();
 			organ.Text = record.getPatient().getOrganDonor().ToString();
-			//roomNum.Text = record.getRoom().getRoomNumber();
+			roomNum.Text = record.getRoom().getRoomNumber();
 			// attending phys
 		}
 

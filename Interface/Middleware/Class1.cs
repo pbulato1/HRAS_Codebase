@@ -635,10 +635,10 @@ namespace Middleware
 				diagnosis = new Diagnosis(dataReader.GetString(indexDiagnosis));
 				notes = dataReader.GetString(indexNotes);
 				insurer = dataReader.GetString(indexInsurer);
-				string roomNumber = Room.getRoomNumber(ssn, entryDate);
-				//currentRoom = new Room(entryDate, roomNumber);
 			}
 			dataReader.Close();
+			string roomNumber = Room.getRoomNumber(ssn, entryDate);
+			currentRoom = new Room(entryDate, roomNumber);
 		}
 
 		public static DataTable getMedicalRecords()
