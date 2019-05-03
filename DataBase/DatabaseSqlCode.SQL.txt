@@ -100,7 +100,7 @@ CREATE PROCEDURE Search_Medical_Records @input varchar(50) AS BEGIN SELECT Patie
 
 GO
 
-CREATE PROCEDURE SearchAdvance_Medical_Records @firstName varchar(50), @lastName varchar(25), @patientSSN char(9), @roomNum AS BEGIN SELECT Patient.First_Name, Patient.Last_Name, Stayed_In.Room_Number FROM Stayed_In INNER JOIN Patient ON Stayed_In.Patient_SSN = Patient.SSN WHERE First_Name LIKE '%' + @firstName + '%' AND Last_Name LIKE '%' + @lastName + '%' AND Patient_SSN LIKE '%' + @patientSSN + '%' AND Room_Number LIKE '%' + @roomNum + '%' END
+CREATE PROCEDURE SearchAdvance_Medical_Records @firstName varchar(50), @lastName varchar(25), @patientSSN char(9), @roomNum char(9) AS BEGIN SELECT Patient.First_Name, Patient.Last_Name, Stayed_In.Room_Number FROM Stayed_In INNER JOIN Patient ON Stayed_In.Patient_SSN = Patient.SSN WHERE First_Name LIKE '%' + @firstName + '%' AND Last_Name LIKE '%' + @lastName + '%' AND Patient_SSN LIKE '%' + @patientSSN + '%' AND Room_Number LIKE '%' + @roomNum + '%' END
 
 GO
 
