@@ -12,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Middleware;
 
 namespace Interface
 {
@@ -20,11 +21,30 @@ namespace Interface
     /// </summary>
     public partial class PatientInfo : Window
     {
-        public PatientInfo()
+        public PatientInfo(Middleware.MedicalRecord record)
         {
             InitializeComponent();
             Loaded += Patient_Loaded;
-        }
+			Name.Text = record.getLastName() + ", " + record.getFirstName() + ", " + record.getMiddleInitial();
+			ssn.Text = record.getPatient().getSSN();
+			gender.Text = "" + record.getPatient().getGender();
+			birthday.Text = record.getPatient().getBirthDate().ToShortDateString();
+			string addressLineOne = record.getPatient().getAddress().getAddressLineOne();
+			string addressLineTwo = record.getPatient().getAddress().getAddressLineTwo();
+			string addressCity = record.getPatient().getAddress().getCity();
+			string addressState = record.getPatient().getAddress().getState();
+			string addressZip = record.getPatient().getAddress().getZip();
+			address.Text = addressLineOne + " " + addressLineTwo + " " + addressCity + ", " + addressState + " " + addressZip;
+			entryDate.Text = record.getEntryDate().ToShortDateString();
+			exitDate.Text = record.getExitDate().ToShortDateString();
+			diagnosis.Text = record.getDiagnosis().getName();
+			note.Text = record.getNotes();
+			insurer.Text = record.getInsurer();
+			dnr.Text = record.getPatient().getDnrStatus().ToString();
+			organ.Text = record.getPatient().getOrganDonor().ToString();
+			roomNum.Text = record.getRoom().getRoomNumber();
+			// attending phys
+		}
 
         private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -34,7 +54,7 @@ namespace Interface
 
         private void Button_Click_Checkout(object sender, RoutedEventArgs e)
         {
-            Billing billing = new Billing();
+            Billing billing = new Billing(ssn.Text, new Room(DateTime.Parse(entryDate.Text), roomNum.Text));
             billing.Show();
             this.Close();
 

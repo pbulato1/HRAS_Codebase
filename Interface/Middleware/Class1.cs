@@ -281,6 +281,21 @@ namespace Middleware
 	{
 		string diagnosisName;
 		List<string> symptoms;
+
+		public Diagnosis(string name)
+		{
+			diagnosisName = name;
+		}
+
+		public string getName()
+		{
+			return diagnosisName;
+		}
+
+		public void addSymptom(string symptom)
+		{
+			symptoms.Add(symptom);
+		}
 	}
 
 	public class PasswordHasher
@@ -420,8 +435,33 @@ namespace Middleware
 
         public BasicAddress(string line1, string line2, string theCity, string theState, string theZip)
         {
-            // this should connect the datebase directly, 
+			addressLineOne = line1;
+			addressLineTwo = line2;
+			city = theCity;
+			state = theState;
+			zip = theZip;
         }
+
+		public string getAddressLineOne()
+		{
+			return addressLineOne;
+		}
+		public string getAddressLineTwo()
+		{
+			return addressLineTwo;
+		}
+		public string getCity()
+		{
+			return city;
+		}
+		public string getState()
+		{
+			return state;
+		}
+		public string getZip()
+		{
+			return zip;
+		}
 
 	}
 
@@ -440,8 +480,61 @@ namespace Middleware
 
         public Patient(string theLastName, string theFirstName, char middle, char theGender, string SSN, DateTime birthdate, BasicAddress theAddress, bool theDnrStatus, bool Donor)
         {
-            
+			lastName = theLastName;
+			firstName = theFirstName;
+			middleInitial = middle;
+			gender = theGender;
+			ssn = SSN;
+			birthDate = birthdate;
+			address = theAddress;
+			dnrStatus = theDnrStatus;
+			organDonor = Donor;
         }
+
+		public string getFirstName()
+		{
+			return firstName;
+		}
+
+		public string getLastName()
+		{
+			return lastName;
+		}
+
+		public char getMiddleInitial()
+		{
+			return middleInitial;
+		}
+
+		public string getSSN()
+		{
+			return ssn;
+		}
+
+		public DateTime getBirthDate()
+		{
+			return birthDate;
+		}
+
+		public BasicAddress getAddress()
+		{
+			return address;
+		}
+
+		public char getGender()
+		{
+			return gender;
+		}
+
+		public bool getDnrStatus()
+		{
+			return dnrStatus;
+		}
+
+		public bool getOrganDonor()
+		{
+			return organDonor;
+		}
 
 		public static bool checkPatient(string ssn)
 		{
@@ -487,13 +580,66 @@ namespace Middleware
 		Patient patient;
 		DateTime entryDate;
 		DateTime exitDate;
-		string attendingPhysician;
+		string attendingPhysician = "";
 		Dictionary<Room, double> previousRooms;
 		Room currentRoom;
 		Diagnosis diagnosis;
 		string notes;
 		string insurer;
 		List<InventoryItem> suppliesUsed;
+
+		public MedicalRecord(string ssn, DateTime date)
+		{
+			SqlConnection connection = Session.getCurrentSession().getConnection();
+			string queryString = "Retrieve_Patient_Page";
+			SqlCommand command = new SqlCommand(queryString, connection);
+			command.CommandType = System.Data.CommandType.StoredProcedure;
+			command.Parameters.Add(new SqlParameter("@ssn", ssn));
+			command.Parameters.Add(new SqlParameter("@entryDateTime", date));
+			SqlDataReader dataReader = command.ExecuteReader();
+			while (dataReader.Read())
+			{
+				int indexFirstName = dataReader.GetOrdinal("First_Name");
+				int indexLastName = dataReader.GetOrdinal("Last_Name");
+				int indexMiddleInitial = dataReader.GetOrdinal("Middle_initial");
+				int indexGender = dataReader.GetOrdinal("Gender");
+				int indexBirthDate = dataReader.GetOrdinal("Birth_Date");
+				int indexAddressLine1 = dataReader.GetOrdinal("Address_Line1");
+				int indexAddressLine2 = dataReader.GetOrdinal("Address_Line2");
+				int indexAddressCity = dataReader.GetOrdinal("Address_City");
+				int indexAddressState = dataReader.GetOrdinal("Address_State");
+				int indexAddressZip = dataReader.GetOrdinal("Address_Zip");
+				int indexDNR = dataReader.GetOrdinal("DNR_Status");
+				int indexDonor = dataReader.GetOrdinal("Organ_Donor");
+				int indexEntryDate = dataReader.GetOrdinal("Entry_Date");
+				int indexExitDate = dataReader.GetOrdinal("Exit_Date");
+				int indexDiagnosis = dataReader.GetOrdinal("Diagnosis");
+				int indexNotes = dataReader.GetOrdinal("Notes");
+				int indexInsurer = dataReader.GetOrdinal("Insurer");
+				string firstName = dataReader.GetString(indexFirstName);
+				string lastName = dataReader.GetString(indexLastName);
+				string middleInitial = dataReader.GetString(indexMiddleInitial);
+				string gender = dataReader.GetString(indexGender);
+				DateTime birthDate = DateTime.ParseExact(dataReader.GetString(indexBirthDate), "MMddyyyy", null);
+				bool dnr = (dataReader.GetString(indexDNR) == "Y");
+				bool donor = (dataReader.GetString(indexDonor) == "Y");
+				string addressLine1 = dataReader.GetString(indexAddressLine1);
+				string addressLine2 = dataReader.GetString(indexAddressLine2);
+				string addressCity = dataReader.GetString(indexAddressCity);
+				string addressState = dataReader.GetString(indexAddressState);
+				string addressZip = dataReader.GetString(indexAddressZip);
+				BasicAddress address = new BasicAddress(addressLine1, addressLine2, addressCity, addressState, addressZip);
+				patient = new Patient(lastName, firstName, middleInitial[0], gender[0], ssn, birthDate, address, dnr, donor);
+				entryDate = dataReader.GetDateTime(indexEntryDate);
+				exitDate = dataReader.GetDateTime(indexExitDate);
+				diagnosis = new Diagnosis(dataReader.GetString(indexDiagnosis));
+				notes = dataReader.GetString(indexNotes);
+				insurer = dataReader.GetString(indexInsurer);
+			}
+			dataReader.Close();
+			string roomNumber = Room.getRoomNumber(ssn, entryDate);
+			currentRoom = new Room(entryDate, roomNumber);
+		}
 
 		public static DataTable getMedicalRecords()
 		{
@@ -518,6 +664,56 @@ namespace Middleware
 			SqlDataReader reader = command.ExecuteReader();
 			records.Load(reader);
 			return records;
+		}
+
+		public Room getRoom()
+		{
+			return currentRoom;
+		}
+
+		public string getFirstName()
+		{
+			return patient.getFirstName();
+		}
+
+		public string getLastName()
+		{
+			return patient.getLastName();
+		}
+
+		public char getMiddleInitial()
+		{
+			return patient.getMiddleInitial();
+		}
+
+		public DateTime getEntryDate()
+		{
+			return entryDate;
+		}
+
+		public DateTime getExitDate()
+		{
+			return exitDate;
+		}
+
+		public Patient getPatient()
+		{
+			return patient;
+		}
+
+		public string getNotes()
+		{
+			return notes;
+		}
+
+		public string getInsurer()
+		{
+			return insurer;
+		}
+
+		public Diagnosis getDiagnosis()
+		{
+			return diagnosis;
 		}
 
 		public void addSupply(InventoryItem item)
@@ -733,28 +929,115 @@ namespace Middleware
 
 	public class Room
 	{
-		int roomNumber;
+		string roomNumber;
 		double hourlyRate;
-		Dictionary<Patient, DateTime> occupants;
+		DateTime checkedIn;
+		DateTime checkedOut;
+		bool occupancyStatus;
+
+		public Room(DateTime date, string roomNum)
+		{
+			roomNumber = roomNum;
+			hourlyRate = getHourlyRate(roomNum);
+			checkIn(date);
+			occupancyStatus = true;
+		}
 
 		public void checkIn(DateTime date)
 		{
-
+			checkedIn = date;
 		}
 
-		public double checkOut(DateTime date)
+		public void checkOut(DateTime date)
 		{
-			return 0;
+			checkedOut = date;
+			occupancyStatus = false;
+		}
+
+		public void viewPossibleCheckOut(DateTime date)
+		{
+			checkedOut = date;
 		}
 
 		public void adjustRate(double newRate)
 		{
-
+			hourlyRate = newRate;
 		}
 
 		public double calculateCost(Patient thePatient)
 		{
-			return 0;
+			return hourlyRate * (checkedOut.Subtract(checkedIn)).TotalHours;
+		}
+
+		public double getHourlyRate()
+		{
+			return hourlyRate;
+		}
+
+		public static double getHourlyRate(string roomNumber)
+		{
+			decimal retrievedQuantity = 0;
+			SqlConnection connection = Session.getCurrentSession().getConnection();
+			string queryString = "Retrieve_Hourly_Rate";
+			SqlCommand command = new SqlCommand(queryString, connection);
+			command.CommandType = System.Data.CommandType.StoredProcedure;
+			command.Parameters.Add(new SqlParameter("@roomNumber", roomNumber));
+			SqlDataReader dataReaderRate = command.ExecuteReader();
+			while (dataReaderRate.Read())
+			{
+				int index = dataReaderRate.GetOrdinal("Hourly_Rate");
+				retrievedQuantity = dataReaderRate.GetDecimal(index);
+			}
+			dataReaderRate.Close();
+			return (double)retrievedQuantity;
+
+		}
+
+		public static string getRoomNumber(string ssn, DateTime entryDate)
+		{
+			string connectionString = Properties.Settings1.Default.CONNECTIONSTRING;
+			SqlConnection connection = new SqlConnection(connectionString);
+			connection.Open();
+			string queryString = "Retrieve_Room_Number";
+			SqlCommand command = new SqlCommand(queryString, connection);
+			command.CommandType = System.Data.CommandType.StoredProcedure;
+			command.Parameters.Add(new SqlParameter("@ssn", ssn));
+			command.Parameters.Add(new SqlParameter("@entryDate", entryDate));
+			SqlDataReader dataReader = command.ExecuteReader();
+			int index = dataReader.GetOrdinal("Room_Number");
+			string roomNumber = "";
+			while (dataReader.Read())
+			{
+				roomNumber = dataReader.GetString(index);
+			}
+			dataReader.Close();
+			command.Dispose();
+			return roomNumber;
+		}
+
+		public string getRoomNumber()
+		{
+			return roomNumber;
+		}
+
+		public DateTime getEntryDate()
+		{
+			return checkedIn;
+		}
+
+		public DateTime getExitDate()
+		{
+			return checkedOut;
+		}
+
+		public bool isOccupied()
+		{
+			return occupancyStatus;
+		}
+
+		public double getDuration()
+		{
+			return (checkedOut.Subtract(checkedIn)).TotalHours;
 		}
 	}
 
@@ -933,6 +1216,7 @@ namespace Middleware
 						alreadyExists = true;
 					}
 					dataReader.Close();
+					command.Dispose();
 
 					if (!alreadyExists)
 					{
