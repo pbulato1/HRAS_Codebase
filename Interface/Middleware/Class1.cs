@@ -188,18 +188,19 @@ namespace Middleware
 		}
 	}
 
-    class DiagnosisWizard
+    public class DiagnosisWizardMid
     {
         string SymptomList = "Where Symptom_Name <> ''";
         string DiagnosisList = "Where Symptom_Name <> ''";
         Boolean exit = false;
+        public string answer;
 
         public void RunDiagnosisWizard()
         {
             while (!exit)// connect exit to the exit button to leave the diagnosis wizard
             {
                 string fiftyName = getSymptomName(SymptomList);
-                Boolean response = askQuestion(fiftyName);
+                Boolean response = Response(answer);
 
                 if (response == true)
                 {
@@ -214,14 +215,29 @@ namespace Middleware
             }
         }
 
-        private Boolean askQuestion(string name)
+        public string getSymptomList()
         {
-            string question = "Is the patient  show signs of " + name + "?";
-
-            return true;// need to hook up to interface which asks the questiom and get response from te yes/ no bubles after they hit enter
+            return SymptomList;
         }
 
-        private string[,] getDiagnosisPercentages(string DiagnosisList)
+        public string askQuestion(string name)
+        {
+            return "Is the patient  show signs of " + name + "?";
+        }
+
+        public Boolean Response(string answer)
+        {
+            if (answer == "Yes")
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public string[,] getDiagnosisPercentages(string DiagnosisList)
         {
             string DiagnosisScript = "SELECT TOP 10 * FROM(" +
                 "SELECT Diagnosis, (COUNT(Diagnosis) *100)/" +
@@ -254,7 +270,7 @@ namespace Middleware
             return PercentsList;
         }
 
-        private string getSymptomName(string SymptomList)
+        public string getSymptomName(string SymptomList)
         {
             string SymptomScript = "SELECT TOP 1 Symptom_Name FROM(" +
                 "Select Symptom_Name, ABS(500-(COUNT(Symptom_Name) *1000/" +

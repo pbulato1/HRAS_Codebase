@@ -8,22 +8,32 @@
         WindowState="Maximized"
         Title="Diagnosis Wizard" Height="720" Width="1280">
     <Grid>
+        <Label x:Name="question" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="624,141,639.6,0" Content="" FontSize="12" Background="White" Foreground="Red" FontWeight="Bold" RenderTransformOrigin="0.5,0.5">
+            <Label.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform Angle="-1.837"/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Label.RenderTransform>
+        </Label>
+        <DataGrid Name="DG1" Margin="450,316,449.6,0" Width="374" Height="284" HorizontalAlignment="Center" VerticalAlignment="Top" ItemsSource="{Binding}" AutoGenerateColumns="False" SelectionChanged="DiagnosisPercent_Change" />
         <Label Content="HRAS Diagnosis Wizard" FontSize="30" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,20,0,0"/>
         <Label Content="*Finish the following questions to predict the diagnosis" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,80,0,0"/>
-        <Grid HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,140,0,0" Height="30">
+        <Grid HorizontalAlignment="Center" VerticalAlignment="Top" Margin="1353,316,-330.4,0" Height="30">
             <Label Content="Question" FontSize="15" HorizontalAlignment="Left" VerticalAlignment="Top"/>
             <Label Content="##:" FontSize="15" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="65,0,0,0"/>
             <Label Content="Sample question?" FontSize="15" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="125,-2,0,0"/>
         </Grid>
-        <CheckBox Content="Yes" FontSize="15" HorizontalAlignment="Center" Margin="-375,220,0,0" VerticalAlignment="Top"/>
-        <CheckBox Content="No" FontSize="15" HorizontalAlignment="Center" Margin="-375,240,0,0" VerticalAlignment="Top"/>
 
 
-        <Button Content="Previous" HorizontalAlignment="Left" VerticalAlignment="Bottom"  Margin="290,0,0,300" FontSize="15" Height="35" Width="75" Click="Button_Click_Previous"/>
-        <Button Content="Next" HorizontalAlignment="Center" VerticalAlignment="Bottom"  Margin="0,0,0,300" FontSize="15" Height="35" Width="75" Click="Button_Click_Next"/>
-        <Button Content="Submit" HorizontalAlignment="Right" VerticalAlignment="Bottom"  Margin="0,0,290,300" FontSize="15" Height="35" Width="75" Click="Button_Click_Submit"/>
-        
+        <Button Content="Restart" HorizontalAlignment="Center" VerticalAlignment="Bottom"  Margin="739,0,459.6,446.4" FontSize="15" Height="35" Width="75" Click="Button_Click_Restart"/>
+        <Button Content="Submit" HorizontalAlignment="Right" VerticalAlignment="Bottom"  Margin="0,0,599.6,446.4" FontSize="15" Height="35" Width="75" Click="Button_Click_Submit"/>
+
         <Button Content="Main Menu" Background="White" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Bottom"  Margin="60,0,0,30" Height="35" Width="75" Click="Button_Click_BackMenu" />
         <Button Content="Log out" Background="White" FontWeight="Bold" HorizontalAlignment="Right" VerticalAlignment="Bottom"  Margin="0,0,60,30" Height="35" Width="75" Click="Button_Click_LogOut" />
+        <RadioButton Content="Yes" HorizontalAlignment="Left" Margin="450,209,0,0" VerticalAlignment="Top" Checked="YesButton_Checked"/>
+        <RadioButton Content="No" HorizontalAlignment="Left" Margin="450,232,0,0" VerticalAlignment="Top" Height="17" Checked="NoButton_Checked"/>
     </Grid>
 </Window>
