@@ -117,6 +117,29 @@ END
 
 GO
 
+CREATE PROCEDURE Retrieve_Patient_Page @ssn char(9), @entryDateTime datetime 
+AS 
+BEGIN 
+SELECT  Patient.*, Visited_History.*
+FROM 
+Visited_History
+INNER JOIN Patient ON Visited_History.Patient_SSN = Patient.SSN  
+WHERE Visited_History.Patient_SSN = @ssn AND Visited_History.Entry_Date = @entryDateTime
+END
+
+GO
+
+CREATE PROCEDURE Retrieve_Hourly_Rate @roomNumber char(9)
+AS 
+BEGIN 
+SELECT  Hourly_Rate
+FROM 
+Room
+WHERE Room_Number = @roomNumber
+END
+
+GO
+
 CREATE PROCEDURE Retrieve_SSN @ssn char(9) AS BEGIN Select SSN FROM Patient WHERE SSN = @ssn END
 
 GO
@@ -203,6 +226,12 @@ USE [HRAS_iTas] GRANT EXECUTE ON OBJECT::Withdraw_Inventory TO HRAS_MW_iTas;
 GO
 
 USE [HRAS_iTas] GRANT EXECUTE ON OBJECT::Get_Entry_Date TO HRAS_MW_iTas;
+GO
+
+USE [HRAS_iTas] GRANT EXECUTE ON OBJECT::Retrieve_Hourly_Rate TO HRAS_MW_iTas;
+GO
+
+USE [HRAS_iTas] GRANT EXECUTE ON OBJECT::Retrieve_Patient_Page TO HRAS_MW_iTas;
 GO
 
 ALTER LOGIN HRAS_MW_iTas ENABLE;
