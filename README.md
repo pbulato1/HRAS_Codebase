@@ -9,7 +9,7 @@ First time Startup procedure:
 5. Make sure that the C# Middlewere/properties/settings1.settings has the same data in the script
 6. Execute the code
 7. Open up the Security at the sever leven and find the user HRAS_MW_iTas and right click and select the properties and change the defalt database to HRAS_iTas
-8. At the database level open security and find the user you create and alow to write from database
+8. At the database level open security and find the user you create right click and go into properties and click on membership and allow the account to read from database
 9. Run the C# program
 10. login to Username = admin and Password = password      p.s. this is just a temp user you should delete this user
 11. Click on "Import Files" button
