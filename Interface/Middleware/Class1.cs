@@ -624,7 +624,7 @@ namespace Middleware
 
 
 
-			string queryString = "Import_Item";
+            string queryString = "Import_Item";
 			SqlCommand command = new SqlCommand(queryString, connection);
 			command.CommandType = System.Data.CommandType.StoredProcedure;
 			command.Parameters.Add(new SqlParameter("@stockID", stockID));
