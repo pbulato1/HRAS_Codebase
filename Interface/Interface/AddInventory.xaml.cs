@@ -20,8 +20,6 @@ namespace Interface
     /// <summary>
     /// Interaction logic for AddInventory.xaml
     /// </summary>
-
-
     public partial class AddInventory : Window
     {
 		DataGrid grid;
@@ -33,11 +31,6 @@ namespace Interface
 			InitializeComponent();
             Date.Text = DateTime.Now.ToString("MM/dd/yyyy hh:mm:ss");
             Date.IsEnabled = false;
-        }
-
-        private void ItemName_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            // check if the format of the box is correct or not for every text box.
         }
 
         private void ItemID_TextChanged(object sender, TextChangedEventArgs e)

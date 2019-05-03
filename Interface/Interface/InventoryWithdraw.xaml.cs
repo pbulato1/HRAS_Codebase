@@ -27,8 +27,8 @@ namespace Interface
 		{
             grid = previousPageDataGrid;
             InitializeComponent();
-            Date.Text = DateTime.Now.ToString("MM/dd/yyyy hh:mm:ss");
-            Date.IsEnabled = false;
+            WithdrawDate.Text = DateTime.Now.ToString("MM/dd/yyyy hh:mm:ss");
+            WithdrawDate.IsEnabled = false;
         }
 
         private void Button_Click_Submit(object sender, RoutedEventArgs e)
@@ -39,7 +39,7 @@ namespace Interface
                 bool success = false;
                 try
                 {
-                    if (InventoryItem.withdrawItem(ItemID.Text, Quantity.Text, PatientID.Text, Date.Text)) success = true;
+                    if (InventoryItem.withdrawItem(ItemID.Text, Quantity.Text, PatientID.Text, WithdrawDate.Text)) success = true;
                     else MessageBox.Show(this, "An error occured.", "Error", MessageBoxButton.OK, MessageBoxImage.Stop);
                 }
                 catch (Exception ex)

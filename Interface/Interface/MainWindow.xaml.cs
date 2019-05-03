@@ -25,8 +25,8 @@ namespace Interface
     {
 		public static Timer logoffTimer = new Timer();
 		int AFKTime = 0; // in minutes
-		int warningThreshold = 10;
-		int logoffThreshold = 15;
+		int warningThreshold = 500;
+		int logoffThreshold = 1000;
 
 		public MainWindow()
         {
@@ -36,7 +36,7 @@ namespace Interface
 			logoffTimer.AutoReset = true;
 			logoffTimer.Enabled = false;
 			btnHiddenLogoff.Visibility = Visibility.Hidden;
-			//RegisterAllEvents();
+			        //RegisterAllEvents();
 		}
 
 		public static void RegisterAllEvents(Type type, FrameworkElement target)
@@ -60,7 +60,6 @@ namespace Interface
 
 		private void LogIn_Click(object sender, RoutedEventArgs e)
 		{
-
 			byte[] passwordBytes = Encoding.ASCII.GetBytes(password.Password);
 			HashAlgorithm sha = new SHA1CryptoServiceProvider();
 			byte[] hashedBytes = sha.ComputeHash(passwordBytes);
@@ -95,7 +94,8 @@ namespace Interface
 					MessageBox.Show(this, "Your account is locked!", "Locked", MessageBoxButton.OK, MessageBoxImage.Stop);
 				}
 			}
-		}
+        }
+        
 		private void OnTimedEvent(Object source, System.Timers.ElapsedEventArgs e)
 		{
 			AFKTime++;
@@ -121,7 +121,5 @@ namespace Interface
 				});
 			}
 		}
-
-
     }
 }
