@@ -33,7 +33,10 @@ namespace Interface
 
 		private void openRecord(object sender, RoutedEventArgs e)
 		{
-			PatientInfo login = new PatientInfo();
+			string ssn = (M1.SelectedItem as DataRowView).Row[2].ToString(); // NEED TO FIX MAGIC NUMBER
+			DateTime date = (DateTime)(M1.SelectedItem as DataRowView).Row[3]; // NEED TO FIX MAGIC NUMBER
+			Middleware.MedicalRecord record = new Middleware.MedicalRecord(ssn, date);
+			PatientInfo login = new PatientInfo(record);
 			login.Show();
 			this.Close();
 		}

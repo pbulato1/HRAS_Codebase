@@ -12,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Middleware;
 
 namespace HRAS
 {
@@ -20,9 +21,22 @@ namespace HRAS
     /// </summary>
     public partial class Billing : Window
     {
-        public Billing()
+		DateTime entryDate;
+		Room room;
+
+        public Billing(string recordSSN, Room recordRoom)
         {
             InitializeComponent();
+			tfCheckIn.IsReadOnly = true;
+			tfDuration.IsReadOnly = true;
+			tfHourlyRate.IsReadOnly = true;
+			tfRoom.IsReadOnly = true;
+			tfCheckIn.Text = room.getEntryDate().ToString("MM\\dd\\yyyy HH\\mm");
+			tfDuration.Text = room.getDuration().ToString();
+			tfRoom.Text = room.getRoomNumber();
+			entryDate = room.getEntryDate();
+			room = recordRoom;
+
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
