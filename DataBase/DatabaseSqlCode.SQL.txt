@@ -140,6 +140,26 @@ END
 
 GO
 
+CREATE PROCEDURE Retrieve_Room_Number @ssn char(9), @entryDate datetime
+AS 
+BEGIN 
+SELECT  Room_Number
+FROM Stayed_In
+WHERE Patient_SSN = @ssn AND Entry_Date = @entryDate
+END
+
+GO
+
+CREATE PROCEDURE Retrieve_Symptoms @ssn char(9), @entryDate datetime
+AS 
+BEGIN 
+SELECT Symptom_Name
+FROM Show_Signs
+WHERE Patient_SSN = @ssn AND Entry_Date = @entryDate
+END
+
+GO
+
 CREATE PROCEDURE Retrieve_SSN @ssn char(9) AS BEGIN Select SSN FROM Patient WHERE SSN = @ssn END
 
 GO
@@ -183,10 +203,16 @@ GO
 USE [HRAS_iTas] GRANT EXECUTE ON OBJECT::Import_Symptom TO HRAS_MW_iTas;
 GO
 
+USE [HRAS_iTas] GRANT EXECUTE ON OBJECT::Retrieve_Room_Number TO HRAS_MW_iTas;
+GO
+
 USE [HRAS_iTas] GRANT EXECUTE ON OBJECT::Import_Inventory TO HRAS_MW_iTas;
 GO
 
 USE [HRAS_iTas] GRANT EXECUTE ON OBJECT::Retrieve_Item TO HRAS_MW_iTas;
+GO
+
+USE [HRAS_iTas] GRANT EXECUTE ON OBJECT::Retrieve_Symptoms TO HRAS_MW_iTas;
 GO
 
 USE [HRAS_iTas] GRANT EXECUTE ON OBJECT::Retrieve_Symptom TO HRAS_MW_iTas;

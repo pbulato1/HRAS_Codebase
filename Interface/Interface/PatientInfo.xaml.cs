@@ -43,6 +43,11 @@ namespace Interface
 			dnr.Text = record.getPatient().getDnrStatus().ToString();
 			organ.Text = record.getPatient().getOrganDonor().ToString();
 			roomNum.Text = record.getRoom().getRoomNumber();
+			foreach (string symptom in record.getDiagnosis().getSymptoms())
+			{
+				symptoms.Text += symptom + ", ";
+			}
+			symptoms.Text = symptoms.Text.Substring(0, symptoms.Text.Length - ", ".Length);
 			// attending phys
 		}
 
