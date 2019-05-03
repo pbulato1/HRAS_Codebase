@@ -1,10 +1,17 @@
 # HRAS_Codebase
-Users can log in with the default admin username="admin" password="password" after running this script. Make sure that the spacing doesn't get messed up when you copy and paste, and make sure that the server is set up to allow SQL authentication.
+NOTE: all names/passwords can be changed but they must be change in the databaseSqlCode.sql.text and C# Middlewere properties settings1.settings
 
-Before using the software the connection string will have to be set to the correct server name. Leave the rest of the connection string as is, the account used is created in this script. The connection string can be found in the settings file of the middleware.
-
-NOTES: 
-
-*When importing files, make sure to import rooms before medical records because the system will not allow for visits to non-existing rooms.
-
-*SQL code is in database folder.
+First time Startup procedure:
+1. Go into Database folder and Click on the databaseSqlCode.sql.text file
+2. Open up Microsodft SQL Server Managment
+3. Right click on the sever and open a New Query
+4. Paste the code you got from databaseSqlCode.sql.text if you wish to make cahnges now is the time to do so
+5. Make sure that the C# Middlewere/properties/settings1.settings has the same data in the script
+6. Execute the code
+7. Open up the Security at the sever leven and find the user HRAS_MW_iTas and right click and select the properties and change the defalt database to HRAS_iTas
+8. Run the C# program
+9. login to Username = admin and Password = password      p.s. this is just a temp user you should delete this user
+10. Click on "Import Files" button
+11. Click on "Browse For File" and find a file you wish to import and select what kind of file it is and hit "Begin Import" but always import the room file before others
+12. Repeat 11 until all file have been imported
+13. Now the system is ready for use
