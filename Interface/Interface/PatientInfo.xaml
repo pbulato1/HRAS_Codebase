@@ -41,7 +41,7 @@
         <TextBox x:Name="exitDate" HorizontalAlignment="Left" Height="36" Margin="623,204,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="214" FontSize="16"/>
         <TextBox x:Name="attendingPhy" HorizontalAlignment="Left" Height="36" Margin="623,274,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="214" FontSize="16"/>
         <TextBox x:Name="roomNum" HorizontalAlignment="Left" Height="36" Margin="585,348,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="214" FontSize="16"/>
-        <TextBox x:Name="sympotoms" HorizontalAlignment="Left" Height="116" Margin="585,422,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="252" FontSize="16"/>
+        <TextBox x:Name="symptoms" HorizontalAlignment="Left" Height="116" Margin="585,422,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="252" FontSize="16"/>
         <TextBox x:Name="diagnosis" HorizontalAlignment="Left" Height="36" Margin="989,137,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="214" FontSize="16"/>
         <TextBox x:Name="note" HorizontalAlignment="Left" Height="65" Margin="989,202,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="214" FontSize="16"/>
         <TextBox x:Name="insurer" HorizontalAlignment="Left" Height="36" Margin="989,274,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="214" FontSize="16"/>

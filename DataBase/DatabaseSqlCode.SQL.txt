@@ -100,6 +100,10 @@ CREATE PROCEDURE Search_Medical_Records @input varchar(50) AS BEGIN SELECT Patie
 
 GO
 
+CREATE PROCEDURE SearchAdvance_Medical_Records @firstName varchar(50), @lastName varchar(25), @patientSSN char(9), @roomNum char(9) AS BEGIN SELECT Patient.First_Name, Patient.Last_Name, Stayed_In.Room_Number FROM Stayed_In INNER JOIN Patient ON Stayed_In.Patient_SSN = Patient.SSN WHERE First_Name LIKE '%' + @firstName + '%' AND Last_Name LIKE '%' + @lastName + '%' AND Patient_SSN LIKE '%' + @patientSSN + '%' AND Room_Number LIKE '%' + @roomNum + '%' END
+
+GO
+
 CREATE PROCEDURE Get_Failed_Attempts @userName varchar(25) AS BEGIN SELECT Failed_Login FROM Staff WHERE [User_Name] = @userName END
 
 GO
@@ -136,6 +140,26 @@ SELECT  Hourly_Rate
 FROM 
 Room
 WHERE Room_Number = @roomNumber
+END
+
+GO
+
+CREATE PROCEDURE Retrieve_Room_Number @ssn char(9), @entryDate datetime
+AS 
+BEGIN 
+SELECT  Room_Number
+FROM Stayed_In
+WHERE Patient_SSN = @ssn AND Entry_Date = @entryDate
+END
+
+GO
+
+CREATE PROCEDURE Retrieve_Symptoms @ssn char(9), @entryDate datetime
+AS 
+BEGIN 
+SELECT Symptom_Name
+FROM Show_Signs
+WHERE Patient_SSN = @ssn AND Entry_Date = @entryDate
 END
 
 GO
@@ -183,10 +207,16 @@ GO
 USE [HRAS_iTas] GRANT EXECUTE ON OBJECT::Import_Symptom TO HRAS_MW_iTas;
 GO
 
+USE [HRAS_iTas] GRANT EXECUTE ON OBJECT::Retrieve_Room_Number TO HRAS_MW_iTas;
+GO
+
 USE [HRAS_iTas] GRANT EXECUTE ON OBJECT::Import_Inventory TO HRAS_MW_iTas;
 GO
 
 USE [HRAS_iTas] GRANT EXECUTE ON OBJECT::Retrieve_Item TO HRAS_MW_iTas;
+GO
+
+USE [HRAS_iTas] GRANT EXECUTE ON OBJECT::Retrieve_Symptoms TO HRAS_MW_iTas;
 GO
 
 USE [HRAS_iTas] GRANT EXECUTE ON OBJECT::Retrieve_Symptom TO HRAS_MW_iTas;
@@ -205,6 +235,9 @@ USE [HRAS_iTas] GRANT EXECUTE ON OBJECT::Search_Items TO HRAS_MW_iTas;
 GO
 
 USE [HRAS_iTas] GRANT EXECUTE ON OBJECT::Search_Medical_Records TO HRAS_MW_iTas;
+GO
+
+USE [HRAS_iTas] GRANT EXECUTE ON OBJECT::SearchAdvance_Medical_Records TO HRAS_MW_iTas;
 GO
 
 USE [HRAS_iTas] GRANT EXECUTE ON OBJECT::Retrieve_Hourly_Rate TO HRAS_MW_iTas;

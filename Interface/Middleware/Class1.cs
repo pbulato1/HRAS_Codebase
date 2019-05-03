@@ -280,7 +280,7 @@ namespace Middleware
 	public class Diagnosis
 	{
 		string diagnosisName;
-		List<string> symptoms;
+		List<string> symptoms = new List<string>();
 
 		public Diagnosis(string name)
 		{
@@ -295,6 +295,31 @@ namespace Middleware
 		public void addSymptom(string symptom)
 		{
 			symptoms.Add(symptom);
+		}
+
+		public List<string> getSymptoms()
+		{
+			return symptoms;
+		}
+
+		public static string getSymptoms(string ssn, DateTime entryDate)
+		{
+			string symptoms = "";
+			SqlConnection connection = Session.getCurrentSession().getConnection();
+			string queryString = "Retrieve_Symptoms";
+			SqlCommand command = new SqlCommand(queryString, connection);
+			command.CommandType = System.Data.CommandType.StoredProcedure;
+			command.Parameters.Add(new SqlParameter("@ssn", ssn));
+			command.Parameters.Add(new SqlParameter("@entryDate", entryDate));
+			SqlDataReader dataReaderRate = command.ExecuteReader();
+			while (dataReaderRate.Read())
+			{
+				int index = dataReaderRate.GetOrdinal("Symptom_Name");
+				symptoms += (dataReaderRate.GetString(index)) + ",";
+			}
+			dataReaderRate.Close();
+			return symptoms;
+
 		}
 	}
 
@@ -639,6 +664,14 @@ namespace Middleware
 			dataReader.Close();
 			string roomNumber = Room.getRoomNumber(ssn, entryDate);
 			currentRoom = new Room(entryDate, roomNumber);
+			string symptoms = Diagnosis.getSymptoms(patient.getSSN(), entryDate);
+			foreach (string symptom in symptoms.Split(','))
+			{
+				if (symptom != "")
+				{
+					diagnosis.addSymptom(symptom);
+				}
+			}
 		}
 
 		public static DataTable getMedicalRecords()
@@ -1174,6 +1207,7 @@ namespace Middleware
 				string addressLine1 = line.Substring((int)DataStart.ADDRESSLINE1, (int)DataLength.ADDRESSLINE1);
 				string addressLine2 = line.Substring((int)DataStart.ADDRESSLINE2, (int)DataLength.ADDRESSLINE2);
 				string addressCity = line.Substring((int)DataStart.ADDRESSCITY, (int)DataLength.ADDRESSCITY);
+				addressCity = addressCity.Trim();
 				string addressState = line.Substring((int)DataStart.ADDRESSSTATE, (int)DataLength.ADDRESSSTATE);
 				string addressZip = line.Substring((int)DataStart.ADDRESSZIP, (int)DataLength.ADDRESSZIP);
 				string dnrStatus = line.Substring((int)DataStart.DNRSTATUS, (int)DataLength.DNRSTATUS);
