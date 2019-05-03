@@ -5,29 +5,27 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:HRAS"
         mc:Ignorable="d"
-        Title="Advance Search" Height="300" Width="300">
+        WindowState="Maximized"
+        Title="Diagnosis Wizard" Height="720" Width="1280">
     <Grid>
-        <Label Content="First name" HorizontalAlignment="Left" Height="23" Margin="10,10,0,0" VerticalAlignment="Top" Width="75" FontSize="9"/>
-        <Label Content="Last name" HorizontalAlignment="Left" Height="23" Margin="145,10,0,0" VerticalAlignment="Top" Width="57" FontSize="9"/>
-        <Label Content="SSN" HorizontalAlignment="Left" Height="23" Margin="10,33,0,0" VerticalAlignment="Top" Width="75" FontSize="9"/>
-        <Label Content="Room No" HorizontalAlignment="Left" Height="23" Margin="10,56,0,0" VerticalAlignment="Top" Width="75" FontSize="9"/>
-        <TextBox HorizontalAlignment="Left" Height="11" Margin="62,17,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="81" FontSize="6" TextChanged="TextBox_TextChanged"/>
-        <TextBox HorizontalAlignment="Left" Height="11" Margin="195,17,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="87" FontSize="6" TextChanged="TextBox_TextChanged"/>
-        <TextBox HorizontalAlignment="Left" Height="11" Margin="35,40,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="50" FontSize="6" TextChanged="TextBox_TextChanged"/>
-        <TextBox HorizontalAlignment="Left" Height="11" Margin="62,61,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="50" FontSize="6" TextChanged="TextBox_TextChanged"/>
-        <Button Content="Search" HorizontalAlignment="Left" Height="17" Margin="93,96,0,0" VerticalAlignment="Top" Width="47" FontSize="8"/>
-        <Button Content="Clear" HorizontalAlignment="Left" Height="17" Margin="178,96,0,0" VerticalAlignment="Top" Width="47" FontSize="8"/>
-        <Label Content="Date range:" HorizontalAlignment="Left" Height="23" Margin="10,138,0,0" VerticalAlignment="Top" Width="75" FontSize="9"/>
-        <CheckBox Content="On this date" HorizontalAlignment="Left" Height="13" Margin="10,166,0,0" VerticalAlignment="Top" Width="75" FontSize="9"/>
-        <CheckBox Content="Before this date" HorizontalAlignment="Left" Height="13" Margin="10,187,0,0" VerticalAlignment="Top" Width="85" FontSize="9"/>
-        <CheckBox Content="From this date" HorizontalAlignment="Left" Height="13" Margin="10,210,0,0" VerticalAlignment="Top" Width="85" FontSize="9"/>
-        <TextBox HorizontalAlignment="Left" Height="11" Margin="93,168,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="50" FontSize="6" TextChanged="TextBox_TextChanged"/>
-        <TextBox HorizontalAlignment="Left" Height="11" Margin="100,189,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="50" FontSize="6" TextChanged="TextBox_TextChanged"/>
-        <TextBox HorizontalAlignment="Left" Height="11" Margin="95,212,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="50" FontSize="6" TextChanged="TextBox_TextChanged"/>
-        <Label Content="to" HorizontalAlignment="Left" Height="23" Margin="150,204,0,0" VerticalAlignment="Top" Width="23" FontSize="9"/>
-        <TextBox HorizontalAlignment="Left" Height="11" Margin="175,212,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="50" FontSize="6" TextChanged="TextBox_TextChanged"/>
-        <Button Content="Menu" HorizontalAlignment="Left" Height="17" Margin="10,242,0,0" VerticalAlignment="Top" Width="47" FontSize="8" Click="Button_Click_1"/>
-        <Button Content="Log out" HorizontalAlignment="Left" Height="17" Margin="235,242,0,0" VerticalAlignment="Top" Width="47" FontSize="8" Click="Button_Click"/>
+        <Label Content="Advance Search" FontSize="30" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,20,0,0"/>
 
+        <Label Content="First Name: " HorizontalAlignment="Left" VerticalAlignment="Top" Margin="30,110,0,0" FontSize="13" Height="30"/>
+        <TextBox x:Name="FirstName" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="150,110,0,0" TextWrapping="Wrap" Text="First Name" FontSize="15" Height="30" Width="250"/>
+
+        <Label Content="Last Name: " HorizontalAlignment="Left" VerticalAlignment="Top" Margin="420,110,0,0" FontSize="13" Height="30"/>
+        <TextBox x:Name="LastName" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="500,110,0,0" TextWrapping="Wrap" Text="Last Name" FontSize="15" Height="30" Width="250"/>
+
+        <Label Content="Patient SSN: " HorizontalAlignment="Left" VerticalAlignment="Top" Margin="30,150,0,0" FontSize="13" Height="30"/>
+        <TextBox x:Name="SSN" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="150,150,0,0" TextWrapping="Wrap" Text="" FontSize="15" Height="30" Width="250"/>
+
+        <Label Content="Room Number " HorizontalAlignment="Left" VerticalAlignment="Top" Margin="30,190,0,0" FontSize="13" Height="30"/>
+        <TextBox x:Name="Room" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="150,190,0,0" TextWrapping="Wrap" Text="" FontSize="15" Height="30" Width="250"/>
+
+        <Button Content="Search" HorizontalAlignment="Left" VerticalAlignment="Bottom"  Margin="390,0,0,250" FontSize="15" Height="35" Width="100" Click="Button_Click_Search"/>
+        <Button Content="Clear" HorizontalAlignment="Right" VerticalAlignment="Bottom"  Margin="0,0,390,250" FontSize="15" Height="35" Width="100" Click="Button_Click_Clear"/>
+
+        <Button Content="Main Menu" Background="White" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Bottom"  Margin="60,0,0,30" Height="35" Width="75" Click="Button_Click_BackMenu" />
+        <Button Content="Log out" Background="White" FontWeight="Bold" HorizontalAlignment="Right" VerticalAlignment="Bottom"  Margin="0,0,60,30" Height="35" Width="75" Click="Button_Click_LogOut" />
     </Grid>
 </Window>

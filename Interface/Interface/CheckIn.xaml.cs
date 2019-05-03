@@ -11,7 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-
+using Middleware;
 namespace Interface
 {
     /// <summary>
@@ -24,53 +24,12 @@ namespace Interface
             InitializeComponent();
         }
 
-        private void FirstName_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            FirstName.Text = "";
-        }
-
-        private void LastName_TextChanged(object sender, TextChangedEventArgs e)
-        {
-
-        }
-
-        private void SSN_TextChanged(object sender, TextChangedEventArgs e)
-        {
-
-        }
-
-        private void Birthdate_TextChanged(object sender, TextChangedEventArgs e)
-        {
-
-        }
-
-        private void Phone_TextChanged(object sender, TextChangedEventArgs e)
-        {
-
-        }
-
-        private void Address_TextChanged(object sender, TextChangedEventArgs e)
-        {
-
-        }
-
-        private void City_TextChanged(object sender, TextChangedEventArgs e)
-        {
-
-        }
-
-        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-
-        }
-
-        private void Zip_TextChanged(object sender, TextChangedEventArgs e)
-        {
-
-        }
-
         private void Button_Click_Submit(object sender, RoutedEventArgs e)
         {
+            if (Zip.Text.Length != (int)DataLength.ADDRESSZIP)
+            {
+                MessageBox.Show(this, "The zip code is in a wrong format! Check your format", "Error", MessageBoxButton.OK, MessageBoxImage.Stop);
+            }
             //Need connection here => save item
         }
 

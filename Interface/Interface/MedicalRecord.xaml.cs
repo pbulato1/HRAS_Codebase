@@ -94,7 +94,7 @@ namespace Interface
 
         private void Button_Click_AdvanceSearch(object sender, RoutedEventArgs e)
         {
-            AdvanceSearch advanceSearch = new AdvanceSearch();
+            AdvanceSearch advanceSearch = new AdvanceSearch(M1);
             advanceSearch.Show();
             this.Close();
         }
