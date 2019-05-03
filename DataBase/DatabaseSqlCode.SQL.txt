@@ -52,10 +52,6 @@ CREATE PROCEDURE Import_Show_Signs @symptomName varchar(25), @ssn char(9), @entr
 
 GO
 
-CREATE PROCEDURE Retrieve_Hourly_Rate @hourlyRate NUMERIC(5,2) AS BEGIN Select Hourly_Rate FROM Room WHERE Hourly_Rate = @hourlyrate END
-
-GO
-
 CREATE PROCEDURE Import_Symptom @symptomName varchar(25) AS BEGIN INSERT INTO Symptom(Name) VALUES(@symptomName) END
 
 GO
@@ -259,9 +255,6 @@ USE [HRAS_iTas] GRANT EXECUTE ON OBJECT::Withdraw_Inventory TO HRAS_MW_iTas;
 GO
 
 USE [HRAS_iTas] GRANT EXECUTE ON OBJECT::Get_Entry_Date TO HRAS_MW_iTas;
-GO
-
-USE [HRAS_iTas] GRANT EXECUTE ON OBJECT::Retrieve_Hourly_Rate TO HRAS_MW_iTas;
 GO
 
 USE [HRAS_iTas] GRANT EXECUTE ON OBJECT::Retrieve_Patient_Page TO HRAS_MW_iTas;
