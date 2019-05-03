@@ -665,8 +665,24 @@ namespace Middleware
 			records.Load(reader);
 			return records;
 		}
+ 
+        public static DataTable searchAdvanceMedicalRecords(string firstName, string lastName, string patientSSN, string roomNum)
+        {
+            DataTable records = new DataTable();
+            SqlConnection connection = Session.getCurrentSession().getConnection();
+            string queryString = "SearchAdvance_Medical_Records";
+            SqlCommand command = new SqlCommand(queryString, connection);
+            command.CommandType = System.Data.CommandType.StoredProcedure;
+            command.Parameters.Add(new SqlParameter("@fristName", firstName));
+            command.Parameters.Add(new SqlParameter("@lastName", lastName));
+            command.Parameters.Add(new SqlParameter("@patientSSN", patientSSN));
+            command.Parameters.Add(new SqlParameter("@roomNum", roomNum));
+            SqlDataReader reader = command.ExecuteReader();
+            records.Load(reader);
+            return records;
+        }
 
-		public Room getRoom()
+        public Room getRoom()
 		{
 			return currentRoom;
 		}
@@ -817,9 +833,7 @@ namespace Middleware
 		public static bool addInventory(string description, string stockID, string size, string quantity, string price)
 		{
 			SqlConnection connection = Session.getCurrentSession().getConnection();
-
-
-
+            
             string queryString = "Import_Item";
 			SqlCommand command = new SqlCommand(queryString, connection);
 			command.CommandType = System.Data.CommandType.StoredProcedure;
