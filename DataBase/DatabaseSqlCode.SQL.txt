@@ -100,6 +100,10 @@ CREATE PROCEDURE Search_Medical_Records @input varchar(50) AS BEGIN SELECT Patie
 
 GO
 
+CREATE PROCEDURE SearchAdvance_Medical_Records @input varchar(50) AS BEGIN SELECT Patient.First_Name, Patient.Last_Name, Visited_History.* FROM Visited_History INNER JOIN Patient ON Visited_History.Patient_SSN = Patient.SSN where First_Name LIKE '%' + @input + '%' AND Last_Name LIKE '%' + @input + '%' AND Patient_SSN LIKE '%' + @input + '%' END
+
+GO
+
 CREATE PROCEDURE Get_Failed_Attempts @userName varchar(25) AS BEGIN SELECT Failed_Login FROM Staff WHERE [User_Name] = @userName END
 
 GO
@@ -231,6 +235,9 @@ USE [HRAS_iTas] GRANT EXECUTE ON OBJECT::Search_Items TO HRAS_MW_iTas;
 GO
 
 USE [HRAS_iTas] GRANT EXECUTE ON OBJECT::Search_Medical_Records TO HRAS_MW_iTas;
+GO
+
+USE [HRAS_iTas] GRANT EXECUTE ON OBJECT::SearchAdvance_Medical_Records TO HRAS_MW_iTas;
 GO
 
 USE [HRAS_iTas] GRANT EXECUTE ON OBJECT::Retrieve_Hourly_Rate TO HRAS_MW_iTas;
