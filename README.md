@@ -1,5 +1,5 @@
 # HRAS_Codebase
-NOTE: all names/passwords can be changed but they must be change in the databaseSqlCode.sql.text and C# Middlewere properties settings1.settings
+NOTE: all names/passwords in the SQL and C# code can be changed but they must match through out the databaseSqlCode.sql.text and C# Middlewere properties settings1.settings
 
 First time Startup procedure:
 1. Go into Database folder and Click on the databaseSqlCode.sql.text file
