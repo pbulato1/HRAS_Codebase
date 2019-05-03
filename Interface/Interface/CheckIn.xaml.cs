@@ -26,7 +26,7 @@ namespace Interface
 
         private void FirstName_TextChanged(object sender, TextChangedEventArgs e)
         {
-
+            FirstName.Text = "";
         }
 
         private void LastName_TextChanged(object sender, TextChangedEventArgs e)
@@ -76,14 +76,30 @@ namespace Interface
 
         private void Button_Click_Cancel(object sender, RoutedEventArgs e)
         {
-            //Need warning sign here => clear everything
+            if (FirstName.Text.Equals("") && LastName.Text.Equals("") && SSN.Text.Equals("") && Birthdate.Text.Equals("") && Phone.Text.Equals("") && Address.Text.Equals("") && City.Text.Equals("") && State.Text.Equals("") && Zip.Text.Equals("")) this.Close();
+            else
+            {
+                MessageBoxResult result = MessageBox.Show(this, "There are unsave contents, do you still want to restart?", "Unsave Content", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                if (result == MessageBoxResult.Yes)
+                {
+                    InitializeComponent();
+                }
+            }
         }
 
         private void Button_Click_BackMenu(object sender, RoutedEventArgs e)
         {
-            MainMenu menu = new MainMenu();
-            menu.Show();
-            this.Close();
+            if (FirstName.Text.Equals("") && LastName.Text.Equals("") && SSN.Text.Equals("") && Birthdate.Text.Equals("") && Phone.Text.Equals("") && Address.Text.Equals("") && City.Text.Equals("") && State.Text.Equals("") && Zip.Text.Equals("")) this.Close();
+            else
+            {
+                MessageBoxResult result = MessageBox.Show(this, "There are unsave contents, do you still want to go back?", "Unsave Content", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                if (result == MessageBoxResult.Yes)
+                {
+                    MainMenu menu = new MainMenu();
+                    menu.Show();
+                    this.Close();
+                }
+            }
         }
 
         private void Button_Click_LogOut(object sender, RoutedEventArgs e)

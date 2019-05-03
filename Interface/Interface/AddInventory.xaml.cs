@@ -20,8 +20,6 @@ namespace Interface
     /// <summary>
     /// Interaction logic for AddInventory.xaml
     /// </summary>
-
-
     public partial class AddInventory : Window
     {
 		DataGrid grid;
