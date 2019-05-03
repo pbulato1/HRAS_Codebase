@@ -55,11 +55,11 @@ namespace Interface
             DG1.CanUserAddRows = false;
         }
 
-        private void Search_TextChanged(object sender, TextChangedEventArgs e)
+        private void Button_Click_Search(object sender, RoutedEventArgs e)
         {
-            if (tfID != null && tfDescription != null && tfSize != null)
+            if (tfStockID != null && tfDescription != null && tfSize != null)
             {
-                DataTable inventory = InventoryItem.searchInventory(tfID.Text, tfDescription.Text, tfSize.Text);
+                DataTable inventory = InventoryItem.searchInventory(tfStockID.Text, tfDescription.Text, tfSize.Text);
                 DG1.ItemsSource = inventory.DefaultView;
                 DG1.AutoGenerateColumns = true;
                 DG1.CanUserAddRows = false;
@@ -83,9 +83,5 @@ namespace Interface
                 this.Close();
             }
         }
-        private void IR_DataChange(object sender, SelectionChangedEventArgs e)
-        {
-        }
-        
     }
 }
