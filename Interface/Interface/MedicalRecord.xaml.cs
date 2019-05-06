@@ -38,7 +38,7 @@ namespace Interface
 			Middleware.MedicalRecord record = new Middleware.MedicalRecord(ssn, date);
 			PatientInfo login = new PatientInfo(record);
 			login.Show();
-			this.Close();
+            this.Close();
 		}
 
 		private void Button_Click_BackMenu(object sender, RoutedEventArgs e)
@@ -70,14 +70,6 @@ namespace Interface
 			M1.CanUserAddRows = false;
 		}
 
-      
-
-        private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-
-        }
-
-
         private void MedicalRecord_Loaded(object sender, EventArgs e)
         {
 			DataTable records = Middleware.MedicalRecord.getMedicalRecords();
@@ -96,7 +88,6 @@ namespace Interface
         {
             AdvanceSearch advanceSearch = new AdvanceSearch(M1);
             advanceSearch.Show();
-            this.Close();
         }
     }
 }

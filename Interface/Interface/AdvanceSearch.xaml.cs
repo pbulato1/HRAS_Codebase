@@ -34,6 +34,7 @@ namespace HRAS
             grid.ItemsSource = records.DefaultView;
             grid.AutoGenerateColumns = true;
             grid.CanUserAddRows = false;
+            this.Close();
         }
         private void Button_Click_Clear(object sender, RoutedEventArgs e)
         {

@@ -706,7 +706,7 @@ namespace Middleware
             string queryString = "SearchAdvance_Medical_Records";
             SqlCommand command = new SqlCommand(queryString, connection);
             command.CommandType = System.Data.CommandType.StoredProcedure;
-            command.Parameters.Add(new SqlParameter("@fristName", firstName));
+            command.Parameters.Add(new SqlParameter("@firstName", firstName));
             command.Parameters.Add(new SqlParameter("@lastName", lastName));
             command.Parameters.Add(new SqlParameter("@patientSSN", patientSSN));
             command.Parameters.Add(new SqlParameter("@roomNum", roomNum));
