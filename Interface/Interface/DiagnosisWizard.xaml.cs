@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Middleware;
 
 namespace Interface
 {
@@ -22,20 +23,22 @@ namespace Interface
         public DiagnosisWizard()
         {
             InitializeComponent();
+            DG1.IsReadOnly = true;
+            Middleware.DiagnosisWizardMid wizard = new Middleware.DiagnosisWizardMid();
+            wizard.RunDiagnosisWizard();
+            question.Content = wizard.askQuestion(wizard.getSymptomName(wizard.getSymptomList()));
         }
-        private void Button_Click_Previous(object sender, RoutedEventArgs e)
+
+        private void Button_Click_Restart(object sender, RoutedEventArgs e)
         {
-
-        }
-
-        private void Button_Click_Next(object sender, RoutedEventArgs e)
-        {
-
+            MainMenu newWindow = new MainMenu();
+            newWindow.Show();
+            this.Close();
         }
 
         private void Button_Click_Submit(object sender, RoutedEventArgs e)
         {
-
+            // check for yes/no buttons then put that data in class varibal answer
         }
 
         private void Button_Click_BackMenu(object sender, RoutedEventArgs e)
@@ -56,6 +59,20 @@ namespace Interface
                 this.Close();
             }
         }
-       
+
+        private void DiagnosisPercent_Change(object sender, SelectionChangedEventArgs e)
+        {
+            // need to call getDiagnosisPercentages
+        }
+
+        private void NoButton_Checked(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void YesButton_Checked(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

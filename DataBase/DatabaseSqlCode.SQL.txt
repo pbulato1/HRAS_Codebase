@@ -52,10 +52,6 @@ CREATE PROCEDURE Import_Show_Signs @symptomName varchar(25), @ssn char(9), @entr
 
 GO
 
-CREATE PROCEDURE Retrieve_Hourly_Rate @hourlyRate NUMERIC(5,2) AS BEGIN Select Hourly_Rate FROM Room WHERE Hourly_Rate = @hourlyrate END
-
-GO
-
 CREATE PROCEDURE Import_Symptom @symptomName varchar(25) AS BEGIN INSERT INTO Symptom(Name) VALUES(@symptomName) END
 
 GO
@@ -100,7 +96,7 @@ CREATE PROCEDURE Search_Medical_Records @input varchar(50) AS BEGIN SELECT Patie
 
 GO
 
-CREATE PROCEDURE SearchAdvance_Medical_Records @firstName varchar(50), @lastName varchar(25), @patientSSN char(9), @roomNum char(9) AS BEGIN SELECT Patient.First_Name, Patient.Last_Name, Stayed_In.Room_Number FROM Stayed_In INNER JOIN Patient ON Stayed_In.Patient_SSN = Patient.SSN WHERE First_Name LIKE '%' + @firstName + '%' AND Last_Name LIKE '%' + @lastName + '%' AND Patient_SSN LIKE '%' + @patientSSN + '%' AND Room_Number LIKE '%' + @roomNum + '%' END
+CREATE PROCEDURE SearchAdvance_Medical_Records @firstName varchar(50), @lastName varchar(25), @patientSSN char(9), @roomNum char(9) AS BEGIN SELECT Patient.First_Name, Patient.Last_Name, Stayed_In.Room_Number FROM Stayed_In INNER JOIN Patient ON Stayed_In.Patient_SSN = Patient.SSN WHERE First_Name LIKE '%' + @firstName + '%' OR Last_Name LIKE '%' + @lastName + '%' OR Patient_SSN LIKE '%' + @patientSSN + '%' OR Room_Number LIKE '%' + @roomNum + '%' END
 
 GO
 
@@ -259,9 +255,6 @@ USE [HRAS_iTas] GRANT EXECUTE ON OBJECT::Withdraw_Inventory TO HRAS_MW_iTas;
 GO
 
 USE [HRAS_iTas] GRANT EXECUTE ON OBJECT::Get_Entry_Date TO HRAS_MW_iTas;
-GO
-
-USE [HRAS_iTas] GRANT EXECUTE ON OBJECT::Retrieve_Hourly_Rate TO HRAS_MW_iTas;
 GO
 
 USE [HRAS_iTas] GRANT EXECUTE ON OBJECT::Retrieve_Patient_Page TO HRAS_MW_iTas;

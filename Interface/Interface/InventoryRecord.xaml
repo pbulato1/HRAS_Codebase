@@ -13,9 +13,7 @@
         <Button Content="Add inventory" FontSize="13" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,90,0,0" Height="30" Width="150" Click="Button_Click_Add"/>
         <Button Content="Inventory Withdraw" FontSize="13" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="190,90,0,0" Height="30" Width="150" Click="Button_Click_Withdraw"/>
         <Button Content="Inventory History" FontSize="13" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="360,90,0,0" Height="30" Width="150" Click="Button_Click_History"/>
-
-        <DataGrid Name="DG1" Margin="0,150,0,100" Width="1700" HorizontalAlignment="Center" VerticalAlignment="Top" ItemsSource="{Binding}" AutoGenerateColumns="False"/>
-
+        <DataGrid Name="DG1" Margin="31,150,42.6,0" Width="1200" Height="450" HorizontalAlignment="Center" VerticalAlignment="Top" ItemsSource="{Binding}" AutoGenerateColumns="False"/>
         <Label Content="Stock ID:" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,25,275,0" FontSize="15" Height="30" Width="95"/>
         <TextBox Name="tfStockID" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,25,100,0" TextWrapping="Wrap" Text="" FontSize="13" Height="30" Width="180"/>
 
