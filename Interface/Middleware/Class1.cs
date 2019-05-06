@@ -614,7 +614,69 @@ namespace Middleware
 			if (!entryExists) throw noPatient;
 			return entryDate;
 		}
-	}
+
+        public static bool checkInPatient(string FirstName, string LastName, string MiddleInitial, string SSN, string Birthdate, string PhoneNum, string Address, string City, string State, string Zip)
+        {
+            SqlConnection connection = Session.getCurrentSession().getConnection();
+            bool alreadyExists = false;
+            string queryString = "CheckIn_Patient";
+            SqlCommand command = new SqlCommand(queryString, connection);
+            command.CommandType = System.Data.CommandType.StoredProcedure;
+            command.Parameters.Add(new SqlParameter("@FirstName", FirstName));
+            command.Parameters.Add(new SqlParameter("@FirstName", FirstName));
+            command.Parameters.Add(new SqlParameter("@FirstName", MiddleInitial));
+            command.Parameters.Add(new SqlParameter("@SSN", SSN));
+            command.Parameters.Add(new SqlParameter("@Birthdate", Birthdate));
+            command.Parameters.Add(new SqlParameter("@PhoneNum", PhoneNum));
+            command.Parameters.Add(new SqlParameter("@Address", Address));
+            command.Parameters.Add(new SqlParameter("@City", City));
+            command.Parameters.Add(new SqlParameter("@Zip", Zip));
+            SqlDataReader dataReader = command.ExecuteReader();
+            while (dataReader.Read())
+            {
+                alreadyExists = true;
+            }
+            dataReader.Close();
+            return alreadyExists;
+            //need a procedure for this
+        }
+        public static bool checkInExistedPatient(string SSN)
+        {
+            SqlConnection connection = Session.getCurrentSession().getConnection();
+            bool alreadyExists = false;
+            string queryString = "CheckInExisted_Patient";
+            SqlCommand command = new SqlCommand(queryString, connection);
+            command.CommandType = System.Data.CommandType.StoredProcedure;
+            command.Parameters.Add(new SqlParameter("@SSN", SSN));
+            SqlDataReader dataReader = command.ExecuteReader();
+            while (dataReader.Read())
+            {
+                alreadyExists = true;
+            }
+            dataReader.Close();
+            return alreadyExists;
+            //need a procedure for this
+        }
+
+        public static bool patientExists(string SSN)
+        {
+            SqlConnection connection = Session.getCurrentSession().getConnection();
+            bool alreadyExists = false;
+            string queryString = "Retrieve_Patient";
+            SqlCommand command = new SqlCommand(queryString, connection);
+            command.CommandType = System.Data.CommandType.StoredProcedure;
+            command.Parameters.Add(new SqlParameter("@SSN", SSN));
+            SqlDataReader dataReader = command.ExecuteReader();
+            while (dataReader.Read())
+            {
+                alreadyExists = true;
+            }
+            dataReader.Close();
+            return alreadyExists;
+            //need a procedure for this
+        }
+
+    }
 
 	public class MedicalRecord
 	{
