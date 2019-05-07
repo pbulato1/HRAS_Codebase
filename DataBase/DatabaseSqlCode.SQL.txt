@@ -1,3 +1,22 @@
+Skip to content
+ 
+Search or jump to…
+
+Pull requests
+Issues
+Marketplace
+Explore
+ 
+@duy042125 
+0
+0 0 uws-itas/HRAS_Codebase
+ Code  Issues 0  Pull requests 0  Projects 0  Wiki  Insights  Settings
+HRAS_Codebase/DataBase/DatabaseSqlCode.SQL.txt
+@ItasTeamMember ItasTeamMember Check in complete.
+8c84ee8 17 minutes ago
+@ItasTeamMember @jLeonar6 @duy042125 @pbulato1
+300 lines (188 sloc)  13.4 KB
+    
 CREATE DATABASE HRAS_iTas --this is a changable name but make sure you change it everywhere here and in the singalton pattern in the C# code.
 
 GO
@@ -106,6 +125,10 @@ CREATE PROCEDURE Search_Items @stockID varchar(5), @description varchar(35), @si
 GO
 
 CREATE PROCEDURE Search_Medical_Records @input varchar(50) AS BEGIN SELECT Patient.First_Name, Patient.Last_Name, Visited_History.* FROM Visited_History INNER JOIN Patient ON Visited_History.Patient_SSN = Patient.SSN where First_Name LIKE '%' + @input + '%' OR Last_Name LIKE '%' + @input + '%' OR Patient_SSN LIKE '%' + @input + '%' END
+
+GO
+
+CREATE PROCEDURE SearchAdvance_Medical_Records @firstName varchar(50), @lastName varchar(25), @patientSSN char(9), @roomNum char(9) AS BEGIN SELECT Patient.First_Name, Patient.Last_Name, Stayed_In.Room_Number FROM Stayed_In INNER JOIN Patient ON Stayed_In.Patient_SSN = Patient.SSN WHERE First_Name LIKE '%' + @firstName + '%' OR Last_Name LIKE '%' + @lastName + '%' OR Patient_SSN LIKE '%' + @patientSSN + '%' OR Room_Number LIKE '%' + @roomNum + '%' END
 
 GO
 
@@ -290,6 +313,9 @@ GO
 USE [HRAS_iTas] GRANT EXECUTE ON OBJECT::Retrieve_Patient_Page TO HRAS_MW_iTas;
 GO
 
+USE [HRAS_iTas] GRANT EXECUTE ON OBJECT::SearchAdvance_Medical_Records TO HRAS_MW_iTas;
+GO
+
 ALTER LOGIN HRAS_MW_iTas ENABLE;
 GO
 
@@ -297,3 +323,15 @@ USE [HRAS_iTas] GRANT EXECUTE ON OBJECT::Retrieve_SSN TO HRAS_MW_iTas;
 GO
 
 USE [HRAS_iTas] INSERT INTO Staff([User_Name], [Password], [User_Type], [Failed_Login]) VALUES('admin', 'W6ph5Mm5Pz8GgiULbPgzG37mj9g=', 'A', 0)
+© 2019 GitHub, Inc.
+Terms
+Privacy
+Security
+Status
+Help
+Contact GitHub
+Pricing
+API
+Training
+Blog
+About
