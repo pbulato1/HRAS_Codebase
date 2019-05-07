@@ -56,7 +56,7 @@ namespace Interface
                         {
                             try
                             {
-                                if (!Patient.checkInPatient(FirstName.Text, LastName.Text, MiddleInitial.Text, SSN.Text, Birthdate.Text, Phone.Text, Address.Text, City.Text, State.Text, Zip.Text))
+                                if (!Patient.checkInPatient(FirstName.Text, LastName.Text, MiddleInitial.Text, SSN.Text, Birthdate.Text, Gender.Text, Address.Text, City.Text, State.Text, Zip.Text))
                                 {
                                     MessageBox.Show(this, "An error occurred while adding to the database, make sure that the data format " +
                                         "is correct.", "Error", MessageBoxButton.OK, MessageBoxImage.Stop);
@@ -78,7 +78,7 @@ namespace Interface
 
         private void Button_Click_Clear(object sender, RoutedEventArgs e)
         {
-            if (FirstName.Text.Equals("") && MiddleInitial.Text.Equals("") && LastName.Text.Equals("") && SSN.Text.Equals("") && Birthdate.Text.Equals("") && Phone.Text.Equals("") && Address.Text.Equals("") && City.Text.Equals("") && State.Text.Equals("") && Zip.Text.Equals("")) InitializeComponent();
+            if (FirstName.Text.Equals("") && MiddleInitial.Text.Equals("") && LastName.Text.Equals("") && SSN.Text.Equals("") && Birthdate.Text.Equals("") && Gender.Text.Equals("") && Address.Text.Equals("") && City.Text.Equals("") && State.Text.Equals("") && Zip.Text.Equals("")) InitializeComponent();
             else
             {
                 MessageBoxResult result = MessageBox.Show(this, "There are unsave contents, do you still want to restart?", "Unsave Content", MessageBoxButton.YesNo, MessageBoxImage.Warning);
@@ -91,7 +91,7 @@ namespace Interface
 
         private void Button_Click_BackMenu(object sender, RoutedEventArgs e)
         {
-            if (FirstName.Text.Equals("") && LastName.Text.Equals("") && SSN.Text.Equals("") && Birthdate.Text.Equals("") && Phone.Text.Equals("") && Address.Text.Equals("") && City.Text.Equals("") && State.Text.Equals("") && Zip.Text.Equals("")) this.Close();
+            if (FirstName.Text.Equals("") && LastName.Text.Equals("") && SSN.Text.Equals("") && Birthdate.Text.Equals("") && Gender.Text.Equals("") && Address.Text.Equals("") && City.Text.Equals("") && State.Text.Equals("") && Zip.Text.Equals("")) this.Close();
             else
             {
                 MessageBoxResult result = MessageBox.Show(this, "There are unsave contents, do you still want to go back?", "Unsave Content", MessageBoxButton.YesNo, MessageBoxImage.Warning);

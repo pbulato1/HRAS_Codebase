@@ -615,29 +615,33 @@ namespace Middleware
 			return entryDate;
 		}
 
-        public static bool checkInPatient(string FirstName, string LastName, string MiddleInitial, string SSN, string Birthdate, string PhoneNum, string Address, string City, string State, string Zip)
+        public static bool checkInPatient(string FirstName, string LastName, string MiddleInitial, string SSN, string Birthdate, string Gender, string Address, string City, string State, string Zip)
         {
             SqlConnection connection = Session.getCurrentSession().getConnection();
-            bool alreadyExists = false;
+            bool successful = false;
             string queryString = "CheckIn_Patient";
             SqlCommand command = new SqlCommand(queryString, connection);
             command.CommandType = System.Data.CommandType.StoredProcedure;
-            command.Parameters.Add(new SqlParameter("@FirstName", FirstName));
-            command.Parameters.Add(new SqlParameter("@FirstName", FirstName));
-            command.Parameters.Add(new SqlParameter("@FirstName", MiddleInitial));
-            command.Parameters.Add(new SqlParameter("@SSN", SSN));
-            command.Parameters.Add(new SqlParameter("@Birthdate", Birthdate));
-            command.Parameters.Add(new SqlParameter("@PhoneNum", PhoneNum));
-            command.Parameters.Add(new SqlParameter("@Address", Address));
-            command.Parameters.Add(new SqlParameter("@City", City));
-            command.Parameters.Add(new SqlParameter("@Zip", Zip));
-            SqlDataReader dataReader = command.ExecuteReader();
-            while (dataReader.Read())
-            {
-                alreadyExists = true;
-            }
-            dataReader.Close();
-            return alreadyExists;
+            command.Parameters.Add(new SqlParameter("@firstName", FirstName));
+            command.Parameters.Add(new SqlParameter("@lastName", LastName));
+            command.Parameters.Add(new SqlParameter("@middleInitial", MiddleInitial));
+            command.Parameters.Add(new SqlParameter("@ssn", SSN));
+            command.Parameters.Add(new SqlParameter("@birthdate", Birthdate));
+            command.Parameters.Add(new SqlParameter("@address", Address));
+			command.Parameters.Add(new SqlParameter("@addressState", State));
+			command.Parameters.Add(new SqlParameter("@addressCity", City));
+            command.Parameters.Add(new SqlParameter("@addressZip", Zip));
+			command.Parameters.Add(new SqlParameter("@gender", Gender));
+			try
+			{
+				command.ExecuteNonQuery();
+				successful = true;
+			}
+			catch (Exception)
+			{
+				return false;
+			}
+            return successful;
             //need a procedure for this
         }
         public static bool checkInExistedPatient(string SSN)

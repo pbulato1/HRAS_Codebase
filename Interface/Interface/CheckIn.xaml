@@ -27,8 +27,8 @@
         <DatePicker x:Name="Birthdate" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="150,190,0,0" FontSize="15" Height="30" Width="250"/>
         <Label Content="(*)" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="400,190,0,0" FontSize="10" Height="30" Foreground="Red"/>
         
-        <Label Content="Phone Number: " HorizontalAlignment="Left" VerticalAlignment="Top" Margin="30,230,0,0" FontSize="13" Height="30"/>
-        <TextBox x:Name="Phone" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="150,230,0,0" TextWrapping="Wrap" Text="" FontSize="15" Height="30" Width="250"/>
+        <Label Content="Gender: " HorizontalAlignment="Left" VerticalAlignment="Top" Margin="30,230,0,0" FontSize="13" Height="30"/>
+        <TextBox x:Name="Gender" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="150,230,0,0" TextWrapping="Wrap" Text="" FontSize="15" Height="30" Width="250"/>
         <Label Content="Address: " HorizontalAlignment="Left" VerticalAlignment="Top" Margin="30,270,0,0" FontSize="13" Height="30"/>
         <TextBox x:Name="Address" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="150,270,0,0" TextWrapping="Wrap" Text="" FontSize="15" Height="30" Width="250"/>
         <Label Content="(*)" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="400,270,0,0" FontSize="10" Height="30" Foreground="Red"/>

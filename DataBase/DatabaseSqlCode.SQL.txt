@@ -64,6 +64,15 @@ CREATE PROCEDURE Import_User @username varchar(25), @password varchar(50), @user
 
 GO
 
+CREATE PROCEDURE CheckIn_Patient @lastName varchar(50), @firstName varchar(25), @middleInitial varchar(1), @gender varchar(1), @ssn varchar(9), @birthDate varchar(8), @address varchar(35), @addressCity varchar(25), @addressState varchar(2), @addressZip varchar(5) 
+AS 
+BEGIN 
+INSERT INTO Patient(Last_Name, First_Name, Middle_Initial, Gender, SSN, Birth_Date, Address_Line1, Address_City, Address_State, Address_Zip) VALUES(@lastName, @firstName, @middleInitial, @gender, @ssn, @birthDate, @address, @addressCity, @addressState, @addressZip) 
+INSERT INTO Visited_History(Patient_SSN, Entry_Date) VALUES(@ssn, (SELECT GETDATE()))
+END
+
+GO
+
 CREATE PROCEDURE Retrieve_Symptom @symptomName varchar(25) AS BEGIN Select [Name] FROM Symptom WHERE [Name] = @symptomName END
 
 GO
@@ -216,6 +225,9 @@ USE [HRAS_iTas] GRANT EXECUTE ON OBJECT::Import_Stayed_In TO HRAS_MW_iTas;
 GO
 
 USE [HRAS_iTas] GRANT EXECUTE ON OBJECT::Import_Symptom TO HRAS_MW_iTas;
+GO
+
+USE [HRAS_iTas] GRANT EXECUTE ON OBJECT::CheckIn_Patient TO HRAS_MW_iTas;
 GO
 
 USE [HRAS_iTas] GRANT EXECUTE ON OBJECT::Retrieve_Room_Number TO HRAS_MW_iTas;
