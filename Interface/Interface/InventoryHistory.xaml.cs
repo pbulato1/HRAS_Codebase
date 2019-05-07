@@ -24,7 +24,8 @@ namespace Interface
         public InventoryHistory()
         {
             InitializeComponent();
-            Loaded += InventoryHistory_Loaded;
+			D1.IsReadOnly = true;
+			Loaded += InventoryHistory_Loaded;
         }
 
         private void Button_Click_Back(object sender, RoutedEventArgs e)
@@ -55,11 +56,11 @@ namespace Interface
 
         private void InventoryHistory_Loaded(object sender, EventArgs e)
         {
-            //DataTable inventoryHistory = ();
-            //D1.ItemsSource = inventoryHistory.DefaultView;
-            D1.AutoGenerateColumns = true;
-            D1.CanUserAddRows = false;
-        }
+			DataTable inventory = InventoryItem.getInventoryHistory();
+			D1.ItemsSource = inventory.DefaultView;
+			D1.AutoGenerateColumns = true;
+			D1.CanUserAddRows = false;
+		}
 
         private void Search_TextChanged(object sender, TextChangedEventArgs e)
         {
