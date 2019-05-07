@@ -20,6 +20,7 @@ namespace Interface
     /// </summary>
     public partial class DiagnosisWizard : Window
     {
+        private bool answer = false;
         public DiagnosisWizard()
         {
             InitializeComponent();
@@ -67,12 +68,12 @@ namespace Interface
 
         private void NoButton_Checked(object sender, RoutedEventArgs e)
         {
-
+            answer = false;
         }
 
         private void YesButton_Checked(object sender, RoutedEventArgs e)
         {
-
+            answer = false;
         }
     }
 }

@@ -190,9 +190,9 @@ namespace Middleware
 
     public class DiagnosisWizardMid
     {
-        string SymptomList = "Where Symptom_Name <> ''";
-        string DiagnosisList = "Where Symptom_Name <> ''";
-        Boolean exit = false;
+        string SymptomList = "WHERE Symptom_Name <> ''";
+        string DiagnosisList = "WHERE Symptom_Name <> ''";
+        bool exit = false;
         public string answer;
 
         public void RunDiagnosisWizard()
@@ -200,7 +200,7 @@ namespace Middleware
             while (!exit)// connect exit to the exit button to leave the diagnosis wizard
             {
                 string fiftyName = getSymptomName(SymptomList);
-                Boolean response = Response(answer);
+                bool response = Response(answer);
 
                 if (response == true)
                 {
@@ -225,7 +225,7 @@ namespace Middleware
             return "Is the patient  show signs of " + name + "?";
         }
 
-        public Boolean Response(string answer)
+        public bool Response(string answer)
         {
             if (answer == "Yes")
             {

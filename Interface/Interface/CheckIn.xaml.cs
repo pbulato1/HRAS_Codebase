@@ -28,7 +28,7 @@ namespace Interface
 
         private void Button_Click_Submit(object sender, RoutedEventArgs e)
         {
-            bool currentAddExists = InventoryItem.itemExists(SSN.Text);
+            bool patientExist = Patient.patientExists(SSN.Text);
 
             if (FirstName.Text.Equals("") || LastName.Text.Equals("") || SSN.Text.Equals("") || Birthdate.Text.Equals("") || Address.Text.Equals("") || City.Text.Equals("") || State.Text.Equals("") || Zip.Text.Equals(""))
                 MessageBox.Show(this, "You have to fill all required fields", "Fill required fields", MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -38,7 +38,7 @@ namespace Interface
                 MessageBoxResult result = MessageBox.Show(this, "Do you want to submit?", "Submit", MessageBoxButton.YesNo, MessageBoxImage.Warning);
                 if (result == MessageBoxResult.Yes)
                 {
-                    if (currentAddExists)
+                    if (patientExist)
                     {
                         if (!Patient.checkInExistedPatient(SSN.Text))
                         {
