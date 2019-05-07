@@ -643,18 +643,21 @@ namespace Middleware
         public static bool checkInExistedPatient(string SSN)
         {
             SqlConnection connection = Session.getCurrentSession().getConnection();
-            bool alreadyExists = false;
+            bool successful = false;
             string queryString = "CheckInExisted_Patient";
             SqlCommand command = new SqlCommand(queryString, connection);
             command.CommandType = System.Data.CommandType.StoredProcedure;
-            command.Parameters.Add(new SqlParameter("@SSN", SSN));
-            SqlDataReader dataReader = command.ExecuteReader();
-            while (dataReader.Read())
-            {
-                alreadyExists = true;
-            }
-            dataReader.Close();
-            return alreadyExists;
+            command.Parameters.Add(new SqlParameter("@ssn", SSN));
+			try
+			{
+				command.ExecuteNonQuery();
+				successful = true;
+			}
+			catch (Exception)
+			{
+				return false;
+			}
+            return successful;
             //need a procedure for this
         }
 
