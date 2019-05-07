@@ -56,6 +56,14 @@ CREATE PROCEDURE Retrieve_Hourly_Rate @hourlyRate NUMERIC(5,2) AS BEGIN Select H
 
 GO
 
+CREATE PROCEDURE Retrieve_Inventory_History
+AS 
+BEGIN 
+Select * FROM [Use]
+END
+
+GO
+
 CREATE PROCEDURE Import_Symptom @symptomName varchar(25) AS BEGIN INSERT INTO Symptom(Name) VALUES(@symptomName) END
 
 GO
@@ -252,6 +260,9 @@ USE [HRAS_iTas] GRANT EXECUTE ON OBJECT::Verify_Login TO HRAS_MW_iTas;
 GO
 
 USE [HRAS_iTas] GRANT EXECUTE ON OBJECT::Get_Items_Top TO HRAS_MW_iTas;
+GO
+
+USE [HRAS_iTas] GRANT EXECUTE ON OBJECT::Retrieve_Inventory_History TO HRAS_MW_iTas;
 GO
 
 USE [HRAS_iTas] GRANT EXECUTE ON OBJECT::Get_Medical_Records_Top TO HRAS_MW_iTas;

@@ -40,7 +40,7 @@ namespace Interface
                 try
                 {
                     if (InventoryItem.withdrawItem(ItemID.Text, Quantity.Text, PatientID.Text, WithdrawDate.Text)) success = true;
-                    else MessageBox.Show(this, "An error occured.", "Error", MessageBoxButton.OK, MessageBoxImage.Stop);
+                    else MessageBox.Show(this, "The patient you entered is not checked into the hospital.", "Error", MessageBoxButton.OK, MessageBoxImage.Stop);
                 }
                 catch (Exception ex)
                 {

@@ -933,7 +933,19 @@ namespace Middleware
             return inventory;
         }
 
-        public static DataTable searchInventory(string id, string description, string size)
+		public static DataTable getInventoryHistory()
+		{
+			DataTable inventory = new DataTable();
+			SqlConnection connection = Session.getCurrentSession().getConnection();
+			string queryString = "Retrieve_Inventory_History";
+			SqlCommand command = new SqlCommand(queryString, connection);
+			command.CommandType = System.Data.CommandType.StoredProcedure;
+			SqlDataReader reader = command.ExecuteReader();
+			inventory.Load(reader);
+			return inventory;
+		}
+
+		public static DataTable searchInventory(string id, string description, string size)
         {
             DataTable inventory = new DataTable();
             SqlConnection connection = Session.getCurrentSession().getConnection();
