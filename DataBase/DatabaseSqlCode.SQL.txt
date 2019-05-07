@@ -132,7 +132,7 @@ CREATE PROCEDURE Search_Items @stockID varchar(5), @description varchar(35), @si
 
 GO
 
-CREATE PROCEDURE Search_Medical_Records @input varchar(50) AS BEGIN SELECT Patient.First_Name, Patient.Last_Name, Visited_History.* FROM Visited_History INNER JOIN Patient ON Visited_History.Patient_SSN = Patient.SSN where First_Name LIKE '%' + @input + '%' OR Last_Name LIKE '%' + @input + '%' OR Patient_SSN LIKE '%' + @input + '%' END
+CREATE PROCEDURE Search_Medical_Records @input varchar(50) AS BEGIN SELECT Patient.First_Name, Patient.Last_Name, Visited_History.* FROM Visited_History INNER JOIN Patient ON Visited_History.Patient_SSN = Patient.SSN where First_Name LIKE '%' + @input + '%' AND Last_Name LIKE '%' + @input + '%' AND Patient_SSN LIKE '%' + @input + '%' END
 
 GO
 
